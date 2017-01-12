@@ -23,7 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-
+#include "Board.h"
 class Game
 {
 public:
@@ -36,12 +36,13 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	
+	Board chessBoard;
 	/********************************/
 };

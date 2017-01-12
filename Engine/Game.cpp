@@ -24,7 +24,8 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	chessBoard(8,8) //basic chess board
 {
 }
 
@@ -42,4 +43,18 @@ void Game::UpdateModel()
 }
 void Game::ComposeFrame()
 {
+	int xx=0;
+	int yy = 0;
+	for (auto i = chessBoard.boardTiles.cbegin(); i < chessBoard.boardTiles.cend(); i++)
+	{		
+		gfx.PutPixel((*i)->location.x + 150 + xx, (*i)->location.y + 150 +yy ,(*i)->color);
+		xx += 10;
+		if ((*i)->location.y % 7 == 0 && (*i)->location.y != 0)//first one = 0
+		{
+			yy += 10;
+			xx = 0;
+		}
+			
+		//gfx.PutPixel((*i)->location.x + 150, (*i)->location.y + 150, (*i)->color);
+	}
 }

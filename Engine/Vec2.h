@@ -221,7 +221,8 @@ public:
 	T x;
 	T y;
 };
-
+typedef _Vec2< int > Vec2I;
+typedef _Vec2< double > Ved2;
 typedef _Vec2< float > Vec2;
 typedef _Vec2< double > Ved2;
 
