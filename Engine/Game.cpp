@@ -21,12 +21,14 @@
 #include "MainWindow.h"
 #include "Game.h"
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd ),
-	chessBoard(8,8) //basic chess board
+	wnd(wnd),
+	gfx(wnd),
+	chessBoard(8, 8), //basic chess board
+	pawn(Vec2I(1, 2),Piece::Team::BLACK, &chessBoard)
 {
+	//mo2ktn el 2byda makano ta7t daymn
 }
 
 void Game::Go()
@@ -39,22 +41,37 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	
 }
 void Game::ComposeFrame()
 {
-	int xx=0;
+
+	//draw Grid/Board
+	int xx = 0;
 	int yy = 0;
+	const int screenCenterY = (Graphics::ScreenHeight - 100) / 2;
+	const int screenCenterX = (Graphics::ScreenWidth - 100) / 2;
+	int screenLocationX = screenCenterX;
+	int screenLocationY = screenCenterY;
+	Color c;
+	//screenlocation reduces by 1 when x or y increases by 1 so that its place dont change
 	for (auto i = chessBoard.boardTiles.cbegin(); i < chessBoard.boardTiles.cend(); i++)
 	{		
-		gfx.PutPixel((*i)->location.x + 150 + xx, (*i)->location.y + 150 +yy ,(*i)->color);
+		//if the location contain a piece, give it another color
+		if ((*i)->location == pawn.locate())
+			c = Colors::White;
+		else
+			c = (*i)->color;
+
+		gfx.PutPixel((*i)->location.x + screenLocationX + xx, (*i)->location.y + screenLocationY +yy ,c);
 		xx += 10;
-		if ((*i)->location.y % 7 == 0 && (*i)->location.y != 0)//first one = 0
+		screenLocationY --;
+		if ((*i)->location.y % 7 == 0 && (*i)->location.y != 0)//first one = 0, if we pass the 7 then its new row
 		{
 			yy += 10;
 			xx = 0;
-		}
+			screenLocationX--;
+			screenLocationY = screenCenterY;
 			
-		//gfx.PutPixel((*i)->location.x + 150, (*i)->location.y + 150, (*i)->color);
+		}			
 	}
 }

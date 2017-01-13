@@ -24,6 +24,7 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "Board.h"
+#include "Pawn.h"
 class Game
 {
 public:
@@ -37,6 +38,7 @@ private:
 	/********************************/
 	/*  User Functions              */
 
+	
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -44,5 +46,7 @@ private:
 	/********************************/
 	/*  User Variables              */
 	Board chessBoard;
+	Pawn pawn;
 	/********************************/
 };
+

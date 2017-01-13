@@ -25,8 +25,20 @@
     <Filter Include="Source Files\Framework">
       <UniqueIdentifier>{567a3cd8-6e33-4e18-aa7e-e4b5681fd722}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Pieces">
+      <UniqueIdentifier>{379c149a-3c4f-4ed7-980b-9b1900cd5eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pieces">
+      <UniqueIdentifier>{cd44ae2e-7b5c-4e4c-9edc-63030ae0cca8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{7449bcf3-02f1-4956-8a3b-bd2ca1a2ce1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pieces\unit tests">
+      <UniqueIdentifier>{97731359-c637-4362-8df6-3a587a6d62ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pieces\unit tests">
+      <UniqueIdentifier>{4c394b3e-ab6c-4808-9087-e402bc36a0aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +96,15 @@
     <ClInclude Include="Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Pawn.h">
+      <Filter>Header Files\Pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDirector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pawnTest.h">
+      <Filter>Header Files\Pieces\unit tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -112,6 +133,15 @@
     </ClCompile>
     <ClCompile Include="Board.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pawn.cpp">
+      <Filter>Source Files\Pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDirector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pawnTest.cpp">
+      <Filter>Source Files\Pieces\unit tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
