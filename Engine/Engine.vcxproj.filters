@@ -105,6 +105,9 @@
     <ClInclude Include="pawnTest.h">
       <Filter>Header Files\Pieces\unit tests</Filter>
     </ClInclude>
+    <ClInclude Include="Rook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -142,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="pawnTest.cpp">
       <Filter>Source Files\Pieces\unit tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Rook.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

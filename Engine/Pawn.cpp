@@ -3,12 +3,13 @@ Pawn::Pawn(Vec2I location, Team team, const Board *board)
 	:
 	Piece(location, team, PAWN, board)
 {
+	//increment n of pieces
 	switch (team)
 	{
-		case Piece::Team::WHITE:
+		case Team::WHITE:
 			nWhiteLeft++;
 			break;
-		case Piece::Team::BLACK:
+		case Team::BLACK:
 			nBlackLeft++;
 			break;
 	}
@@ -20,10 +21,10 @@ int Pawn::howManyLeft() const
 	///return the number of pieces left in this team
 	switch (team)
 	{
-		case Piece::Team::WHITE:
+		case Team::WHITE:
 			return nWhiteLeft;
 			break;
-		case Piece::Team::BLACK:
+		case Team::BLACK:
 			return nBlackLeft;
 			break;
 		default:
@@ -35,21 +36,21 @@ int Pawn::howManyLeft() const
 bool Pawn::isValidLocation(Vec2I newLocation) const
 {
 	//checking if the location is inside the board
-	if (newLocation.x <= board->rows &&
-		newLocation.y <= board->columns &&
-		newLocation.x >= 0 &&
-		newLocation.y >= 0
+	if (newLocation.y <= board->rows &&
+		newLocation.x <= board->columns &&
+		newLocation.y >= 0 &&
+		newLocation.x >= 0
 		)
 	{
 		switch (team)
 		{
-			case Piece::Team::WHITE:
+			case Team::WHITE:
 			{//eating case is missing
-				if (newLocation.y == location.y)
+				if (newLocation.x == location.x)
 				{
 					if (movedBefore == false)
 					{
-						if (newLocation.x == location.x - 2 || newLocation.x == location.x - 1)
+						if (newLocation.y == location.y - 2 || newLocation.y == location.y - 1)
 						{//if it is a move of 1 or 2 points
 							return true;
 						}
@@ -60,7 +61,7 @@ bool Pawn::isValidLocation(Vec2I newLocation) const
 					}
 					else
 					{
-						if (newLocation.x == location.x - 1)
+						if (newLocation.y == location.y - 1)
 						{//only on tile is allowed
 							return true;
 						}
@@ -74,14 +75,14 @@ bool Pawn::isValidLocation(Vec2I newLocation) const
 					return false;
 			}
 
-			case Piece::Team::BLACK:
+			case Team::BLACK:
 			{
 				{//eating case is missing
-					if (newLocation.y == location.y)
+					if (newLocation.x == location.x)
 					{
 						if (movedBefore == false)
 						{
-							if (newLocation.x == location.x + 2 || newLocation.x == location.x + 1)
+							if (newLocation.y == location.y + 2 || newLocation.y == location.y + 1)
 							{//if it is a move of 1 or 2 points
 
 								return true;
@@ -93,7 +94,7 @@ bool Pawn::isValidLocation(Vec2I newLocation) const
 						}
 						else
 						{
-							if (newLocation.x == location.x + 1)
+							if (newLocation.y == location.y + 1)
 							{//only on tile is allowed
 								return true;
 							}
@@ -108,7 +109,7 @@ bool Pawn::isValidLocation(Vec2I newLocation) const
 				}
 			}
 
-			case Piece::Team::INVALID:
+			case Team::INVALID:
 				return false;
 		}
 	}
@@ -130,10 +131,10 @@ Pawn::~Pawn()
 	
 	switch (team)
 	{
-		case Piece::Team::WHITE:
+		case Team::WHITE:
 			nWhiteLeft--;
 			break;
-		case Piece::Team::BLACK:
+		case Team::BLACK:
 			nBlackLeft--;
 			break;
 	}

@@ -2,26 +2,11 @@
 #include "Vec2.h"
 #include "Colors.h"
 #include "Board.h"
+#include "GameDirector.h" // for the enums
+using namespace GlobalEnums;
 //abstract class 
 class Piece
 {
-public:
-	enum pieceType
-	{
-		PAWN,
-		KNIGHT,
-		ROOK,
-		BISHOP,
-		QUEEN,
-		KING,
-		NOTDEFINED
-	};
-	enum class Team
-	{
-		WHITE,
-		BLACK,
-		INVALID
-	};
 protected:
 	Piece(Vec2I location, Team team, pieceType type, const Board* const board)
 		:
