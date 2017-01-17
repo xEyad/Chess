@@ -1,5 +1,5 @@
 #include "Pawn.h"
-Pawn::Pawn(Vec2I location, Team team, const Board *board)
+Pawn::Pawn(Vec2I location, Team team,  Board *const board)
 	:
 	Piece(location, team, PAWN, board)
 {
@@ -18,7 +18,7 @@ Pawn::Pawn(Vec2I location, Team team, const Board *board)
 
 int Pawn::howManyLeft() const
 {
-	///return the number of pieces left in this team
+	
 	switch (team)
 	{
 		case Team::WHITE:
@@ -35,83 +35,48 @@ int Pawn::howManyLeft() const
 
 bool Pawn::isValidLocation(Vec2I newLocation) const
 {
-	//checking if the location is inside the board
-	if (newLocation.y <= board->rows &&
-		newLocation.x <= board->columns &&
-		newLocation.y >= 0 &&
-		newLocation.x >= 0
-		)
+	if (team == Team::BLACK && curLocation.y > newLocation.y)		//black and tries to move up
+		return false;
+
+	else if (team == Team::WHITE && curLocation.y < newLocation.y)	//white and tries to move down
+		return false;
+	else 													//other than that... then its a valid move
 	{
-		switch (team)
+		auto tile = board->getTileState(newLocation);
+		int yDiff = abs(curLocation.y - newLocation.y);
+		int xDiff = abs(curLocation.x - newLocation.x);
+		if (!movedBefore && isWayClear(newLocation) && yDiff <= 2)	// can do 2 vertical moves 
+			return true;
+
+		else if (isWayClear(newLocation) && yDiff == 1) //basically 1 vertical move
+			return true;
+
+		else if (yDiff == 1 && xDiff == 1 && tile.team != team) //eating(capturing) case
 		{
-			case Team::WHITE:
-			{//eating case is missing
-				if (newLocation.x == location.x)
-				{
-					if (movedBefore == false)
-					{
-						if (newLocation.y == location.y - 2 || newLocation.y == location.y - 1)
-						{//if it is a move of 1 or 2 points
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-					}
-					else
-					{
-						if (newLocation.y == location.y - 1)
-						{//only on tile is allowed
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-					}
-				}
-				else
-					return false;
-			}
+			return true;
+		}
+		else
+			return false;
+	}
+	
+}
 
-			case Team::BLACK:
-			{
-				{//eating case is missing
-					if (newLocation.x == location.x)
-					{
-						if (movedBefore == false)
-						{
-							if (newLocation.y == location.y + 2 || newLocation.y == location.y + 1)
-							{//if it is a move of 1 or 2 points
-
-								return true;
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							if (newLocation.y == location.y + 1)
-							{//only on tile is allowed
-								return true;
-							}
-							else
-							{
-								return false;
-							}
-						}
-					}
-					else
-						return false;
-				}
-			}
-
-			case Team::INVALID:
+bool Pawn::isWayClear(Vec2I newLocation) const
+{
+	if (board->isInsideTheBoard(newLocation) && newLocation.x == curLocation.x)
+	{
+		int judge;
+		for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y)-1; i++)
+		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
+			if (Vec2I(curLocation.x, i) == curLocation)
+				judge = 1;
+			else
+				judge = 0;
+			if (board->getTileState(Vec2I(curLocation.x, i + judge)).containPiece)
 				return false;
 		}
+		//if we get out of the loop then the way is clear
+		return true;
 	}
 	else
 		return false;
@@ -121,8 +86,10 @@ void Pawn::moveTo(Vec2I newLocation)
 {
 	if (isValidLocation(newLocation))
 	{
-		location = newLocation;
+		oldLocation = curLocation;
+		curLocation = newLocation;
 		movedBefore = true;
+		reportChange();
 	}
 }
 

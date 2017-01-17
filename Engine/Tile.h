@@ -7,10 +7,10 @@ class Tile
 {
 private:
 	struct Status
-	{
-		bool containPiece;
-		pieceType piecetype;
-		Team team;
+	{		
+		bool containPiece = false;
+		pieceType piecetype = pieceType::NOTDEFINED;
+		Team team = Team::INVALID;
 	};
 private:
 	Tile(Vec2I location, Color c)
@@ -18,7 +18,12 @@ private:
 		color(c),
 		location(location)
 	{}
-	
+	void applyChanges(bool containPiece, pieceType piecetype, Team team)
+	{
+		state.containPiece = containPiece;
+		state.piecetype = piecetype;
+		state.team = team;
+	}
 public:
 	const Color color;
 	const Vec2I location;

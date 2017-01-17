@@ -48,7 +48,9 @@ private:
 	/*  User Variables              */
 	Board chessBoard;
 	Pawn pawn;
+	Pawn pawn2;
 	Rook rook;
+	
 	/********************************/
 };
 

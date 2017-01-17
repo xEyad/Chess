@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BiDirection.h" />
+    <ClInclude Include="Bishop.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="ChiliException.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />

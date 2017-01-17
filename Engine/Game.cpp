@@ -26,10 +26,11 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	chessBoard(8, 8), //basic chess board
-	pawn(Vec2I(1, 1),Team::BLACK, &chessBoard),
-	rook(Vec2I(3,1), Team::BLACK, &chessBoard)
+	pawn(Vec2I(1, 2),Team::WHITE, &chessBoard),
+	pawn2(Vec2I(6, 1), Team::WHITE, &chessBoard),
+	rook(Vec2I(2,1), Team::BLACK, &chessBoard)
 {
-	//mo2ktn el 2byda makano ta7t daymn
+	//mo2ktn el 2byd makano ta7t daymn
 	
 }
 
@@ -43,9 +44,19 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	rook.moveTo({ 1,4 });
+	pawn.moveTo({ 2,1 });
+	//rook.moveTo({ 3,0 });
+	//pawn.moveTo({ 1,3 });
+	//pawn.moveTo({ 1,6 });
+	/*rook.moveTo({ 1,4 });
 	rook.moveTo({ 1,6 });
-	rook.moveTo({3,6});
+	rook.moveTo(pawn.locate());
+	rook.moveTo({ 0,1 });
+	rook.moveTo(pawn2.locate());
+	rook.moveTo({ 5,2 });
+	rook.moveTo({ 3,0 });
+	rook.moveTo({ 7,1 });
+	rook.moveTo({ 3,5 });*/
 }
 void Game::ComposeFrame()
 {		
@@ -60,10 +71,10 @@ void Game::ComposeFrame()
 	for (auto i = chessBoard.boardTiles.cbegin(); i < chessBoard.boardTiles.cend(); i++)
 	{
 		//if the location contain a piece, give it another color
-		if ((*i)->location == pawn.locate())
-			c = Colors::Green;
-		else if ((*i)->location == rook.locate())
+		 if ((*i)->location == rook.locate())
 			c = Colors::Yellow;
+		 else if ((*i)->location == pawn.locate() || (*i)->location == pawn2.locate())
+			c = Colors::Green;		
 		else
 			c = (*i)->color;
 		//Rows are Y , Columns are X
