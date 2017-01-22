@@ -1,10 +1,10 @@
-#include "Bishop.h"
+#include "Queen.h"
 
-Bishop::Bishop(Vec2I location, Team team, Board *const board)
+Queen::Queen(Vec2I location, Team team, Board* const board)
 	:
-	Piece(location, team, BISHOP, board)
+	Piece(location, team, KING, board)
 {
-	//increment n of pieces
+	//increment number of pieces
 	switch (team)
 	{
 		case Team::WHITE:
@@ -14,9 +14,9 @@ Bishop::Bishop(Vec2I location, Team team, Board *const board)
 			nBlackLeft++;
 			break;
 	}
-}
+};
 
-int Bishop::howManyLeft() const
+int Queen::howManyLeft() const
 {
 	switch (team)
 	{
@@ -32,36 +32,79 @@ int Bishop::howManyLeft() const
 	}
 }
 
-bool Bishop::isValidLocation(Vec2I newLocation) const
+bool Queen::isValidLocation(Vec2I newLocation) const
 {
 	if (board->isInsideTheBoard(newLocation))
 	{
-		if (curLocation.x == newLocation.x || curLocation.y == newLocation.y) //if same Y or X
-			return false;
+		bool hostile = board->getTileState(newLocation).team != team;
+		if (isKingMove(newLocation) && hostile)
+			return true;
+		else if (isWayClear(newLocation) && hostile) //checks type of move (bishop/rook) and the way itself
+			return true;
 		else
-		{
-			int xDiff = abs(curLocation.x - newLocation.x);
-			int yDiff = abs(curLocation.y - newLocation.y);
-			if (xDiff == 1 && yDiff == 1 && board->getTileState(newLocation).team != team) //diagonalic ONE move just ONE
-				return true;
-			else if (isWayClear(newLocation) && board->getTileState(newLocation).team != team) //if the way is clear and there is no friend on it(new tile)
-				return true;
-			else
-				return false;
-		}
+			return false;
 	}
-	else //out of board
+	else
 		return false;
 }
-bool Bishop::isWayClear(Vec2I newLocation) const
+
+bool Queen::isWayClear(Vec2I newLocation) const
+{
+	if (newLocation.x == curLocation.x || newLocation.y == curLocation.y)
+		if (isValidRookMove(newLocation))
+			return true;
+		else
+			return false;
+	else if (isValidBishopMove(newLocation))
+		return true;
+	else
+		return false;
+}
+
+bool Queen::isValidRookMove(Vec2I newLocation) const
+{
+	int judge; //used to make us not check the tile we are currently on
+	if (newLocation.x == curLocation.x) //then its a vertical move (Y)
+	{
+		for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y) - 1; i++)
+		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
+			if (Vec2I(curLocation.x, i) == curLocation)
+				judge = 1;
+			else
+				judge = 0;
+			if (board->getTileState(Vec2I(curLocation.x, i + judge)).containPiece)
+				return false;
+		}
+		//if we get out of the loop then the way is clear
+		return true;
+	}
+	else if (newLocation.y == curLocation.y) //then its a horizontal move (X)
+	{
+		for (int i = std::min(curLocation.x, newLocation.x); i < std::max(curLocation.x, newLocation.x) - 1; i++)
+		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
+			if (Vec2I(i, curLocation.y) == curLocation)
+				judge = 1;
+			else
+				judge = 0;
+			if (board->getTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
+				return false;
+		}
+		//if we get out of the loop then the way is clear
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Queen::isValidBishopMove(Vec2I newLocation) const
 {
 	//checks for diagonalic move(s)
-	int yStart = std::min(curLocation.y, newLocation.y) + 1; //we start at the lowest Y
+	int yStart = std::min(curLocation.y, newLocation.y) +1; //we start at the lowest Y
 	int yEnd = std::max(curLocation.y, newLocation.y); //is the place of the other piece
-	int lastY = yStart-1;
+	int lastY = yStart - 1;
 	int lastX;
 	bool enteredLoop = false; //we may not even enter the loop!
-	
+
 	if (newLocation.x > curLocation.x) //going right
 	{
 		if (newLocation.y > curLocation.y) //going right down
@@ -84,8 +127,8 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 				enteredLoop = true;
 				if (board->getTileState(Vec2I(x, y)).containPiece)
 					return false;
-				 lastX = x;
-				 lastY = y;			
+				lastX = x;
+				lastY = y;
 			}
 			if (enteredLoop)//if we get out of the loop, then everything is good
 				return true;
@@ -109,11 +152,11 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 			//then we do check the path itself for any obstacles
 			for (int y = yStart; y < yEnd; y++, x--)
 			{//checks if the in-between tiles have a piece on it
-				enteredLoop = true;				
+				enteredLoop = true;
 				if (board->getTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
-				lastY = y;				
+				lastY = y;
 			}
 			if (enteredLoop)//if we get out of the loop, then everything is good
 				return true;
@@ -127,23 +170,23 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 		{
 			// start from current location then x decrease to the newLocation
 			int x = curLocation.x - 1;
-			lastX = curLocation.x;	
+			lastX = curLocation.x;
 			//first we check its diagonal move
-			for (int y = yStart,tempX = x; y <= yEnd; y++, tempX--)
+			for (int y = yStart, tempX = x; y <= yEnd; y++, tempX--)
 			{
 				if (y == yEnd) //at last point (after moving diagonally)
 					if (newLocation != Vec2I(tempX, y))  //if the last point isn't the newLocation then thats mean its not a diagonalic move
-						return false;						
+						return false;
 			}
 
 			//then we do check the path itself for any obstacles
-			for (int y = yStart; y < yEnd ; y++, x--)
+			for (int y = yStart; y < yEnd; y++, x--)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
 				if (board->getTileState(Vec2I(x, y)).containPiece)
-					return false;				
+					return false;
 				lastX = x;
-				lastY = y;				
+				lastY = y;
 			}
 			if (enteredLoop)//if we get out of the loop, then everything is good
 				return true;
@@ -171,7 +214,7 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 				if (board->getTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
-				lastY = y;				
+				lastY = y;
 			}
 			if (enteredLoop)//if we get out of the loop, then everything is good
 				return true;
@@ -181,9 +224,17 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 	}
 }
 
+bool Queen::isKingMove(Vec2I newLocation) const
+{
+	int xDiff = abs(newLocation.x - curLocation.x);
+	int yDiff = abs(newLocation.y - curLocation.y);
+	if (xDiff <= 1 && yDiff <= 1)
+		return true;
+	else
+		return false;
+}
 
-
-void Bishop::moveTo(Vec2I newLocation)
+void Queen::moveTo(Vec2I newLocation)
 {
 	if (isValidLocation(newLocation))
 	{
@@ -193,8 +244,8 @@ void Bishop::moveTo(Vec2I newLocation)
 	}
 }
 
-Bishop::~Bishop()
-{
+Queen::~Queen()
+{//decrement number of pieces
 	switch (team)
 	{
 		case Team::WHITE:
@@ -206,5 +257,5 @@ Bishop::~Bishop()
 	}
 }
 
-int Bishop::nWhiteLeft = 0;
-int Bishop::nBlackLeft = 0;
+int Queen::nWhiteLeft = 0;
+int Queen::nBlackLeft = 0;

@@ -40,11 +40,20 @@ std::shared_ptr<Tile> Board::getTile(Vec2I location) const
 
 const Tile::Status Board::getTileState(Vec2I location) const
 {
-	return getTile(location)->state;
+	if (isInsideTheBoard(location))
+		return getTile(location)->state;
+	else
+	{
+		Tile::Status s;
+		s.containPiece = false;
+		s.piecetype = pieceType::NOTDEFINED;
+		s.team = Team::INVALID;
+		return s;
+	}
 }
 bool Board::isInsideTheBoard(Vec2I location) const
 {
-	if (location.y <= rows && location.x <= columns && location.y >= 0 && location.x >= 0)		
+	if (location.y < rows && location.x < columns && location.y >= 0 && location.x >= 0)		
 		return true;
 	else
 		return false;

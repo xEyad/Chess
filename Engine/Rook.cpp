@@ -71,8 +71,8 @@ bool Rook::isWayClear(Vec2I newLocation) const
 	if (board->isInsideTheBoard(newLocation))
 	{
 		if (newLocation.x == curLocation.x) //then its a vertical move (Y)
-		{			
-			for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y)-1; i++)
+		{
+			for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y) - 1; i++)
 			{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 				if (Vec2I(curLocation.x, i) == curLocation)
 					judge = 1;
@@ -86,18 +86,20 @@ bool Rook::isWayClear(Vec2I newLocation) const
 		}
 		else if (newLocation.y == curLocation.y) //then its a horizontal move (X)
 		{
-			for (int i = std::min(curLocation.x, newLocation.x); i < std::max(curLocation.x, newLocation.x)-1; i++)
+			for (int i = std::min(curLocation.x, newLocation.x); i < std::max(curLocation.x, newLocation.x) - 1; i++)
 			{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 				if (Vec2I(i, curLocation.y) == curLocation)
 					judge = 1;
 				else
 					judge = 0;
-				if (board->getTileState(Vec2I(i+1, curLocation.y)).containPiece) //we dont check the last point
+				if (board->getTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
 					return false;
 			}
 			//if we get out of the loop then the way is clear
 			return true;
 		}
+		else
+			return false;
 	}
 	else
 		return false;

@@ -26,6 +26,9 @@
 #include "Board.h"
 #include "Pawn.h"
 #include "Rook.h"
+#include "Bishop.h"
+#include "King.h"
+#include "Queen.h"
 class Game
 {
 public:
@@ -48,9 +51,13 @@ private:
 	/*  User Variables              */
 	Board chessBoard;
 	Pawn pawn;
-	Pawn pawn2;
+	Pawn pawn2; 
+	Pawn pawn3;
+	Pawn pawn4;
 	Rook rook;
-	
+	Bishop bishop;
+	King king;
+	Queen queen;
 	/********************************/
 };
 

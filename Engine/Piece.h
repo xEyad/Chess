@@ -48,9 +48,14 @@ public:
 	}		
 	virtual int howManyLeft() const = 0; //should return the number of pieces left in this team
 	virtual bool isValidLocation(Vec2I newLocation) const = 0;
-	virtual bool isWayClear(Vec2I newLocation) const = 0; //it checks if the way to the new location (not the newLocation itself) contains other pieces or not
+	
 	//actions
 	virtual void moveTo(Vec2I newLocation) = 0;
+
+protected:
+	//getters
+	virtual bool isWayClear(Vec2I newLocation) const = 0; //it checks if the way to the new location (not the newLocation itself) contains other pieces or not
+	//actions
 	virtual void reportChange() //sends to board a pointer to the changed piece
 	{
 		board->ReadChange(this,oldLocation);
