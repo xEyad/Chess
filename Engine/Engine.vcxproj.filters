@@ -117,6 +117,12 @@
     <ClInclude Include="Queen.h">
       <Filter>Header Files\Pieces</Filter>
     </ClInclude>
+    <ClInclude Include="Knight.h">
+      <Filter>Header Files\Pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="testCases.h">
+      <Filter>Header Files\Pieces\unit tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -166,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="Queen.cpp">
       <Filter>Source Files\Pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="Knight.cpp">
+      <Filter>Source Files\Pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

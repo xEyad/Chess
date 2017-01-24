@@ -1,5 +1,4 @@
 #include "Board.h"
-#include "Tile.h"
 #include "Piece.h"
 #include <iostream>
 Board::Board(int rows, int columns)
