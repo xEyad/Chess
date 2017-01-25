@@ -52,7 +52,9 @@ void Game::ComposeFrame()
 	int screenLocationX = screenCenterX;
 	int screenLocationY = screenCenterY;
 	Color c;
-	for (auto i = chessBoard.boardTiles.cbegin(); i < chessBoard.boardTiles.cend(); i++)
+	chessBoard.Draw(gfx, { 40,40 }, Colors::LightGray);
+	chessBoard.DrawPieces(gfx,Director, { 40,40 });
+	/*for (auto i = chessBoard.boardTiles.cbegin(); i < chessBoard.boardTiles.cend(); i++)
 	{
 		bool enteredIF = false; // somehow the break of the switch inside the if statment makes the compiler to enter the else as if we didn't enter the IF block
 		for (auto p = Director.pieces.cbegin(); p < Director.pieces.cend(); p++)
@@ -100,6 +102,5 @@ void Game::ComposeFrame()
 			xx = 0;
 			yy += 10;
 		}
-	}
-	
+	}*/	
 }

@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Piece.h"
 #include <iostream>
+#include "GameDirector.h"
 Board::Board(int rows, int columns)
 	:
 	rows(rows),
@@ -82,3 +83,61 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	tile->applyChanges(true, piece->getType(), piece->getTeam());
 }
 
+void Board::Draw( Graphics & gfx,Vec2I topLeft, Color edgesClr, int widthOfTile, int heightOfTile) const
+{
+	int xx = 0;
+	int yy = 0;
+	Vec2I screenLocation = topLeft;
+	for (auto i = boardTiles.cbegin(); i < boardTiles.cend(); i++)
+	{		
+		//each tile location is topLeft corner of any Rect
+		Vec2I startPoint(screenLocation.x + xx,screenLocation.y + yy);
+		Vec2I endPoint(startPoint.x + widthOfTile, startPoint.y + heightOfTile);
+		gfx.DrawRect(RectI(startPoint, endPoint), edgesClr);
+		xx += widthOfTile;
+		if ((*i)->location.x % (rows-1) == 0 && (*i)->location.x != 0) //first one = 0, if we pass the 7 then its new row
+		{
+			//go to the beginning and down a little bit
+			xx = 0;
+			yy += heightOfTile;
+		}
+	}
+}
+
+void Board::DrawPieces( Graphics & gfx, const GameDirector &d, Vec2I topLeft, int widthOfTile, int heightOfTile ) const
+{
+	Color c;
+	Vec2I screenLocation = topLeft;
+	for (auto i = d.pieces.cbegin(); i < d.pieces.cend(); i++)
+	{
+		//give it a color based on its type
+		switch ((*i)->getType())
+		{
+			case QUEEN:
+				c = Colors::Red;
+				break;
+			case KING:
+				c = Colors::Magenta;
+				break;
+			case BISHOP:
+				c = Colors::Cyan;
+				break;
+			case ROOK:
+				c = Colors::Yellow;
+				break;
+			case PAWN:
+				c = Colors::Green;
+				break;
+			case KNIGHT:
+				c = Colors::LightGray;
+				break;
+			default:
+				c = Colors::Black;
+				break;
+		}		
+		Vec2I centerPoint(screenLocation.x + (*i)->locate().x * widthOfTile +45 , screenLocation.y + (*i)->locate().y * heightOfTile +45 );
+		int size = widthOfTile / 4;
+		RectI r(centerPoint.y - size, centerPoint.y + size, centerPoint.x - size, centerPoint.x + size);
+		gfx.DrawColoredRect(r, c);
+	}
+}

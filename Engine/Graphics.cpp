@@ -306,6 +306,138 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+void Graphics::DrawLine(int x1, int y1, int x2, int y2, Color c)
+{
+	
+	int dx = x2 - x1;
+	int dy = y2 - y1;
+	if (dy == 0 && dx == 0)
+	{
+		PutPixel(x1, y1,c);
+	}
+	else if (abs(dy) > abs(dx))
+	{
+		if (dy < 0)
+		{
+			int temp = x1;
+			x1 = x2;
+			x2 = temp;
+			temp = y1;
+			y1 = y2;
+			y2 = temp;
+		}
+		float m = (float)dx / (float)dy;
+		float b = x1 - m*y1;
+		for (int y = y1; y <= y2; y = y + 1)
+		{
+			int x = (int)(m*y + b + 0.5f);
+			PutPixel(x, y,c);
+		}
+	}
+	else
+	{
+		if (dx < 0)
+		{
+			int temp = x1;
+			x1 = x2;
+			x2 = temp;
+			temp = y1;
+			y1 = y2;
+			y2 = temp;
+		}
+		float m = (float)dy / (float)dx;
+		float b = y1 - m*x1;
+		for (int x = x1; x <= x2; x = x + 1)
+		{
+			int y = (int)(m*x + b + 0.5f);
+			PutPixel(x, y,c);
+		}
+	}
+}
+
+void Graphics::DrawCircle(int centerX, int centerY, int radius, Color c)
+{
+	int rSquared = radius*radius;
+	int xPivot = (int)(radius * 0.707107f + 0.5f);
+	for (int x = 0; x <= xPivot; x++)
+	{
+		int y = (int)(sqrt((float)(rSquared - x*x)) + 0.5f);
+		PutPixel(centerX + x, centerY + y, c);
+		PutPixel(centerX - x, centerY + y, c);
+		PutPixel(centerX + x, centerY - y, c);
+		PutPixel(centerX - x, centerY - y, c);
+		PutPixel(centerX + y, centerY + x, c);
+		PutPixel(centerX - y, centerY + x, c);
+		PutPixel(centerX + y, centerY - x, c);
+		PutPixel(centerX - y, centerY - x, c);
+	}
+}
+
+void Graphics::DrawRect(const RectI rect, Color c) 
+{
+	DrawLine(rect.left, rect.top, rect.right, rect.top, c);
+	DrawLine(rect.right, rect.top, rect.right, rect.bottom, c);
+	DrawLine(rect.right, rect.bottom, rect.left, rect.bottom, c);
+	DrawLine(rect.left, rect.bottom, rect.left, rect.top,c);
+}
+
+void Graphics::DrawColoredRect(const RectI rect, Color c, int shrink, bool fillEdges)
+{
+	DrawRect(rect, c);
+	FillRect(rect, c, shrink, fillEdges);
+}
+
+void Graphics::FillRect(const RectI rect, Color c ,int shrink, bool fillEdges)
+{
+	int top_left = shrink;
+	int bot_right = 0;
+	if (fillEdges)
+	{
+		top_left = 0;
+		bot_right = shrink;
+	}
+	for (int x = rect.left + top_left; x < rect.right + bot_right; x++)
+	{
+		for (int y = rect.top + top_left; y < rect.bottom + bot_right; y++)
+		{
+			PutPixel(x, y, c);
+		}
+	}
+}
+
+/*void Graphics::DrawChar(char c, int xoff, int yoff, Font* font, D3DCOLOR color)
+{
+	if (c < ' ' || c > '~')
+		return;
+
+	const int sheetIndex = c - ' ';
+	const int sheetCol = sheetIndex % font->nCharsPerRow;
+	const int sheetRow = sheetIndex / font->nCharsPerRow;
+	const int xStart = sheetCol * font->charWidth;
+	const int yStart = sheetRow * font->charHeight;
+	const int xEnd = xStart + font->charWidth;
+	const int yEnd = yStart + font->charHeight;
+	const int surfWidth = font->charWidth * font->nCharsPerRow;
+
+	for (int y = yStart; y < yEnd; y++)
+	{
+		for (int x = xStart; x < xEnd; x++)
+		{
+			if (font->surface[x + y * surfWidth] == D3DCOLOR_XRGB(0, 0, 0))
+			{
+				PutPixel(x + xoff - xStart, y + yoff - yStart, color);
+			}
+		}
+	}
+}*/
+
+/*void Graphics::DrawString(const char* string, int xoff, int yoff, Font* font, D3DCOLOR color)
+{
+	for (int index = 0; string[index] != '\0'; index++)
+	{
+		DrawChar(string[index], xoff + index * font->charWidth, yoff, font, color);
+	}
+}*/
 
 //////////////////////////////////////////////////
 //           Graphics Exception

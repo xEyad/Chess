@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 #include <memory>
+#include "Graphics.h"
 class Piece;
 class Board
 {
@@ -13,6 +14,8 @@ public:
 
 	//actions
 	void ReadChange(Piece* piece,Vec2I oldLocation);
+	void Draw( Graphics &gfx, Vec2I topLeft, Color edgesClr, int widthOfTile = 90, int heightOfTile = 90) const;
+	void DrawPieces( Graphics & gfx, const GameDirector &d, Vec2I topLeft, int widthOfTile = 90, int heightOfTile = 90) const;
 public:
 	const int rows; 
 	const int columns;

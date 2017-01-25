@@ -2,7 +2,7 @@
 
 Queen::Queen(Vec2I location, Team team, Board* const board)
 	:
-	Piece(location, team, KING, board)
+	Piece(location, team, QUEEN, board)
 {
 	//increment number of pieces
 	switch (team)
@@ -66,7 +66,7 @@ bool Queen::isValidRookMove(Vec2I newLocation) const
 	int judge; //used to make us not check the tile we are currently on
 	if (newLocation.x == curLocation.x) //then its a vertical move (Y)
 	{
-		for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y) - 1; i++)
+		for (int i = min(curLocation.y, newLocation.y); i < max(curLocation.y, newLocation.y) - 1; i++)
 		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 			if (Vec2I(curLocation.x, i) == curLocation)
 				judge = 1;
@@ -80,7 +80,7 @@ bool Queen::isValidRookMove(Vec2I newLocation) const
 	}
 	else if (newLocation.y == curLocation.y) //then its a horizontal move (X)
 	{
-		for (int i = std::min(curLocation.x, newLocation.x); i < std::max(curLocation.x, newLocation.x) - 1; i++)
+		for (int i = min(curLocation.x, newLocation.x); i < max(curLocation.x, newLocation.x) - 1; i++)
 		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 			if (Vec2I(i, curLocation.y) == curLocation)
 				judge = 1;
@@ -99,8 +99,8 @@ bool Queen::isValidRookMove(Vec2I newLocation) const
 bool Queen::isValidBishopMove(Vec2I newLocation) const
 {
 	//checks for diagonalic move(s)
-	int yStart = std::min(curLocation.y, newLocation.y) +1; //we start at the lowest Y
-	int yEnd = std::max(curLocation.y, newLocation.y); //is the place of the other piece
+	int yStart = min(curLocation.y, newLocation.y) +1; //we start at the lowest Y
+	int yEnd = max(curLocation.y, newLocation.y); //is the place of the other piece
 	int lastY = yStart - 1;
 	int lastX;
 	bool enteredLoop = false; //we may not even enter the loop!

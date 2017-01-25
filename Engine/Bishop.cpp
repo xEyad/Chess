@@ -56,8 +56,8 @@ bool Bishop::isValidLocation(Vec2I newLocation) const
 bool Bishop::isWayClear(Vec2I newLocation) const
 {
 	//checks for diagonalic move(s)
-	int yStart = std::min(curLocation.y, newLocation.y) + 1; //we start at the lowest Y
-	int yEnd = std::max(curLocation.y, newLocation.y); //is the place of the other piece
+	int yStart = min(curLocation.y, newLocation.y) + 1; //we start at the lowest Y
+	int yEnd = max(curLocation.y, newLocation.y); //is the place of the other piece
 	int lastY = yStart-1;
 	int lastX;
 	bool enteredLoop = false; //we may not even enter the loop!

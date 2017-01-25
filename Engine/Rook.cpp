@@ -72,7 +72,7 @@ bool Rook::isWayClear(Vec2I newLocation) const
 	{
 		if (newLocation.x == curLocation.x) //then its a vertical move (Y)
 		{
-			for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y) - 1; i++)
+			for (int i = min(curLocation.y, newLocation.y); i < max(curLocation.y, newLocation.y) - 1; i++)
 			{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 				if (Vec2I(curLocation.x, i) == curLocation)
 					judge = 1;
@@ -86,7 +86,7 @@ bool Rook::isWayClear(Vec2I newLocation) const
 		}
 		else if (newLocation.y == curLocation.y) //then its a horizontal move (X)
 		{
-			for (int i = std::min(curLocation.x, newLocation.x); i < std::max(curLocation.x, newLocation.x) - 1; i++)
+			for (int i = min(curLocation.x, newLocation.x); i < max(curLocation.x, newLocation.x) - 1; i++)
 			{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 				if (Vec2I(i, curLocation.y) == curLocation)
 					judge = 1;

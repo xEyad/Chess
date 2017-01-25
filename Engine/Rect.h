@@ -21,6 +21,13 @@
 #pragma once
 
 #include "Vec2.h"
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
 
 template < typename T >
 class Rect
@@ -29,10 +36,10 @@ public:
 	inline	Rect() {}
 	inline	Rect( _Vec2< T > p0 , _Vec2< T > p1 )
 	{
-		top = std::min( p0.y, p1.y );
-		bottom = std::max( p0.y, p1.y );
-		right = std::max( p0.x, p1.x );
-		left = std::min( p0.x, p1.x );
+		top = min( p0.y, p1.y );
+		bottom = max( p0.y, p1.y );
+		right = max( p0.x, p1.x );
+		left = min( p0.x, p1.x );
 	}
 	inline	Rect( T top,T bottom,T left,T right )
 		:

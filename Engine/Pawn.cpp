@@ -66,7 +66,7 @@ bool Pawn::isWayClear(Vec2I newLocation) const
 	if (board->isInsideTheBoard(newLocation) && newLocation.x == curLocation.x)
 	{
 		int judge;
-		for (int i = std::min(curLocation.y, newLocation.y); i < std::max(curLocation.y, newLocation.y)-1; i++)
+		for (int i = min(curLocation.y, newLocation.y); i < max(curLocation.y, newLocation.y)-1; i++)
 		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 			if (Vec2I(curLocation.x, i) == curLocation)
 				judge = 1;
