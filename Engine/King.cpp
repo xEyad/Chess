@@ -38,7 +38,7 @@ bool King::isValidLocation(Vec2I newLocation) const
 	{
 		int xDiff = abs(newLocation.x - curLocation.x);
 		int yDiff = abs(newLocation.y - curLocation.y);
-		if (xDiff <= 1 && yDiff <= 1 && board->getTileState(newLocation).team != team)
+		if (xDiff <= 1 && yDiff <= 1 && board->getTileState(newLocation).pieceTeam != team)
 			return true;
 		else
 			return false;
@@ -77,3 +77,16 @@ King::~King()
 }
 int King::nWhiteLeft = 0;
 int King::nBlackLeft = 0;
+
+bool King::isValidLocation(int newLocation) const
+{
+	return isValidLocation(TransLocation(newLocation));
+}
+bool King::isWayClear(int newLocation) const
+{
+	return isWayClear(TransLocation(newLocation));
+}
+void King::moveTo(int newLocation)
+{
+	moveTo(TransLocation(newLocation));
+}

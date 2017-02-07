@@ -58,10 +58,10 @@ GameDirector::GameDirector(Board &board)
 						pieces.push_back(new Bishop(Vec2I{ col,row }, Team::WHITE, &board));
 						break;
 					case 63 - 3:
-						pieces.push_back(new King(Vec2I{ col,row }, Team::WHITE, &board));
+						pieces.push_back(new Queen(Vec2I{ col,row }, Team::WHITE, &board));
 						break;
 					case 63 - 4:
-						pieces.push_back(new Queen(Vec2I{ col,row }, Team::WHITE, &board));
+						pieces.push_back(new King(Vec2I{ col,row }, Team::WHITE, &board));
 						break;
 					case 63 - 5:
 						pieces.push_back(new Bishop(Vec2I{ col,row }, Team::WHITE, &board));
@@ -80,8 +80,27 @@ GameDirector::GameDirector(Board &board)
 	}
 }
 
+Piece* GameDirector::getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const
+{
+	for each (Piece* p in pieces)
+	{
+		if (p->getType() == type && p->getTeam() == team && p->locate() == location)
+			return p;
+	}
+	return nullptr;
+}
+Piece* GameDirector::getPiece(Vec2I location) const
+{
+	for each (Piece* p in pieces)
+	{
+		if (p->locate() == location)
+			return p;
+	}
+	return nullptr;
+}
 void GameDirector::addTurn()
 {
 	gameTurn++;
 }
+
 int GameDirector::gameTurn = 1;

@@ -37,7 +37,7 @@ bool Rook::isValidLocation(Vec2I newLocation) const
 	if (board->isInsideTheBoard(newLocation))
 	{
 		auto tile = board->getTileState(newLocation);
-		if (!tile.containPiece || (tile.containPiece && tile.team != team)) //if it have no piece on it or have a piece of other team
+		if (!tile.containPiece || (tile.containPiece && tile.pieceTeam != team)) //if it have no piece on it or have a piece of other team
 		{
 			if (curLocation.x == newLocation.x && curLocation.y != newLocation.y)
 			{//moving only vertically
@@ -131,3 +131,16 @@ Rook::~Rook()
 }
 int Rook::nWhiteLeft = 0;
 int Rook::nBlackLeft = 0;
+
+bool Rook::isValidLocation(int newLocation) const
+{
+	return isValidLocation(TransLocation(newLocation));
+}
+bool Rook::isWayClear(int newLocation) const
+{
+	return isWayClear(TransLocation(newLocation));
+}
+void Rook::moveTo(int newLocation)
+{
+	moveTo(TransLocation(newLocation));
+}

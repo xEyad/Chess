@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Piece.h"
+
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -29,6 +30,7 @@ Game::Game(MainWindow& wnd)
 	Director(chessBoard)
 {
 	//mo2ktn el 2byd makano ta7t daymn	
+	chessBoard.intializeGameDirector(Director);
 }
 
 void Game::Go()
@@ -41,66 +43,44 @@ void Game::Go()
 
 void Game::UpdateModel()
 {	
+	
 }
 void Game::ComposeFrame()
 {		
 	//draw Grid/Board
-	int xx = 0;
-	int yy = 0;
-	const int screenCenterY = (Graphics::ScreenHeight - 100) / 2;
-	const int screenCenterX = (Graphics::ScreenWidth - 100) / 2;
-	int screenLocationX = screenCenterX;
-	int screenLocationY = screenCenterY;
-	Color c;
+	//int xx = 0;
+	//int yy = 0;
+	//const int screenCenterY = (Graphics::ScreenHeight - 100) / 2;
+	//const int screenCenterX = (Graphics::ScreenWidth - 100) / 2;
+	//int screenLocationX = screenCenterX;
+	//int screenLocationY = screenCenterY;
+	//Color c;
 	chessBoard.Draw(gfx, { 40,40 }, Colors::LightGray);
-	chessBoard.DrawPieces(gfx,Director, { 40,40 });
-	/*for (auto i = chessBoard.boardTiles.cbegin(); i < chessBoard.boardTiles.cend(); i++)
-	{
-		bool enteredIF = false; // somehow the break of the switch inside the if statment makes the compiler to enter the else as if we didn't enter the IF block
-		for (auto p = Director.pieces.cbegin(); p < Director.pieces.cend(); p++)
-		{			
-			//check if there is a piece on the current location, then give it a color
-			if ((*i)->location == (*p)->locate())
-			{
-				enteredIF = true;
-				switch ((*p)->getType())
-				{
-					case QUEEN:
-						c = Colors::Red;
-						break;
-					case KING:
-						c = Colors::Magenta;
-						break;
-					case BISHOP:
-						c = Colors::Cyan;
-						break;
-					case ROOK:
-						c = Colors::Yellow;
-						break;
-					case PAWN:
-						c = Colors::Green;
-						break;
-					case KNIGHT:
-						c = Colors::LightGray;
-						break;
-					default:
-						c = Colors::Black;
-						break;
-				}
-			}
-			else if (!enteredIF)
-				c = (*i)->color;
-		}
-					
-		//Rows are Y , Columns are X
-		gfx.PutPixel((*i)->location.x + screenLocationX + xx, (*i)->location.y + screenLocationY + yy, c);
-		xx += 10;
+	chessBoard.DrawPieces(gfx, { 40,40 });
 
-		if ((*i)->location.x % 7 == 0 && (*i)->location.x != 0) //first one = 0, if we pass the 7 then its new row
+	auto p = Director.getPiece({ 1,0 });
+	if (p != nullptr)
+		p->moveTo(18);
+
+	p = Director.getPiece({ 2,2 });
+	if (p != nullptr)
+		p->moveTo(35);
+
+	p = Director.getPiece({ 3,4 });
+	if (p != nullptr)
+		p->moveTo(52);
+
+
+
+
+	while (!wnd.mouse.IsEmpty())
+	{	
+		const Vec2 mPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
+		chessBoard.highlightTile(gfx, mPos, Colors::LightGray); // top left is hardcoded
+		const Mouse::Event e = wnd.mouse.Read();
+		if (e.GetType() == Mouse::Event::LPress)
 		{
-			//go to the beginning and down a little bit
-			xx = 0;
-			yy += 10;
+			
 		}
-	}*/	
+	}
 }

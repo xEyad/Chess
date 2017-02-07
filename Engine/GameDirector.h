@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Vec2.h"
 //there should be no more than ONE object of this class
 class Piece;
 class Board;
@@ -13,7 +14,7 @@ namespace GlobalEnums
 		BISHOP,
 		QUEEN,
 		KING,
-		NOTDEFINED
+		NOT_DEFINED
 	};
 	enum class Team
 	{
@@ -22,12 +23,23 @@ namespace GlobalEnums
 		INVALID
 	};
 }
+
+
 class GameDirector
 {
 public:
 	GameDirector(Board &board);
+	//getters
+
+	//select piece
+	Piece* getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const;
+	Piece* getPiece(Vec2I location) const;
+	//actions
 	static void addTurn();
-public:
+
+	//friend functions
+	friend class Board;
+private:
 	std::vector<Piece*> pieces;
 	static int gameTurn;
 };

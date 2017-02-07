@@ -51,7 +51,7 @@ bool Pawn::isValidLocation(Vec2I newLocation) const
 		else if (isWayClear(newLocation) && yDiff == 1) //basically 1 vertical move
 			return true;
 
-		else if (yDiff == 1 && xDiff == 1 && tile.team != team) //eating(capturing) case
+		else if (yDiff == 1 && xDiff == 1 && tile.pieceTeam != team) //eating(capturing) case
 		{
 			return true;
 		}
@@ -110,3 +110,16 @@ Pawn::~Pawn()
 //static variables should be intialized like this, in the def file!
 int Pawn::nWhiteLeft = 0;
 int Pawn::nBlackLeft = 0;
+
+bool Pawn::isValidLocation(int newLocation) const
+{
+	return isValidLocation(TransLocation(newLocation));
+}
+bool Pawn::isWayClear(int newLocation) const
+{
+	return isWayClear(TransLocation(newLocation));
+}
+void Pawn::moveTo(int newLocation)
+{
+	moveTo(TransLocation(newLocation));
+}

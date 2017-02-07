@@ -42,9 +42,11 @@ bool Bishop::isValidLocation(Vec2I newLocation) const
 		{
 			int xDiff = abs(curLocation.x - newLocation.x);
 			int yDiff = abs(curLocation.y - newLocation.y);
-			if (xDiff == 1 && yDiff == 1 && board->getTileState(newLocation).team != team) //diagonalic ONE move just ONE
+			if (xDiff == 1 && yDiff == 1 && board->getTileState(newLocation).pieceTeam != team) //diagonalic ONE move just ONE
+			{
 				return true;
-			else if (isWayClear(newLocation) && board->getTileState(newLocation).team != team) //if the way is clear and there is no friend on it(new tile)
+			}
+			else if (isWayClear(newLocation) && board->getTileState(newLocation).pieceTeam != team) //if the way is clear and there is no friend on it(new tile)
 				return true;
 			else
 				return false;
@@ -53,6 +55,11 @@ bool Bishop::isValidLocation(Vec2I newLocation) const
 	else //out of board
 		return false;
 }
+bool Bishop::isValidLocation(int newLocation) const
+{
+	return isValidLocation(TransLocation(newLocation));
+}
+
 bool Bishop::isWayClear(Vec2I newLocation) const
 {
 	//checks for diagonalic move(s)
@@ -180,6 +187,10 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 		}
 	}
 }
+bool Bishop::isWayClear(int newLocation) const
+{
+	return isWayClear(TransLocation(newLocation));
+}
 
 
 
@@ -191,6 +202,10 @@ void Bishop::moveTo(Vec2I newLocation)
 		curLocation = newLocation;
 		reportChange();
 	}
+}
+void Bishop::moveTo(int newLocation)
+{
+	moveTo(TransLocation(newLocation));
 }
 
 Bishop::~Bishop()
@@ -208,3 +223,4 @@ Bishop::~Bishop()
 
 int Bishop::nWhiteLeft = 0;
 int Bishop::nBlackLeft = 0;
+

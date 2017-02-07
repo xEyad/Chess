@@ -38,7 +38,7 @@ bool Knight::isValidLocation(Vec2I newLocation) const
 {
 	if (board->isInsideTheBoard(newLocation))
 	{
-		bool notFriendly = board->getTileState(newLocation).team != team;
+		bool notFriendly = board->getTileState(newLocation).pieceTeam != team;
 		int xDiff = abs(newLocation.x - curLocation.x);
 		int yDiff = abs(newLocation.y - curLocation.y);
 
@@ -84,4 +84,15 @@ Knight::~Knight()
 int Knight::nWhiteLeft = 0;
 int Knight::nBlackLeft = 0;
 
-
+bool Knight::isValidLocation(int newLocation) const
+{
+	return isValidLocation(TransLocation(newLocation));
+}
+bool Knight::isWayClear(int newLocation) const
+{
+	return isWayClear(TransLocation(newLocation));
+}
+void Knight::moveTo(int newLocation)
+{
+	moveTo(TransLocation(newLocation));
+}

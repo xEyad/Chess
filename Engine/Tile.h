@@ -9,8 +9,8 @@ private:
 	struct Status
 	{		
 		bool containPiece = false;
-		pieceType piecetype = pieceType::NOTDEFINED;
-		Team team = Team::INVALID;
+		pieceType piecetype = pieceType::NOT_DEFINED;
+		Team pieceTeam = Team::INVALID;
 	};
 private:
 	Tile(Vec2I location, Color c)
@@ -22,7 +22,7 @@ private:
 	{
 		state.containPiece = containPiece;
 		state.piecetype = piecetype;
-		state.team = team;
+		state.pieceTeam = team;
 	}
 public:
 	const Color color;

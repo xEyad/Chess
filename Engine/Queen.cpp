@@ -36,7 +36,7 @@ bool Queen::isValidLocation(Vec2I newLocation) const
 {
 	if (board->isInsideTheBoard(newLocation))
 	{
-		bool notFriendly = board->getTileState(newLocation).team != team;
+		bool notFriendly = board->getTileState(newLocation).pieceTeam != team;
 		if (isKingMove(newLocation) && notFriendly)
 			return true;
 		else if (isWayClear(newLocation) && notFriendly) //checks type of move (bishop/rook) and the way itself
@@ -259,3 +259,16 @@ Queen::~Queen()
 
 int Queen::nWhiteLeft = 0;
 int Queen::nBlackLeft = 0;
+
+bool Queen::isValidLocation(int newLocation) const
+{
+	return isValidLocation(TransLocation(newLocation));
+}
+bool Queen::isWayClear(int newLocation) const
+{
+	return isWayClear(TransLocation(newLocation));
+}
+void Queen::moveTo(int newLocation)
+{
+	moveTo(TransLocation(newLocation));
+}
