@@ -16,7 +16,7 @@ Queen::Queen(Vec2I location, Team team, Board* const board)
 	}
 };
 
-int Queen::howManyLeft() const
+int Queen::HowManyLeft() const
 {
 	switch (team)
 	{
@@ -32,14 +32,14 @@ int Queen::howManyLeft() const
 	}
 }
 
-bool Queen::isValidLocation(Vec2I newLocation) const
+bool Queen::IsValidLocation(Vec2I newLocation) const
 {
-	if (board->isInsideTheBoard(newLocation))
+	if (board->IsInsideTheBoard(newLocation))
 	{
-		bool notFriendly = board->getTileState(newLocation).pieceTeam != team;
+		bool notFriendly = board->GetTileState(newLocation).pieceTeam != team;
 		if (isKingMove(newLocation) && notFriendly)
 			return true;
-		else if (isWayClear(newLocation) && notFriendly) //checks type of move (bishop/rook) and the way itself
+		else if (IsWayClear(newLocation) && notFriendly) //checks type of move (bishop/rook) and the way itself
 			return true;
 		else
 			return false;
@@ -48,7 +48,7 @@ bool Queen::isValidLocation(Vec2I newLocation) const
 		return false;
 }
 
-bool Queen::isWayClear(Vec2I newLocation) const
+bool Queen::IsWayClear(Vec2I newLocation) const
 {
 	if (newLocation.x == curLocation.x || newLocation.y == curLocation.y)
 		if (isValidRookMove(newLocation))
@@ -72,7 +72,7 @@ bool Queen::isValidRookMove(Vec2I newLocation) const
 				judge = 1;
 			else
 				judge = 0;
-			if (board->getTileState(Vec2I(curLocation.x, i + judge)).containPiece)
+			if (board->GetTileState(Vec2I(curLocation.x, i + judge)).containPiece)
 				return false;
 		}
 		//if we get out of the loop then the way is clear
@@ -86,7 +86,7 @@ bool Queen::isValidRookMove(Vec2I newLocation) const
 				judge = 1;
 			else
 				judge = 0;
-			if (board->getTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
+			if (board->GetTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
 				return false;
 		}
 		//if we get out of the loop then the way is clear
@@ -125,7 +125,7 @@ bool Queen::isValidBishopMove(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x++)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
 				lastY = y;
@@ -153,7 +153,7 @@ bool Queen::isValidBishopMove(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x--)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
 				lastY = y;
@@ -183,7 +183,7 @@ bool Queen::isValidBishopMove(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x--)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
 				lastY = y;
@@ -211,7 +211,7 @@ bool Queen::isValidBishopMove(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x++)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
 				lastY = y;
@@ -234,13 +234,13 @@ bool Queen::isKingMove(Vec2I newLocation) const
 		return false;
 }
 
-void Queen::moveTo(Vec2I newLocation)
+void Queen::MoveTo(Vec2I newLocation)
 {
-	if (isValidLocation(newLocation))
+	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
-		reportChange();
+		ReportChange();
 	}
 }
 
@@ -260,15 +260,15 @@ Queen::~Queen()
 int Queen::nWhiteLeft = 0;
 int Queen::nBlackLeft = 0;
 
-bool Queen::isValidLocation(int newLocation) const
+bool Queen::IsValidLocation(int newLocation) const
 {
-	return isValidLocation(TransLocation(newLocation));
+	return IsValidLocation(TransLocation(newLocation));
 }
-bool Queen::isWayClear(int newLocation) const
+bool Queen::IsWayClear(int newLocation) const
 {
-	return isWayClear(TransLocation(newLocation));
+	return IsWayClear(TransLocation(newLocation));
 }
-void Queen::moveTo(int newLocation)
+void Queen::MoveTo(int newLocation)
 {
-	moveTo(TransLocation(newLocation));
+	MoveTo(TransLocation(newLocation));
 }

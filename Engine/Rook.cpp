@@ -16,7 +16,7 @@ Rook::Rook(Vec2I location, Team team, Board* const board)
 	}
 };
 
-int Rook::howManyLeft() const
+int Rook::HowManyLeft() const
 {
 	switch (team)
 	{
@@ -32,23 +32,23 @@ int Rook::howManyLeft() const
 	}
 }
 
-bool Rook::isValidLocation(Vec2I newLocation) const
+bool Rook::IsValidLocation(Vec2I newLocation) const
 {
-	if (board->isInsideTheBoard(newLocation))
+	if (board->IsInsideTheBoard(newLocation))
 	{
-		auto tile = board->getTileState(newLocation);
+		auto tile = board->GetTileState(newLocation);
 		if (!tile.containPiece || (tile.containPiece && tile.pieceTeam != team)) //if it have no piece on it or have a piece of other team
 		{
 			if (curLocation.x == newLocation.x && curLocation.y != newLocation.y)
 			{//moving only vertically
-				if (isWayClear(newLocation))
+				if (IsWayClear(newLocation))
 					return true;
 				else
 					return false;
 			}
 			else if (curLocation.x != newLocation.x && curLocation.y == newLocation.y)
 			{//moving only horizontally
-				if (isWayClear(newLocation))
+				if (IsWayClear(newLocation))
 					return true;
 				else
 					return false;
@@ -65,10 +65,10 @@ bool Rook::isValidLocation(Vec2I newLocation) const
 		return false;
 }
 
-bool Rook::isWayClear(Vec2I newLocation) const
+bool Rook::IsWayClear(Vec2I newLocation) const
 {
 	int judge; //used to make us not check the tile we are currently on
-	if (board->isInsideTheBoard(newLocation))
+	if (board->IsInsideTheBoard(newLocation))
 	{
 		if (newLocation.x == curLocation.x) //then its a vertical move (Y)
 		{
@@ -78,7 +78,7 @@ bool Rook::isWayClear(Vec2I newLocation) const
 					judge = 1;
 				else
 					judge = 0;
-				if (board->getTileState(Vec2I(curLocation.x, i + judge)).containPiece)
+				if (board->GetTileState(Vec2I(curLocation.x, i + judge)).containPiece)
 					return false;
 			}
 			//if we get out of the loop then the way is clear
@@ -92,7 +92,7 @@ bool Rook::isWayClear(Vec2I newLocation) const
 					judge = 1;
 				else
 					judge = 0;
-				if (board->getTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
+				if (board->GetTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
 					return false;
 			}
 			//if we get out of the loop then the way is clear
@@ -105,14 +105,14 @@ bool Rook::isWayClear(Vec2I newLocation) const
 		return false;
 }
 
-void Rook::moveTo(Vec2I newLocation)
+void Rook::MoveTo(Vec2I newLocation)
 {
-	if (isValidLocation(newLocation))
+	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
 		movedBefore = true;	
-		reportChange();
+		ReportChange();
 	}
 }
 
@@ -132,15 +132,15 @@ Rook::~Rook()
 int Rook::nWhiteLeft = 0;
 int Rook::nBlackLeft = 0;
 
-bool Rook::isValidLocation(int newLocation) const
+bool Rook::IsValidLocation(int newLocation) const
 {
-	return isValidLocation(TransLocation(newLocation));
+	return IsValidLocation(TransLocation(newLocation));
 }
-bool Rook::isWayClear(int newLocation) const
+bool Rook::IsWayClear(int newLocation) const
 {
-	return isWayClear(TransLocation(newLocation));
+	return IsWayClear(TransLocation(newLocation));
 }
-void Rook::moveTo(int newLocation)
+void Rook::MoveTo(int newLocation)
 {
-	moveTo(TransLocation(newLocation));
+	MoveTo(TransLocation(newLocation));
 }

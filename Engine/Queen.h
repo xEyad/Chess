@@ -6,19 +6,19 @@ class Queen :
 public:
 	Queen(Vec2I location, Team team, Board* const board);
 	//getters
-	virtual int howManyLeft() const; //should return the number of pieces left in this team
-	virtual bool isValidLocation(int newLocation) const;
-	virtual bool isValidLocation(Vec2I newLocation) const ;
+	virtual int HowManyLeft() const; //should return the number of pieces left in this team
+	virtual bool IsValidLocation(int newLocation) const;
+	virtual bool IsValidLocation(Vec2I newLocation) const ;
 	
 	//actions
-	virtual void moveTo(int newLocation);
-	virtual void moveTo(Vec2I newLocation);
+	virtual void MoveTo(int newLocation);
+	virtual void MoveTo(Vec2I newLocation);
 	~Queen();
 
 private:
 	//getters
-	virtual bool isWayClear(Vec2I newLocation) const; 
-	virtual bool isWayClear(int newLocation) const;
+	virtual bool IsWayClear(Vec2I newLocation) const; 
+	virtual bool IsWayClear(int newLocation) const;
 	bool isValidRookMove(Vec2I newLocation) const;
 	bool isValidBishopMove(Vec2I newLocation) const;
 	bool isKingMove(Vec2I newLocation) const;

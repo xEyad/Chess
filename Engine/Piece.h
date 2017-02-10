@@ -25,7 +25,7 @@ protected:
 
 		try
 		{
-			reportChange();
+			ReportChange();
 		}
 		catch ( std::logic_error &e)
 		{
@@ -41,8 +41,8 @@ protected:
 	virtual ~Piece(){}
 
 	//getters
-	virtual bool isWayClear(Vec2I newLocation) const = 0; //it checks if the way to the new location (not the newLocation itself) contains other pieces or not
-	virtual bool isWayClear(int newLocation) const = 0;//support
+	virtual bool IsWayClear(Vec2I newLocation) const = 0; //it checks if the way to the new location (not the newLocation itself) contains other pieces or not
+	virtual bool IsWayClear(int newLocation) const = 0;//support	
 	inline int TransLocation(Vec2I location) const
 	{
 		return location.y * board->rows + location.x;
@@ -54,32 +54,33 @@ protected:
 		return{ location % board->columns,(location - (location % board->columns)) / board->rows };
 	}
 	//actions
-	virtual void reportChange() //sends to board a pointer to the changed piece
+	virtual void ReportChange() //sends to board a pointer to the changed piece
 	{
 		board->ReadChange(this, oldLocation);
 	}
 
 public:
 	//getters
-	virtual pieceType getType() const
+	
+	virtual pieceType GetType() const
 	{
 		return type;
 	}
-	virtual Team getTeam() const
+	virtual Team GetTeam() const
 	{
 		return team;
 	}
-	virtual Vec2I locate() const
+	virtual Vec2I Locate() const
 	{
 		return curLocation;
 	}		
-	virtual int howManyLeft() const = 0; //should return the number of pieces left in this team
-	virtual bool isValidLocation(Vec2I newLocation) const = 0; //original
-	virtual bool isValidLocation(int newLocation) const = 0; //support
+	virtual int HowManyLeft() const = 0; //should return the number of pieces left in this team
+	virtual bool IsValidLocation(Vec2I newLocation) const = 0; //original
+	virtual bool IsValidLocation(int newLocation) const = 0; //support
 	//actions
-	virtual void moveTo(Vec2I newLocation) = 0;//original
-	virtual void moveTo(int newLocation) = 0;//support
-	virtual void sendToPrison()
+	virtual void MoveTo(Vec2I newLocation) = 0;//original
+	virtual void MoveTo(int newLocation) = 0;//support
+	virtual void SendToPrison()
 	{
 		captured = true;
 		oldLocation = curLocation;
@@ -102,4 +103,3 @@ protected:
 	//std::vector<int> sredPieces; //enemy pieces captured by this piece
 	Board* const board;
 };
-

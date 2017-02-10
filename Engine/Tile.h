@@ -28,7 +28,11 @@ public:
 	const Color color;
 	const Vec2I location;
 
+	const static int HEIGHT; //Graphical value
+	const static int WIDTH; //Graphical value
 private:
 	friend class Board;
 	Status state;
+
 };
+

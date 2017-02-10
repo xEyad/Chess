@@ -37,7 +37,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-
+	void HandleMouse();
 	
 	/********************************/
 private:
@@ -47,6 +47,9 @@ private:
 	/*  User Variables              */
 	Board chessBoard;
 	GameDirector Director;
+
+	Color highlight = Colors::Red;
+	bool selectionMode = false;
 	/********************************/
 };
 

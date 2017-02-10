@@ -19,7 +19,7 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #include "Mouse.h"
-
+#include <Windows.h>
 
 std::pair<int,int> Mouse::GetPos() const
 {

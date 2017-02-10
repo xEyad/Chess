@@ -32,15 +32,36 @@ public:
 	//getters
 
 	//select piece
-	Piece* getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const;
-	Piece* getPiece(Vec2I location) const;
+	Piece* getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const; //original
+	Piece* getPiece(int location, GlobalEnums::pieceType type, GlobalEnums::Team team) const //support
+	{
+		return getPiece(TransLocation(location), type, team);
+	}
+	Piece* getPiece(Vec2I location) const; //original
+	Piece* getPiece(int location) const //support
+	{
+		return getPiece(TransLocation(location));
+	}
+	inline int TransLocation(Vec2I location) const
+	{
+		return location.y * board_rows + location.x;
+	}
+	
+	inline Vec2I TransLocation(int location) const
+	{
+		//column = location % totalNumberOfColumns    <= X
+		//row = (location - column) / totalNumberOfRows    <= Y
+		return{ location % board_columns,(location - (location % board_columns)) / board_rows };
+	}
 	//actions
-	static void addTurn();
+	static void addTurn(); //maybe end turn
 
 	//friend functions
 	friend class Board;
 private:
 	std::vector<Piece*> pieces;
 	static int gameTurn;
+	int board_rows;
+	int board_columns;
 };
 

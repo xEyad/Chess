@@ -17,7 +17,7 @@ King::King(Vec2I location, Team team, Board* const board)
 };
 
 
-int King::howManyLeft() const
+int King::HowManyLeft() const
 {
 	switch (team)
 	{
@@ -32,13 +32,13 @@ int King::howManyLeft() const
 			break;
 	}
 }
-bool King::isValidLocation(Vec2I newLocation) const
+bool King::IsValidLocation(Vec2I newLocation) const
 {
-	if (board->isInsideTheBoard(newLocation))
+	if (board->IsInsideTheBoard(newLocation))
 	{
 		int xDiff = abs(newLocation.x - curLocation.x);
 		int yDiff = abs(newLocation.y - curLocation.y);
-		if (xDiff <= 1 && yDiff <= 1 && board->getTileState(newLocation).pieceTeam != team)
+		if (xDiff <= 1 && yDiff <= 1 && board->GetTileState(newLocation).pieceTeam != team)
 			return true;
 		else
 			return false;
@@ -46,19 +46,19 @@ bool King::isValidLocation(Vec2I newLocation) const
 	else
 		return false;
 }
-bool King::isWayClear(Vec2I newLocation) const
+bool King::IsWayClear(Vec2I newLocation) const
 {
 	return false;
 }
 
-void King::moveTo(Vec2I newLocation)
+void King::MoveTo(Vec2I newLocation)
 {
-	if (isValidLocation(newLocation))
+	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
 		movedBefore = true;
-		reportChange();
+		ReportChange();
 	}
 }
 
@@ -78,15 +78,15 @@ King::~King()
 int King::nWhiteLeft = 0;
 int King::nBlackLeft = 0;
 
-bool King::isValidLocation(int newLocation) const
+bool King::IsValidLocation(int newLocation) const
 {
-	return isValidLocation(TransLocation(newLocation));
+	return IsValidLocation(TransLocation(newLocation));
 }
-bool King::isWayClear(int newLocation) const
+bool King::IsWayClear(int newLocation) const
 {
-	return isWayClear(TransLocation(newLocation));
+	return IsWayClear(TransLocation(newLocation));
 }
-void King::moveTo(int newLocation)
+void King::MoveTo(int newLocation)
 {
-	moveTo(TransLocation(newLocation));
+	MoveTo(TransLocation(newLocation));
 }

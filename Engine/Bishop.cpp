@@ -16,7 +16,7 @@ Bishop::Bishop(Vec2I location, Team team, Board *const board)
 	}
 }
 
-int Bishop::howManyLeft() const
+int Bishop::HowManyLeft() const
 {
 	switch (team)
 	{
@@ -32,9 +32,9 @@ int Bishop::howManyLeft() const
 	}
 }
 
-bool Bishop::isValidLocation(Vec2I newLocation) const
+bool Bishop::IsValidLocation(Vec2I newLocation) const
 {
-	if (board->isInsideTheBoard(newLocation))
+	if (board->IsInsideTheBoard(newLocation))
 	{
 		if (curLocation.x == newLocation.x || curLocation.y == newLocation.y) //if same Y or X
 			return false;
@@ -42,11 +42,11 @@ bool Bishop::isValidLocation(Vec2I newLocation) const
 		{
 			int xDiff = abs(curLocation.x - newLocation.x);
 			int yDiff = abs(curLocation.y - newLocation.y);
-			if (xDiff == 1 && yDiff == 1 && board->getTileState(newLocation).pieceTeam != team) //diagonalic ONE move just ONE
+			if (xDiff == 1 && yDiff == 1 && board->GetTileState(newLocation).pieceTeam != team) //diagonalic ONE move just ONE
 			{
 				return true;
 			}
-			else if (isWayClear(newLocation) && board->getTileState(newLocation).pieceTeam != team) //if the way is clear and there is no friend on it(new tile)
+			else if (IsWayClear(newLocation) && board->GetTileState(newLocation).pieceTeam != team) //if the way is clear and there is no friend on it(new tile)
 				return true;
 			else
 				return false;
@@ -55,12 +55,12 @@ bool Bishop::isValidLocation(Vec2I newLocation) const
 	else //out of board
 		return false;
 }
-bool Bishop::isValidLocation(int newLocation) const
+bool Bishop::IsValidLocation(int newLocation) const
 {
-	return isValidLocation(TransLocation(newLocation));
+	return IsValidLocation(TransLocation(newLocation));
 }
 
-bool Bishop::isWayClear(Vec2I newLocation) const
+bool Bishop::IsWayClear(Vec2I newLocation) const
 {
 	//checks for diagonalic move(s)
 	int yStart = min(curLocation.y, newLocation.y) + 1; //we start at the lowest Y
@@ -89,7 +89,7 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x++)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				 lastX = x;
 				 lastY = y;			
@@ -117,7 +117,7 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x--)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;				
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
 				lastY = y;				
@@ -147,7 +147,7 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd ; y++, x--)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;				
 				lastX = x;
 				lastY = y;				
@@ -175,7 +175,7 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 			for (int y = yStart; y < yEnd; y++, x++)
 			{//checks if the in-between tiles have a piece on it
 				enteredLoop = true;
-				if (board->getTileState(Vec2I(x, y)).containPiece)
+				if (board->GetTileState(Vec2I(x, y)).containPiece)
 					return false;
 				lastX = x;
 				lastY = y;				
@@ -187,25 +187,25 @@ bool Bishop::isWayClear(Vec2I newLocation) const
 		}
 	}
 }
-bool Bishop::isWayClear(int newLocation) const
+bool Bishop::IsWayClear(int newLocation) const
 {
-	return isWayClear(TransLocation(newLocation));
+	return IsWayClear(TransLocation(newLocation));
 }
 
 
 
-void Bishop::moveTo(Vec2I newLocation)
+void Bishop::MoveTo(Vec2I newLocation)
 {
-	if (isValidLocation(newLocation))
+	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
-		reportChange();
+		ReportChange();
 	}
 }
-void Bishop::moveTo(int newLocation)
+void Bishop::MoveTo(int newLocation)
 {
-	moveTo(TransLocation(newLocation));
+	MoveTo(TransLocation(newLocation));
 }
 
 Bishop::~Bishop()

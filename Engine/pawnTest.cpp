@@ -15,31 +15,31 @@ pawnTest::~pawnTest()
 
 void pawnTest::moveOneUp()
 {
-	Vec2I newLocation(pawn.locate().x - 1, pawn.locate().y);
-	pawn.moveTo(newLocation);
+	Vec2I newLocation(pawn.Locate().x - 1, pawn.Locate().y);
+	pawn.MoveTo(newLocation);
 }
 
 void pawnTest::moveTwoUp()
 {
-	pawn.moveTo(Vec2I(pawn.locate().x - 2, pawn.locate().y));
+	pawn.MoveTo(Vec2I(pawn.Locate().x - 2, pawn.Locate().y));
 }
 
 void pawnTest::moveOneDown()
 {
-	pawn.moveTo(Vec2I(pawn.locate().x + 1, pawn.locate().y));
+	pawn.MoveTo(Vec2I(pawn.Locate().x + 1, pawn.Locate().y));
 }
 
 void pawnTest::moveTwoDown()
 {
-	pawn.moveTo(Vec2I(pawn.locate().x + 2, pawn.locate().y));
+	pawn.MoveTo(Vec2I(pawn.Locate().x + 2, pawn.Locate().y));
 }
 
 void pawnTest::moveRight(int n = 1)
 {
-	pawn.moveTo(Vec2I(pawn.locate().x, pawn.locate().y + n));
+	pawn.MoveTo(Vec2I(pawn.Locate().x, pawn.Locate().y + n));
 }
 
 void pawnTest::moveLeft(int n = -1)
 {
-	pawn.moveTo(Vec2I(pawn.locate().x + 2, pawn.locate().y - n));
+	pawn.MoveTo(Vec2I(pawn.Locate().x + 2, pawn.Locate().y - n));
 }

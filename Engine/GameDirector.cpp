@@ -8,6 +8,9 @@
 #include "Knight.h"
 GameDirector::GameDirector(Board &board)
 {
+	board_rows = board.rows;
+	board_columns = board.columns;
+
 	//spawn the pieces
 	int boardWidth = board.rows;
 	for (int row = 0; row < board.rows; row++)
@@ -84,20 +87,22 @@ Piece* GameDirector::getPiece(Vec2I location, GlobalEnums::pieceType type, Globa
 {
 	for each (Piece* p in pieces)
 	{
-		if (p->getType() == type && p->getTeam() == team && p->locate() == location)
+		if (p->GetType() == type && p->GetTeam() == team && p->Locate() == location)
 			return p;
 	}
 	return nullptr;
 }
+
 Piece* GameDirector::getPiece(Vec2I location) const
 {
 	for each (Piece* p in pieces)
 	{
-		if (p->locate() == location)
+		if (p->Locate() == location)
 			return p;
 	}
 	return nullptr;
 }
+
 void GameDirector::addTurn()
 {
 	gameTurn++;

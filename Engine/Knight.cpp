@@ -18,7 +18,7 @@ Piece(location, team, KNIGHT, board)
 	}
 };
 
-int Knight::howManyLeft() const
+int Knight::HowManyLeft() const
 {
 	switch (team)
 	{
@@ -34,11 +34,11 @@ int Knight::howManyLeft() const
 	}
 }
 
-bool Knight::isValidLocation(Vec2I newLocation) const
+bool Knight::IsValidLocation(Vec2I newLocation) const
 {
-	if (board->isInsideTheBoard(newLocation))
+	if (board->IsInsideTheBoard(newLocation))
 	{
-		bool notFriendly = board->getTileState(newLocation).pieceTeam != team;
+		bool notFriendly = board->GetTileState(newLocation).pieceTeam != team;
 		int xDiff = abs(newLocation.x - curLocation.x);
 		int yDiff = abs(newLocation.y - curLocation.y);
 
@@ -53,19 +53,19 @@ bool Knight::isValidLocation(Vec2I newLocation) const
 		return false;
 }
 
-bool Knight::isWayClear(Vec2I newLocation) const
+bool Knight::IsWayClear(Vec2I newLocation) const
 {
 		return false;
 }
 
 
-void Knight::moveTo(Vec2I newLocation)
+void Knight::MoveTo(Vec2I newLocation)
 {
-	if (isValidLocation(newLocation))
+	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
-		reportChange();
+		ReportChange();
 	}
 }
 
@@ -84,15 +84,15 @@ Knight::~Knight()
 int Knight::nWhiteLeft = 0;
 int Knight::nBlackLeft = 0;
 
-bool Knight::isValidLocation(int newLocation) const
+bool Knight::IsValidLocation(int newLocation) const
 {
-	return isValidLocation(TransLocation(newLocation));
+	return IsValidLocation(TransLocation(newLocation));
 }
-bool Knight::isWayClear(int newLocation) const
+bool Knight::IsWayClear(int newLocation) const
 {
-	return isWayClear(TransLocation(newLocation));
+	return IsWayClear(TransLocation(newLocation));
 }
-void Knight::moveTo(int newLocation)
+void Knight::MoveTo(int newLocation)
 {
-	moveTo(TransLocation(newLocation));
+	MoveTo(TransLocation(newLocation));
 }

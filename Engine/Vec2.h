@@ -33,6 +33,11 @@ public:
 	x( x ),
 	y( y )
 	{}
+	inline			_Vec2(const std::pair<T, T> &rhs)  //experimental
+		:
+		x(rhs.first),
+		y(rhs.second)
+	{}
 	inline			_Vec2( const _Vec2& vect )
 		:
 	_Vec2( vect.x,vect.y )
@@ -97,6 +102,12 @@ public:
 		this->y = rhs.y;
 		return *this;
 	}
+	inline _Vec2&	operator=(const std::pair<T,T> &rhs) //experimental
+	{
+		this->x = rhs.first;
+		this->y = rhs.second;
+		return *this;
+	} 
 	inline _Vec2&	operator+=( const _Vec2 &rhs )
 	{
 		this->x += rhs.x;

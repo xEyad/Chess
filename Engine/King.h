@@ -7,16 +7,16 @@ public:
 	King(Vec2I location, Team team, Board* const board);
 	~King();
 	//getters
-	virtual int howManyLeft() const; //should return the number of pieces left in this team
-	virtual bool isValidLocation(Vec2I newLocation) const ;
-	virtual bool isValidLocation(int newLocation) const;
+	virtual int HowManyLeft() const; //should return the number of pieces left in this team
+	virtual bool IsValidLocation(Vec2I newLocation) const ;
+	virtual bool IsValidLocation(int newLocation) const;
 	//actions
-	virtual void moveTo(Vec2I newLocation);
-	virtual void moveTo(int newLocation);
+	virtual void MoveTo(Vec2I newLocation);
+	virtual void MoveTo(int newLocation);
 private:
 	//getters
-	virtual bool isWayClear(Vec2I newLocation) const;//will be used only in the special case
-	virtual bool isWayClear(int newLocation) const;
+	virtual bool IsWayClear(Vec2I newLocation) const;//will be used only in the special case
+	virtual bool IsWayClear(int newLocation) const;
 private:
 	bool movedBefore = false;
 	static int nWhiteLeft;

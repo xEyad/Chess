@@ -30,7 +30,21 @@ Game::Game(MainWindow& wnd)
 	Director(chessBoard)
 {
 	//mo2ktn el 2byd makano ta7t daymn	
-	chessBoard.intializeGameDirector(Director);
+	chessBoard.IntializeGameDirector(Director);
+
+	//just test cases
+	//auto p = Director.getPiece(11); //pawn
+	//if (p != nullptr)
+	//	p->MoveTo(19);
+
+	//p = Director.getPiece({ 3,0 }); //queen
+	//if (p != nullptr)
+	//{
+	//	p->MoveTo({ 3,2 });
+	//	p->MoveTo({ 1,4 });
+	//	p->MoveTo({ 1,5 });
+
+	//}
 }
 
 void Game::Go()
@@ -42,45 +56,54 @@ void Game::Go()
 }
 
 void Game::UpdateModel()
-{	
-	
+{
+	HandleMouse();
 }
+
 void Game::ComposeFrame()
 {		
-	//draw Grid/Board
-	//int xx = 0;
-	//int yy = 0;
-	//const int screenCenterY = (Graphics::ScreenHeight - 100) / 2;
-	//const int screenCenterX = (Graphics::ScreenWidth - 100) / 2;
-	//int screenLocationX = screenCenterX;
-	//int screenLocationY = screenCenterY;
-	//Color c;
-	chessBoard.Draw(gfx, { 40,40 }, Colors::LightGray);
-	chessBoard.DrawPieces(gfx, { 40,40 });
+	
+	chessBoard.Draw(gfx,Colors::LightGray);
+	chessBoard.DrawPieces(gfx);	
+	if (selectionMode)
+		highlight = Colors::Magenta;
+	else
+		highlight = Colors::Red;
 
-	auto p = Director.getPiece({ 1,0 });
-	if (p != nullptr)
-		p->moveTo(18);
+	chessBoard.HighlightTile(gfx, wnd.mouse.GetPos(), highlight);
+}
+void Game::HandleMouse()
+{
+	static int clickCounter = 0;
+	static std::shared_ptr<Tile> t1, t2;
+	
+	//do highlights
+	if (clickCounter == 1)
+		selectionMode = true;
+	else
+		selectionMode = false;
 
-	p = Director.getPiece({ 2,2 });
-	if (p != nullptr)
-		p->moveTo(35);
-
-	p = Director.getPiece({ 3,4 });
-	if (p != nullptr)
-		p->moveTo(52);
-
-
-
-
-	while (!wnd.mouse.IsEmpty())
-	{	
-		const Vec2 mPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
-		chessBoard.highlightTile(gfx, mPos, Colors::LightGray); // top left is hardcoded
-		const Mouse::Event e = wnd.mouse.Read();
-		if (e.GetType() == Mouse::Event::LPress)
+	const Mouse::Event e = wnd.mouse.Read();
+	if (e.GetType() == Mouse::Event::LPress) //update counter on left click
+	{
+		chessBoard.HighlightTile(gfx, wnd.mouse.GetPos(), Colors::Yellow); //flash yellow
+		if (clickCounter == 0) //first click
 		{
-			
+			t1 = chessBoard.GetTileByMouse(wnd.mouse.GetPos()); //click 1 (get its coordinates)
+			clickCounter++;
+		}
+		else if (clickCounter >= 1)
+		{
+			t2 = chessBoard.GetTileByMouse(wnd.mouse.GetPos()); //click 2 (get its coordinates)
+			if (t1 != nullptr && t2 != nullptr) //if the 2 clicks locations are valid
+			{
+				//move the piece (if its logical)
+				auto p = Director.getPiece(t1->location);
+				if (p != nullptr)
+					p->MoveTo(t2->location);
+			}
+			clickCounter = 0;
 		}
 	}
+	
 }
