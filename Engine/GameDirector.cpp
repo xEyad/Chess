@@ -6,7 +6,11 @@
 #include "King.h"
 #include "Queen.h"
 #include "Knight.h"
-GameDirector::GameDirector(Board &board)
+GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
+	:
+	board(board),
+	gfx(gfx),
+	mouse(mouse)
 {
 	board_rows = board.rows;
 	board_columns = board.columns;
@@ -103,9 +107,89 @@ Piece* GameDirector::getPiece(Vec2I location) const
 	return nullptr;
 }
 
-void GameDirector::addTurn()
+void GameDirector::SetStage()
 {
-	gameTurn++;
+	board.Draw(gfx, Colors::LightGray);
+	board.DrawPieces(gfx);
+	if (selectionMode)
+		highlight = Colors::Magenta;
+	else
+		highlight = Colors::Red;
+
+	board.HighlightTile(gfx, mouse.GetPos(), highlight);
 }
 
-int GameDirector::gameTurn = 1;
+void GameDirector::HandleInput()
+{
+	static int clickCounter = 0;
+	static std::shared_ptr<Tile> t1, t2;
+
+	//do highlights
+	if (clickCounter == 1)
+		selectionMode = true;
+	else
+		selectionMode = false;
+
+	const Mouse::Event e = mouse.Read();
+	if (e.GetType() == Mouse::Event::LPress) //update counter on left click
+	{
+		if (clickCounter == 0) //first click
+		{
+			t1 = board.GetTileByMouse(mouse.GetPos()); //click 1 (get its coordinates)
+			clickCounter++;
+		}
+		else if (clickCounter >= 1)
+		{
+			t2 = board.GetTileByMouse(mouse.GetPos()); //click 2 (get its coordinates)
+			if (t1 != nullptr && t2 != nullptr && t1 != t2) //if the 2 clicks locations are valid
+			{
+				//move the piece (if its logical)
+				auto p = getPiece(t1->location);
+				if (p != nullptr && WhoseTurn() == p->GetTeam())
+				{
+					if(p->MoveTo(t2->location)) //if moving succed (if it actually moved!)
+						gameTurn++;	//a turn ends
+				}
+			}
+			clickCounter = 0;
+		}
+	}
+}
+
+//cheating functions 
+
+void GameDirector::CH_HandleInput()
+{ //cheating function
+	static int clickCounter = 0;
+	static std::shared_ptr<Tile> t1, t2;
+
+	//do highlights
+	if (clickCounter == 1)
+		selectionMode = true;
+	else
+		selectionMode = false;
+
+	const Mouse::Event e = mouse.Read();
+	if (e.GetType() == Mouse::Event::LPress) //update counter on left click
+	{
+		if (clickCounter == 0) //first click
+		{
+			t1 = board.GetTileByMouse(mouse.GetPos()); //click 1 (get its coordinates)
+			clickCounter++;
+		}
+		else if (clickCounter >= 1)
+		{
+			t2 = board.GetTileByMouse(mouse.GetPos()); //click 2 (get its coordinates)
+			if (t1 != nullptr && t2 != nullptr && t1 != t2) //if the 2 clicks locations are valid
+			{
+				//move the piece (if its logical)
+				auto p = getPiece(t1->location);
+				if (p != nullptr)
+				{
+					p->MoveTo(t2->location);						
+				}
+			}
+			clickCounter = 0;
+		}
+	}
+}

@@ -105,15 +105,18 @@ bool Rook::IsWayClear(Vec2I newLocation) const
 		return false;
 }
 
-void Rook::MoveTo(Vec2I newLocation)
+bool Rook::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
-		movedBefore = true;	
+		movedBefore = true;
 		ReportChange();
+		return true;
 	}
+	else
+		return false;
 }
 
 Rook::~Rook()
@@ -140,7 +143,7 @@ bool Rook::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
 }
-void Rook::MoveTo(int newLocation)
+bool Rook::MoveTo(int newLocation)
 {
-	MoveTo(TransLocation(newLocation));
+	return MoveTo(TransLocation(newLocation));
 }

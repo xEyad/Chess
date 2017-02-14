@@ -51,7 +51,7 @@ bool Pawn::IsValidLocation(Vec2I newLocation) const
 		else if (IsWayClear(newLocation) && yDiff == 1 && !tile.containPiece) //basically 1 vertical move
 			return true;
 
-		else if (yDiff == 1 && xDiff == 1 && tile.pieceTeam != team) //eating(capturing) case
+		else if (yDiff == 1 && xDiff == 1 &&  tile.containPiece &&tile.pieceTeam != team) //eating(capturing) case
 		{
 			return true;
 		}
@@ -66,7 +66,7 @@ bool Pawn::IsWayClear(Vec2I newLocation) const
 	if (board->IsInsideTheBoard(newLocation) && newLocation.x == curLocation.x)
 	{
 		int judge;
-		for (int i = min(curLocation.y, newLocation.y); i <= max(curLocation.y, newLocation.y)-1; i++)
+		for (int i = min(newLocation.y, curLocation.y); i <= max(newLocation.y, curLocation.y) -1; i++)
 		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
 			if (Vec2I(curLocation.x, i) == curLocation)
 				judge = 1;
@@ -83,7 +83,7 @@ bool Pawn::IsWayClear(Vec2I newLocation) const
 		return false;
 }
 
-void Pawn::MoveTo(Vec2I newLocation)
+bool Pawn::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
@@ -91,7 +91,10 @@ void Pawn::MoveTo(Vec2I newLocation)
 		curLocation = newLocation;
 		movedBefore = true;
 		ReportChange();
+		return true;
 	}
+	else
+		return false;
 }
 
 Pawn::~Pawn()
@@ -120,7 +123,7 @@ bool Pawn::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
 }
-void Pawn::MoveTo(int newLocation)
+bool Pawn::MoveTo(int newLocation)
 {
-	MoveTo(TransLocation(newLocation));
+	return MoveTo(TransLocation(newLocation));
 }

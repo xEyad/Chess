@@ -27,24 +27,24 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	chessBoard(8, 8), //basic chess board	
-	Director(chessBoard)
+	Director(chessBoard,gfx,wnd.mouse)
 {
 	//mo2ktn el 2byd makano ta7t daymn	
 	chessBoard.IntializeGameDirector(Director);
 
 	//just test cases
-	//auto p = Director.getPiece(11); //pawn
-	//if (p != nullptr)
-	//	p->MoveTo(19);
+	auto p = Director.getPiece(11); //pawn
+	if (p != nullptr)
+		p->MoveTo(19);
 
-	//p = Director.getPiece({ 3,0 }); //queen
-	//if (p != nullptr)
-	//{
-	//	p->MoveTo({ 3,2 });
-	//	p->MoveTo({ 1,4 });
-	//	p->MoveTo({ 1,5 });
+	p = Director.getPiece({ 3,0 }); //queen
+	if (p != nullptr)
+	{
+		p->MoveTo({ 3,2 });
+		p->MoveTo({ 1,4 });
+		p->MoveTo({ 1,5 });
 
-	//}
+	}
 }
 
 void Game::Go()
@@ -57,53 +57,12 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	HandleMouse();
+	//Director.HandleInput();
+	Director.CH_HandleInput();
 }
 
 void Game::ComposeFrame()
 {		
-	
-	chessBoard.Draw(gfx,Colors::LightGray);
-	chessBoard.DrawPieces(gfx);	
-	if (selectionMode)
-		highlight = Colors::Magenta;
-	else
-		highlight = Colors::Red;
-
-	chessBoard.HighlightTile(gfx, wnd.mouse.GetPos(), highlight);
+	Director.SetStage();
 }
-void Game::HandleMouse()
-{
-	static int clickCounter = 0;
-	static std::shared_ptr<Tile> t1, t2;
-	
-	//do highlights
-	if (clickCounter == 1)
-		selectionMode = true;
-	else
-		selectionMode = false;
 
-	const Mouse::Event e = wnd.mouse.Read();
-	if (e.GetType() == Mouse::Event::LPress) //update counter on left click
-	{
-		chessBoard.HighlightTile(gfx, wnd.mouse.GetPos(), Colors::Yellow); //flash yellow
-		if (clickCounter == 0) //first click
-		{
-			t1 = chessBoard.GetTileByMouse(wnd.mouse.GetPos()); //click 1 (get its coordinates)
-			clickCounter++;
-		}
-		else if (clickCounter >= 1)
-		{
-			t2 = chessBoard.GetTileByMouse(wnd.mouse.GetPos()); //click 2 (get its coordinates)
-			if (t1 != nullptr && t2 != nullptr) //if the 2 clicks locations are valid
-			{
-				//move the piece (if its logical)
-				auto p = Director.getPiece(t1->location);
-				if (p != nullptr)
-					p->MoveTo(t2->location);
-			}
-			clickCounter = 0;
-		}
-	}
-	
-}

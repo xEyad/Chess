@@ -234,14 +234,17 @@ bool Queen::isKingMove(Vec2I newLocation) const
 		return false;
 }
 
-void Queen::MoveTo(Vec2I newLocation)
+bool Queen::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
 		ReportChange();
+		return true;
 	}
+	else
+		return false;
 }
 
 Queen::~Queen()
@@ -268,7 +271,7 @@ bool Queen::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
 }
-void Queen::MoveTo(int newLocation)
+bool Queen::MoveTo(int newLocation)
 {
-	MoveTo(TransLocation(newLocation));
+	return MoveTo(TransLocation(newLocation));
 }

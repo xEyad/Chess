@@ -11,8 +11,8 @@ public:
 	virtual bool IsValidLocation(int newLocation) const;
 	virtual bool IsValidLocation(Vec2I newLocation) const;
 	//actions
-	virtual void MoveTo(int newLocation);
-	virtual void MoveTo(Vec2I newLocation);
+	virtual bool MoveTo(int newLocation);
+	virtual bool MoveTo(Vec2I newLocation);
 
 private:
 	//getters

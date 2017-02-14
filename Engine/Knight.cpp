@@ -59,14 +59,17 @@ bool Knight::IsWayClear(Vec2I newLocation) const
 }
 
 
-void Knight::MoveTo(Vec2I newLocation)
+bool Knight::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
 		ReportChange();
+		return true;
 	}
+	else
+		return false;
 }
 
 Knight::~Knight()
@@ -92,7 +95,7 @@ bool Knight::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
 }
-void Knight::MoveTo(int newLocation)
+bool Knight::MoveTo(int newLocation)
 {
-	MoveTo(TransLocation(newLocation));
+	return MoveTo(TransLocation(newLocation));
 }

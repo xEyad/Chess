@@ -194,18 +194,21 @@ bool Bishop::IsWayClear(int newLocation) const
 
 
 
-void Bishop::MoveTo(Vec2I newLocation)
+bool Bishop::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
 		oldLocation = curLocation;
 		curLocation = newLocation;
 		ReportChange();
+		return true;
 	}
+	else
+		return false;
 }
-void Bishop::MoveTo(int newLocation)
+bool Bishop::MoveTo(int newLocation)
 {
-	MoveTo(TransLocation(newLocation));
+	return MoveTo(TransLocation(newLocation));
 }
 
 Bishop::~Bishop()

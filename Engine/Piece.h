@@ -78,8 +78,8 @@ public:
 	virtual bool IsValidLocation(Vec2I newLocation) const = 0; //original
 	virtual bool IsValidLocation(int newLocation) const = 0; //support
 	//actions
-	virtual void MoveTo(Vec2I newLocation) = 0;//original
-	virtual void MoveTo(int newLocation) = 0;//support
+	virtual bool MoveTo(Vec2I newLocation) = 0;//original
+	virtual bool MoveTo(int newLocation) = 0;//support
 	virtual void SendToPrison()
 	{
 		captured = true;
@@ -100,6 +100,5 @@ protected:
 	Team enemyTeam;
 	bool captured = false; // the piece itself
 	//std::vector< CapturedPiece> capturedPieces; //enemy pieces captured by this piece
-	//std::vector<int> sredPieces; //enemy pieces captured by this piece
 	Board* const board;
 };
