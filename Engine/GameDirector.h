@@ -46,6 +46,10 @@ public:
 	{
 		return gameTurn;
 	}
+	bool isGameOver() const
+	{
+		return gameOver;
+	}
 	GlobalEnums::Team WhoseTurn() const
 	{
 		if (gameTurn % 2 == 0) //even
@@ -68,6 +72,7 @@ public:
 
 	//graphical actions
 	void SetStage();
+
 	//logical actions
 	void HandleInput();  //mouse
 
@@ -75,7 +80,8 @@ public:
 	//cheats
 
 	//free moving and clicking using mouse (no turns)
-	void CH_HandleInput();  
+	void CH_HandleInput(); 
+
 	//friend functions
 	friend class Board;
 private:
@@ -85,8 +91,9 @@ private:
 	Mouse &mouse;
 	int board_rows;
 	int board_columns;
-	int gameTurn = 1; //odd is white
+	int gameTurn = 1; //odd is white's turn
 	bool selectionMode = false;
 	Color highlight = Colors::Red;	
+	bool gameOver = false; //manipulated by board
 };
 

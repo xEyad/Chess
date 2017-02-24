@@ -95,25 +95,32 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	if (!IsInsideTheBoard(oldLocation))
 	{
 		auto Tile = GetTile(piece->Locate());
-		if (Tile->state.containPiece)
-		{
-			throw  std::logic_error("no more than 1 piece can be initialized on same spot/Location"); //handled in piece constructor
-			return;
-		}			
+		assert(!Tile->state.containPiece); //if it doesn't contain a piece then everything is OK
+		//if your program crashed then thats what you did wrong:
+		//initialized more than 1 piece on same spot/Location		
 	}
-	//do changes to the tile which the piece moved from
+
+	//do changes to the tile which the piece moved FROM
 	else if (IsInsideTheBoard(oldLocation)) //basically not intialization
 	{
 		auto prevTile = GetTile(oldLocation);
 		prevTile->applyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); //supposing that we left this tile empty
 	}
-	//do changes to the tile which the piece moved to
+
+	//do changes to the tile which the piece moved TO
 	auto tile = GetTile(piece->Locate());
 	if (tile->state.containPiece)
 	{
 		//if this has moved then the new tile is either empty or have enemy piece.
 		//if it contains a piece then we send it to prison.
-		director->getPiece(piece->Locate(),tile->state.piecetype,tile->state.pieceTeam)->SendToPrison();
+		auto p = director->getPiece(piece->Locate(), tile->state.piecetype, tile->state.pieceTeam);
+		p->SendToPrison();
+
+		//if captured piece is KING
+		if (p->GetType() == KING)
+		{
+			director->gameOver = true;
+		}
 	}
 	
 	tile->applyChanges(true, piece->GetType(), piece->GetTeam());

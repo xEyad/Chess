@@ -111,6 +111,7 @@ void GameDirector::SetStage()
 {
 	board.Draw(gfx, Colors::LightGray);
 	board.DrawPieces(gfx);
+
 	if (selectionMode)
 		highlight = Colors::Magenta;
 	else

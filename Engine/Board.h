@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 #include <memory>
+#include <assert.h>
 #include "Graphics.h"
 class Mouse;
 class Piece;
@@ -20,7 +21,11 @@ public:
 	void Draw( Graphics &gfx, Color edgesClr) const;
 	void HighlightTile(Graphics & gfx, Vec2I mousePos, Color edgesClr) const;
 	void DrawPieces(Graphics & gfx) const;
-	void IntializeGameDirector(GameDirector &d) { director = &d; }
+	void IntializeGameDirector(GameDirector &d) 
+	{
+		assert(director == nullptr); //if it is already intialized, crash.  (if the director = null then everything is OK)
+		director = &d;
+	}
 
 private:
 	std::vector<std::shared_ptr<Tile>> boardTiles; //array of shared pointers of type Tile 

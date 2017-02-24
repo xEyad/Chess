@@ -24,11 +24,23 @@
 #include "ChiliException.h"
 #include "Colors.h"
 #include "Rect.h"
+#include "Bitmap.h"
+#include "TextSurface.h"
 #define CHILI_GFX_EXCEPTION( hr,note ) Graphics::Exception( hr,note,_CRT_WIDE(__FILE__),__LINE__ )
+
+
 
 class Graphics
 {
 public:
+
+	/*struct Font
+	{
+		int charWidth;
+		int charHeight;
+		int nCharsPerRow;
+		Color* surface;
+	};*/
 	class Exception : public ChiliException
 	{
 	public:
@@ -64,8 +76,10 @@ public:
 	void DrawRect(const RectI rect, Color c);
 	void DrawColoredRect(const RectI rect, Color c, int shrink = 1, bool fillEdges = false);
 	void FillRect(const RectI rect, Color c, int shrink = 1, bool fillEdges = false);
-	//void DrawChar(char c, int x, int y, Font* font, Color color);
-	//void DrawString(const char* string, int x, int y, Font* font, Color color);
+	void DrawText(const std::wstring& string, const Vec2& pt, const TextSurface::Font& font, Color c)
+	{
+		sysBuffer.DrawString(string, pt, font, c);
+	}
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
@@ -81,6 +95,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>			pSamplerState;
 	D3D11_MAPPED_SUBRESOURCE							mappedSysBufferTexture;
 	Color*                                              pSysBuffer = nullptr;
+	TextSurface                                         sysBuffer;
 public:
 	static constexpr unsigned int ScreenWidth = 800u;
 	static constexpr unsigned int ScreenHeight = 800u;

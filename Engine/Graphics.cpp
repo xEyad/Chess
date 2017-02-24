@@ -25,6 +25,9 @@
 #include <assert.h>
 #include <string>
 #include <array>
+//#include <GdiPlus.h>
+//#pragma comment( lib,"gdiplus.lib" )
+
 
 // Ignore the intellisense error "cannot open source file" for .shh files.
 // They will be created during the build sequence before the preprocessor runs.
@@ -39,6 +42,8 @@ namespace FramebufferShaders
 using Microsoft::WRL::ComPtr;
 
 Graphics::Graphics(HWNDKey& key)
+	:
+	sysBuffer(Graphics::ScreenWidth, Graphics::ScreenHeight)
 {
 	assert(key.hWnd != nullptr);
 
@@ -62,6 +67,11 @@ Graphics::Graphics(HWNDKey& key)
 	D3D_FEATURE_LEVEL	featureLevelsSupported;
 	HRESULT				hr;
 	UINT				createFlags = 0u;
+#ifdef _DEBUG
+#ifdef USE_DIRECT3D_DEBUG_RUNTIME
+	createFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+#endif
 
 	// create device and front/back buffers
 	if (FAILED(hr = D3D11CreateDeviceAndSwapChain(
@@ -230,23 +240,12 @@ Graphics::Graphics(HWNDKey& key)
 	{
 		throw CHILI_GFX_EXCEPTION(hr, L"Creating sampler state");
 	}
-
-	// allocate memory for sysbuffer (16-byte aligned for faster access)
-	pSysBuffer = reinterpret_cast<Color*>(
-		_aligned_malloc(sizeof(Color) * Graphics::ScreenWidth * Graphics::ScreenHeight, 16u));
 }
-
 
 Graphics::~Graphics()
 {
-	// free sysbuffer memory (aligned free)
-	if( pSysBuffer )
-	{
-		_aligned_free( pSysBuffer );
-		pSysBuffer = nullptr;
-	}
 	// clear the state of the device context before destruction
-	if( pImmediateContext ) pImmediateContext->ClearState();
+	if (pImmediateContext) pImmediateContext->ClearState();
 }
 
 void Graphics::EndFrame()
@@ -254,47 +253,44 @@ void Graphics::EndFrame()
 	HRESULT hr;
 
 	// lock and map the adapter memory for copying over the sysbuffer
-	if( FAILED( hr = pImmediateContext->Map( pSysBufferTexture.Get(),0u,
-		D3D11_MAP_WRITE_DISCARD,0u,&mappedSysBufferTexture ) ) )
+	if (FAILED(hr = pImmediateContext->Map(pSysBufferTexture.Get(), 0u,
+		D3D11_MAP_WRITE_DISCARD, 0u, &mappedSysBufferTexture)))
 	{
-		throw CHILI_GFX_EXCEPTION( hr,L"Mapping sysbuffer" );
+		throw CHILI_GFX_EXCEPTION(hr, L"Mapping sysbuffer");
 	}
 	// setup parameters for copy operation
-	Color* pDst = reinterpret_cast<Color*>(mappedSysBufferTexture.pData );
-	const size_t dstPitch = mappedSysBufferTexture.RowPitch / sizeof( Color );
+	BYTE* pDst = reinterpret_cast<BYTE*>(mappedSysBufferTexture.pData);
+	const size_t dstPitch = mappedSysBufferTexture.RowPitch;
 	const size_t srcPitch = Graphics::ScreenWidth;
-	const size_t rowBytes = srcPitch * sizeof( Color );
+	const size_t rowBytes = srcPitch * sizeof(Color);
 	// perform the copy line-by-line
-	for( size_t y = 0u; y < Graphics::ScreenHeight; y++ )
-	{
-		memcpy( &pDst[ y * dstPitch ],&pSysBuffer[y * srcPitch],rowBytes );
-	}
+	sysBuffer.Present(dstPitch, pDst);
 	// release the adapter memory
-	pImmediateContext->Unmap( pSysBufferTexture.Get(),0u );
+	pImmediateContext->Unmap(pSysBufferTexture.Get(), 0u);
 
 	// render offscreen scene texture to back buffer
-	pImmediateContext->IASetInputLayout( pInputLayout.Get() );
-	pImmediateContext->VSSetShader( pVertexShader.Get(),nullptr,0u );
-	pImmediateContext->PSSetShader( pPixelShader.Get(),nullptr,0u );
-	pImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-	const UINT stride = sizeof( FSQVertex );
+	pImmediateContext->IASetInputLayout(pInputLayout.Get());
+	pImmediateContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+	pImmediateContext->PSSetShader(pPixelShader.Get(), nullptr, 0u);
+	pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	const UINT stride = sizeof(FSQVertex);
 	const UINT offset = 0u;
-	pImmediateContext->IASetVertexBuffers( 0u,1u,pVertexBuffer.GetAddressOf(),&stride,&offset );
-	pImmediateContext->PSSetShaderResources( 0u,1u,pSysBufferTextureView.GetAddressOf() );
-	pImmediateContext->PSSetSamplers( 0u,1u,pSamplerState.GetAddressOf() );
-	pImmediateContext->Draw( 6u,0u );
+	pImmediateContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+	pImmediateContext->PSSetShaderResources(0u, 1u, pSysBufferTextureView.GetAddressOf());
+	pImmediateContext->PSSetSamplers(0u, 1u, pSamplerState.GetAddressOf());
+	pImmediateContext->Draw(6u, 0u);
 
 	// flip back/front buffers
-	if( FAILED( hr = pSwapChain->Present( 1u,0u ) ) )
+	if (FAILED(hr = pSwapChain->Present(1u, 0u)))
 	{
-		throw CHILI_GFX_EXCEPTION( hr,L"Presenting back buffer" );
+		throw CHILI_GFX_EXCEPTION(hr, L"Presenting back buffer");
 	}
 }
 
 void Graphics::BeginFrame()
 {
 	// clear the sysbuffer
-	memset( pSysBuffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
+	sysBuffer.Clear(Colors::Black);
 }
 
 void Graphics::PutPixel( int x,int y,Color c )
@@ -303,7 +299,7 @@ void Graphics::PutPixel( int x,int y,Color c )
 	assert( x < int( Graphics::ScreenWidth ) );
 	assert( y >= 0 );
 	assert( y < int( Graphics::ScreenHeight ) );
-	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
+	sysBuffer.PutPixel(x, y, c);
 }
 
 void Graphics::DrawLine(int x1, int y1, int x2, int y2, Color c)
@@ -405,42 +401,6 @@ void Graphics::FillRect(const RectI rect, Color c ,int shrink, bool fillEdges)
 	}
 }
 
-/*void Graphics::DrawChar(char c, int xoff, int yoff, Font* font, D3DCOLOR color)
-{
-	if (c < ' ' || c > '~')
-		return;
-
-	const int sheetIndex = c - ' ';
-	const int sheetCol = sheetIndex % font->nCharsPerRow;
-	const int sheetRow = sheetIndex / font->nCharsPerRow;
-	const int xStart = sheetCol * font->charWidth;
-	const int yStart = sheetRow * font->charHeight;
-	const int xEnd = xStart + font->charWidth;
-	const int yEnd = yStart + font->charHeight;
-	const int surfWidth = font->charWidth * font->nCharsPerRow;
-
-	for (int y = yStart; y < yEnd; y++)
-	{
-		for (int x = xStart; x < xEnd; x++)
-		{
-			if (font->surface[x + y * surfWidth] == D3DCOLOR_XRGB(0, 0, 0))
-			{
-				PutPixel(x + xoff - xStart, y + yoff - yStart, color);
-			}
-		}
-	}
-}*/
-
-/*void Graphics::DrawString(const char* string, int xoff, int yoff, Font* font, D3DCOLOR color)
-{
-	for (int index = 0; string[index] != '\0'; index++)
-	{
-		DrawChar(string[index], xoff + index * font->charWidth, yoff, font, color);
-	}
-}*/
-
-//////////////////////////////////////////////////
-//           Graphics Exception
 Graphics::Exception::Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line )
 	:
 	ChiliException( file,line,note ),

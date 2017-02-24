@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d9.h>
-
+#include "Colors.h"
 struct BitmapFileHeader
 {             
    unsigned int fileSize;                   
@@ -28,4 +28,4 @@ struct Pixel24
 	unsigned char red;
 };
 
-void LoadBmp( const char* filename,D3DCOLOR* surface );
+void LoadBmp( const char* filename,Color* surface );

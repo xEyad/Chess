@@ -23,20 +23,7 @@ protected:
 		else if (team == Team::WHITE)
 			enemyTeam = Team::BLACK;
 
-		try
-		{
-			ReportChange();
-		}
-		catch ( std::logic_error &e)
-		{
-			//std::exit(2);
-			//auto msg = "Caught a runtime_error exception: " + e;
-			e.what(); //just to avoid warnings
-			OutputDebugStringA("Caught a runtime_error exception: no more thane 1 piece can be initialized on same spot/Location"); //should find a better way to use this
-			//curLocation = oldLocation; //make it disappear from the world!
-
-		}
-		
+		ReportChange();
 	}
 	virtual ~Piece(){}
 

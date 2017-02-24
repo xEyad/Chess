@@ -34,12 +34,6 @@
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{7449bcf3-02f1-4956-8a3b-bd2ca1a2ce1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Pieces\unit tests">
-      <UniqueIdentifier>{97731359-c637-4362-8df6-3a587a6d62ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Pieces\unit tests">
-      <UniqueIdentifier>{4c394b3e-ab6c-4808-9087-e402bc36a0aa}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -102,9 +96,6 @@
     <ClInclude Include="GameDirector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pawnTest.h">
-      <Filter>Header Files\Pieces\unit tests</Filter>
-    </ClInclude>
     <ClInclude Include="Rook.h">
       <Filter>Header Files\Pieces</Filter>
     </ClInclude>
@@ -120,8 +111,14 @@
     <ClInclude Include="Knight.h">
       <Filter>Header Files\Pieces</Filter>
     </ClInclude>
-    <ClInclude Include="testCases.h">
-      <Filter>Header Files\Pieces\unit tests</Filter>
+    <ClInclude Include="GDIPlusManager.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="TextSurface.h">
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -158,9 +155,6 @@
     <ClCompile Include="GameDirector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pawnTest.cpp">
-      <Filter>Source Files\Pieces\unit tests</Filter>
-    </ClCompile>
     <ClCompile Include="Rook.cpp">
       <Filter>Source Files\Pieces</Filter>
     </ClCompile>
@@ -178,6 +172,18 @@
     </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="TextSurface.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="GDIPlusManager.cpp">
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

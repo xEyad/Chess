@@ -46,6 +46,7 @@ private:
 	/*  User Variables              */
 	Board chessBoard;
 	GameDirector Director;
+	Surface pawn;
 	/********************************/
 };
 
