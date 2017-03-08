@@ -145,7 +145,7 @@ void GameDirector::SetStage(bool debugMode)
 			if (selectedPiece != nullptr)
 			{
 				auto p = selectedPiece->getValidTiles();
-				board.HighlightTiles(gfx, p, Colors::MakeRGB(67, 46, 140));
+				board.HighlightTiles(gfx, p, Colors::Orange);
 			}
 		}
 	}
@@ -218,7 +218,7 @@ void GameDirector::HandleInput(bool cheatMode)
 	}
 }
 
-void GameDirector::Transformed(Piece* p)
+std::shared_ptr<Piece> GameDirector::Transformed(Piece* p)
 {	
 	assert(dynamic_cast<Pawn*> (p) != nullptr);
 	auto location = p->Locate();
@@ -230,18 +230,11 @@ void GameDirector::Transformed(Piece* p)
 	{
 		pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
 	}
-		
-	for(auto itr = pieces.begin(); itr < pieces.end();itr++)
-	{
-		if ((*itr)->Locate() == location)
-		{
-			pieces.erase(itr); //remove it from the game			
-			break;
-		}
-	}
+	DestroyPiece(p);
 	//generate valid moves for all pieces
 	for each (auto piece in pieces)
 		piece->GenerateValidMoves();
+	return *(pieces.end() - 1); //pointer to the new piece
 }
 
 bool GameDirector::DestroyPiece(Piece* piece)

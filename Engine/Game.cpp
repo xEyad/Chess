@@ -21,7 +21,6 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Piece.h"
-#include "ChiliWin.h"
 
 Game::Game(MainWindow& wnd)
 	:
@@ -59,7 +58,7 @@ void Game::ComposeFrame()
 	switch (Director.WhoseTurn())
 	{
 		case Team::BLACK:
-			gfx.DrawText(L"B", { 0.0f,10.0f }, fontus, Colors::Black);
+			gfx.DrawText(L"B", { 0.0f,10.0f }, fontus, Colors::Orange);
 			break;
 		case Team::WHITE:
 			gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::White);

@@ -25,6 +25,8 @@
 #include "Graphics.h"
 #include "Board.h"
 #include "GameDirector.h"
+#include "ChiliWin.h"
+
 class Game
 {
 public:

@@ -74,7 +74,7 @@ public:
 	void SetStage(bool debugMode = false);
 	//logical actions
 	void HandleInput(bool cheatMode = false);  //mouse
-	void Transformed(Piece* p);
+	std::shared_ptr<Piece> Transformed(Piece* p);
 
 	//cheats
 

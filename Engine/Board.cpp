@@ -89,7 +89,7 @@ const Tile::Status Board::GetTileState(Vec2I location) const
 		return s;
 	}
 }
-//graphical start point (in screen coordinate)
+//graphical start point (in screen coordinates)
 Vec2I Board::GetTileStartPoint(Vec2I Tilelocation) const
 {
 	return Vec2I(topLeft.x + Tilelocation.x * Tile::WIDTH, topLeft.y + Tilelocation.y * Tile::HEIGHT);
@@ -129,24 +129,20 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 		//if this has moved then the new tile is either empty or have enemy piece.
 		//if it contains a piece then we send it to prison.
 		std::shared_ptr<Piece> p = director->getPiece(piece->Locate(), tile->state.piecetype, tile->state.pieceTeam);
-		p->SendToPrison(); //should be deleted
-		//if captured piece is KING
-		if (p->GetType() == KING)
+
+		if (p != nullptr)
 		{
-			director->gameOver = true;
-		}
-		director->DestroyPiece(p);
-		//if pawn Transformed		
-		if (dynamic_cast<Pawn*>(piece) != nullptr && dynamic_cast<Pawn*>(piece)->isTransformed())
-		{
-			//clean this tile first
-			auto thisTile = GetTile(piece->Locate());
-			thisTile->applyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); //supposing that we left this tile empty
-			//then apply transformation
-			director->Transformed(piece);
+			p->SendToPrison(); //should be deleted
+		   //if captured piece is KING
+			if (p->GetType() == KING)
+				director->gameOver = true;
+			director->DestroyPiece(p);
 		}
 	}
-	
+	if (dynamic_cast<Pawn*>(piece) != nullptr && dynamic_cast<Pawn*>(piece)->isTransformed())
+	{
+		piece = director->Transformed(piece).get();
+	}
 	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
 }
 
@@ -196,9 +192,9 @@ void Board::DrawGrid(Graphics & gfx, Color edgesClr) const
 void Board::DrawSprite(Graphics &gfx) const
 {	
 	auto i = sprSurf.begin();
-	for (int x = 0; x < sprite->GetWidth(); x++)
+	for (unsigned int x = 0; x < sprite->GetWidth(); x++)
 	{
-		for (int y = 0; y < sprite->GetHeight(); y++)
+		for (unsigned int y = 0; y < sprite->GetHeight(); y++)
 		{
 			gfx.PutPixel(x, y, (*i++));
 		}
@@ -248,9 +244,9 @@ void Board::DrawPiecesSprite( Graphics & gfx) const
 			Vec2I topLeftPoint(screenLocation.x + (*i)->Locate().x * Tile::WIDTH  , screenLocation.y + (*i)->Locate().y * Tile::HEIGHT  );
 			std::vector<Color> surf;
 
-			for (int x = 0; x < (*i)->GetSprite()->GetWidth(); x++)
+			for (unsigned int x = 0; x < (*i)->GetSprite()->GetWidth(); x++)
 			{
-				for (int y = 0; y < (*i)->GetSprite()->GetHeight(); y++)
+				for (unsigned int y = 0; y < (*i)->GetSprite()->GetHeight(); y++)
 				{
 					surf.push_back((*i)->GetSprite()->GetPixel(x, y));
 				}
@@ -258,9 +254,9 @@ void Board::DrawPiecesSprite( Graphics & gfx) const
 
 			auto ss = (*i)->GetSprSurf()->cbegin();
 			
-			for (int x = topLeftPoint.x; x < (*i)->GetSprite()->GetWidth() + topLeftPoint.x; x++)
+			for (unsigned int x = topLeftPoint.x; x < (*i)->GetSprite()->GetWidth() + topLeftPoint.x; x++)
 			{
-				for (int y = topLeftPoint.y; y < (*i)->GetSprite()->GetHeight() + topLeftPoint.y; y++)
+				for (unsigned int y = topLeftPoint.y; y < (*i)->GetSprite()->GetHeight() + topLeftPoint.y; y++)
 				{
 					if (!(ss->dword == 4294967295 ))//white
 						gfx.PutPixelClipped(x, y, (*ss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
