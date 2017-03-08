@@ -4,7 +4,7 @@ class Knight :
 	public Piece
 {
 public:
-	Knight(Vec2I location, Team team, Board* const board);
+	Knight(Vec2I location, Team team, Board* const board, Surface* const sprite);
 	~Knight();
 	//getters
 	virtual int HowManyLeft() const; //should return the number of pieces left in this team
@@ -14,6 +14,7 @@ public:
 	//actions
 	virtual bool MoveTo(int newLocation);
 	virtual bool MoveTo(Vec2I newLocation);
+	virtual void GenerateValidMoves();
 
 private:
 	//getters

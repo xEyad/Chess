@@ -1,8 +1,8 @@
 #include "Rook.h"
 
-Rook::Rook(Vec2I location, Team team, Board* const board)
+Rook::Rook(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
-	Piece(location, team, ROOK, board)
+	Piece(location, team, ROOK, board,sprite)
 {
 	//increment number of pieces
 	switch (team)
@@ -37,7 +37,7 @@ bool Rook::IsValidLocation(Vec2I newLocation) const
 	if (board->IsInsideTheBoard(newLocation))
 	{
 		auto tile = board->GetTileState(newLocation);
-		if (!tile.containPiece || (tile.containPiece && tile.pieceTeam != team)) //if it have no piece on it or have a piece of other team
+		if (!tile.containPiece || (tile.containPiece && tile.pieceTeam == enemyTeam)) //if it have no piece on it or have a piece of other team
 		{
 			if (curLocation.x == newLocation.x && curLocation.y != newLocation.y)
 			{//moving only vertically
@@ -67,18 +67,14 @@ bool Rook::IsValidLocation(Vec2I newLocation) const
 
 bool Rook::IsWayClear(Vec2I newLocation) const
 {
-	int judge; //used to make us not check the tile we are currently on
 	if (board->IsInsideTheBoard(newLocation))
-	{
+	{		
 		if (newLocation.x == curLocation.x) //then its a vertical move (Y)
 		{
-			for (int i = min(curLocation.y, newLocation.y); i < max(curLocation.y, newLocation.y) - 1; i++)
+			
+			for (int y = min(curLocation.y, newLocation.y) + 1; y < max(curLocation.y, newLocation.y) ; y++)
 			{//start from the lowest to bigger. checks if any of those tiles have a piece on it
-				if (Vec2I(curLocation.x, i) == curLocation)
-					judge = 1;
-				else
-					judge = 0;
-				if (board->GetTileState(Vec2I(curLocation.x, i + judge)).containPiece)
+				if (board->GetTileState(Vec2I(curLocation.x, y)).containPiece)
 					return false;
 			}
 			//if we get out of the loop then the way is clear
@@ -86,13 +82,9 @@ bool Rook::IsWayClear(Vec2I newLocation) const
 		}
 		else if (newLocation.y == curLocation.y) //then its a horizontal move (X)
 		{
-			for (int i = min(curLocation.x, newLocation.x); i < max(curLocation.x, newLocation.x) - 1; i++)
+			for (int x = min(curLocation.x, newLocation.x) + 1; x < max(curLocation.x, newLocation.x) ; x++)
 			{//start from the lowest to bigger. checks if any of those tiles have a piece on it
-				if (Vec2I(i, curLocation.y) == curLocation)
-					judge = 1;
-				else
-					judge = 0;
-				if (board->GetTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
+				if (board->GetTileState(Vec2I(x, curLocation.y)).containPiece) //we dont check the last point
 					return false;
 			}
 			//if we get out of the loop then the way is clear
@@ -103,7 +95,7 @@ bool Rook::IsWayClear(Vec2I newLocation) const
 	}
 	else
 		return false;
-}
+} 
 
 bool Rook::MoveTo(Vec2I newLocation)
 {
@@ -119,6 +111,21 @@ bool Rook::MoveTo(Vec2I newLocation)
 		return false;
 }
 
+void Rook::GenerateValidMoves()
+{
+	validTiles.clear();
+	for (auto x = 0; x < board->rows; x++)
+	{
+		if (IsValidLocation({ x,curLocation.y }))
+			validTiles.push_back({ x,curLocation.y });
+	}
+	for (auto y = 0; y < board->columns; y++)
+	{
+		if (IsValidLocation({ curLocation.x,y }))
+			validTiles.push_back({ curLocation.x,y });
+	}
+}
+
 Rook::~Rook()
 {
 	//decrement number of pieces
@@ -132,8 +139,6 @@ Rook::~Rook()
 			break;
 	}
 }
-int Rook::nWhiteLeft = 0;
-int Rook::nBlackLeft = 0;
 
 bool Rook::IsValidLocation(int newLocation) const
 {
@@ -147,3 +152,7 @@ bool Rook::MoveTo(int newLocation)
 {
 	return MoveTo(TransLocation(newLocation));
 }
+
+
+int Rook::nWhiteLeft = 0;
+int Rook::nBlackLeft = 0;

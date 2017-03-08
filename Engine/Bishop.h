@@ -3,7 +3,7 @@
 class Bishop : public Piece
 {
 public:
-	Bishop(Vec2I location, Team team, Board *const board);
+	Bishop(Vec2I location, Team team, Board *const board, Surface* const sprite);
 	~Bishop();
 
 	//getters 
@@ -13,6 +13,7 @@ public:
 	//actions
 	virtual bool MoveTo(Vec2I newLocation);
 	virtual bool MoveTo(int newLocation);
+	virtual void GenerateValidMoves();
 
 private:
 	//getters

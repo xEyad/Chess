@@ -1,7 +1,7 @@
 #include "Pawn.h"
-Pawn::Pawn(Vec2I location, Team team,  Board *const board)
+Pawn::Pawn(Vec2I location, Team team,  Board *const board, Surface* const sprite)
 	:
-	Piece(location, team, PAWN, board)
+	Piece(location, team, PAWN, board,sprite)
 {
 	//increment n of pieces
 	switch (team)
@@ -87,9 +87,12 @@ bool Pawn::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
+		stepsCounter += abs(newLocation.y - curLocation.y);
 		oldLocation = curLocation;
-		curLocation = newLocation;
-		movedBefore = true;
+		curLocation = newLocation;		
+		if (stepsCounter >= 6 )
+			transformed = true;
+		movedBefore = true;	
 		ReportChange();
 		return true;
 	}
@@ -97,9 +100,45 @@ bool Pawn::MoveTo(Vec2I newLocation)
 		return false;
 }
 
-Pawn::~Pawn()
+void Pawn::GenerateValidMoves()
 {
-	
+	validTiles.clear();
+	if (team == Team::BLACK)
+	{
+		Vec2I p1(curLocation.x, curLocation.y + 1);
+		Vec2I p2(curLocation.x, curLocation.y + 2);
+		Vec2I p3(curLocation.x + 1, curLocation.y + 1);
+		Vec2I p4(curLocation.x - 1, curLocation.y + 1);
+
+		if (IsValidLocation(p1))
+			validTiles.push_back(p1);
+		if (IsValidLocation(p2))
+			validTiles.push_back(p2);
+		if (IsValidLocation(p3))
+			validTiles.push_back(p3);
+		if (IsValidLocation(p4))
+			validTiles.push_back(p4);
+	}
+	else if (team == Team::WHITE)
+	{
+		Vec2I p1(curLocation.x, curLocation.y - 1);
+		Vec2I p2(curLocation.x, curLocation.y - 2);
+		Vec2I p3(curLocation.x + 1, curLocation.y - 1);
+		Vec2I p4(curLocation.x - 1, curLocation.y - 1);
+
+		if (IsValidLocation(p1))
+			validTiles.push_back(p1);
+		if (IsValidLocation(p2))
+			validTiles.push_back(p2);
+		if (IsValidLocation(p3))
+			validTiles.push_back(p3);
+		if (IsValidLocation(p4))
+			validTiles.push_back(p4);
+	}
+}
+
+Pawn::~Pawn()
+{	
 	switch (team)
 	{
 		case Team::WHITE:
@@ -111,9 +150,6 @@ Pawn::~Pawn()
 	}
 }
 
-//static variables should be intialized like this, in the def file!
-int Pawn::nWhiteLeft = 0;
-int Pawn::nBlackLeft = 0;
 
 bool Pawn::IsValidLocation(int newLocation) const
 {
@@ -127,3 +163,8 @@ bool Pawn::MoveTo(int newLocation)
 {
 	return MoveTo(TransLocation(newLocation));
 }
+
+
+//static variables should be intialized like this, in the def file!
+int Pawn::nWhiteLeft = 0;
+int Pawn::nBlackLeft = 0;

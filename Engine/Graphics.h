@@ -33,14 +33,6 @@
 class Graphics
 {
 public:
-
-	/*struct Font
-	{
-		int charWidth;
-		int charHeight;
-		int nCharsPerRow;
-		Color* surface;
-	};*/
 	class Exception : public ChiliException
 	{
 	public:
@@ -69,7 +61,29 @@ public:
 	{
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
-	void PutPixel( int x,int y,Color c );
+	void PutPixel(Vec2I point, int r, int g, int b)
+	{
+		PutPixel(point.x, point.y, { unsigned char(r),unsigned char(g),unsigned char(b) });
+	}
+	void PutPixel(int x, int y, Color c);
+	void PutPixel(Vec2I point, Color c)
+	{
+		PutPixel(point.x, point.y, c);
+	void PutPixel(int x, int y, Color c);
+	}
+	void PutPixelClipped(int x, int y, Color c, RectI clipRect)
+	{
+		if (y > clipRect.top &&
+			y < clipRect.bottom &&
+			x > clipRect.left &&
+			x < clipRect.right)
+			PutPixel(x, y, c);
+	}
+	void PutPixelClipped(Vec2I point, Color c,  RectI clipRect)
+	{
+		PutPixelClipped(point.x, point.y, c, clipRect);
+	}
+
 	//another functions
 	void DrawLine(int x1, int y1, int x2, int y2, Color c);
 	void DrawCircle(int cx, int cy, int radius, Color c);
@@ -97,6 +111,6 @@ private:
 	Color*                                              pSysBuffer = nullptr;
 	TextSurface                                         sysBuffer;
 public:
-	static constexpr unsigned int ScreenWidth = 800u;
-	static constexpr unsigned int ScreenHeight = 800u;
+	static constexpr unsigned int ScreenWidth = 680u;
+	static constexpr unsigned int ScreenHeight = 680u;
 };

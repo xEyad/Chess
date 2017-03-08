@@ -32,13 +32,13 @@ class GameDirector
 public:
 	GameDirector(Board &board, Graphics &gfx,Mouse &mouse);
 	//getters
-	Piece* getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const; //original
-	Piece* getPiece(int location, GlobalEnums::pieceType type, GlobalEnums::Team team) const //support
+	std::shared_ptr<Piece> getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const; //original
+	std::shared_ptr<Piece> getPiece(int location, GlobalEnums::pieceType type, GlobalEnums::Team team) const //support
 	{
 		return getPiece(TransLocation(location), type, team);
 	}
-	Piece* getPiece(Vec2I location) const; //original
-	Piece* getPiece(int location) const //support
+	std::shared_ptr<Piece> getPiece(Vec2I location) const; //original
+	std::weak_ptr<Piece> getPiece(int location) const //support
 	{
 		return getPiece(TransLocation(location));
 	}
@@ -71,21 +71,20 @@ public:
 	//actions
 
 	//graphical actions
-	void SetStage();
-
+	void SetStage(bool debugMode = false);
 	//logical actions
-	void HandleInput();  //mouse
-
+	void HandleInput(bool cheatMode = false);  //mouse
+	void Transformed(Piece* p);
 
 	//cheats
 
-	//free moving and clicking using mouse (no turns)
-	void CH_HandleInput(); 
-
 	//friend functions
-	friend class Board;
 private:
-	std::vector<Piece*> pieces;
+	friend class Board;
+	bool DestroyPiece(Piece* piece);
+	bool DestroyPiece(std::shared_ptr<Piece> piece);
+private:
+	std::vector<std::shared_ptr<Piece>> pieces;
 	Board &board;
 	Graphics &gfx;
 	Mouse &mouse;
@@ -93,6 +92,7 @@ private:
 	int board_columns;
 	int gameTurn = 1; //odd is white's turn
 	bool selectionMode = false;
+	std::shared_ptr<Piece> selectedPiece = nullptr;
 	Color highlight = Colors::Red;	
 	bool gameOver = false; //manipulated by board
 };

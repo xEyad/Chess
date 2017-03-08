@@ -4,7 +4,9 @@ class Queen :
 	public Piece
 {
 public:
-	Queen(Vec2I location, Team team, Board* const board);
+	Queen(Vec2I location, Team team, Board* const board, Surface* const sprite);
+	~Queen();
+
 	//getters
 	virtual int HowManyLeft() const; //should return the number of pieces left in this team
 	virtual bool IsValidLocation(int newLocation) const;
@@ -13,7 +15,7 @@ public:
 	//actions
 	virtual bool MoveTo(int newLocation);
 	virtual bool MoveTo(Vec2I newLocation);
-	~Queen();
+	virtual void GenerateValidMoves();
 
 private:
 	//getters

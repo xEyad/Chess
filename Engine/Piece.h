@@ -10,13 +10,14 @@ using namespace GlobalEnums;
 class Piece
 {
 protected:
-	Piece(Vec2I location, Team team, pieceType type, Board* const board)
+	Piece(Vec2I location, Team team, pieceType type, Board* const board, Surface* const sprite)
 		:
 		curLocation(location),
 		oldLocation({-1,-1}),
 		team(team),
 		type(type),
-		board(board)
+		board(board),
+		sprite(sprite)
 	{
 		if (team == Team::BLACK)
 			enemyTeam = Team::WHITE;
@@ -24,6 +25,16 @@ protected:
 			enemyTeam = Team::BLACK;
 
 		ReportChange();
+
+		for (unsigned int x = 0; x < sprite->GetWidth(); x++)
+		{
+			for (unsigned int y = 0; y < sprite->GetHeight(); y++)
+			{
+				sprSurf.push_back(sprite->GetPixel(x, y));
+			}
+		}
+		GenerateValidMoves();
+
 	}
 	virtual ~Piece(){}
 
@@ -49,24 +60,38 @@ protected:
 public:
 	//getters
 	
-	virtual pieceType GetType() const
+	pieceType GetType() const
 	{
 		return type;
 	}
-	virtual Team GetTeam() const
+	Team GetTeam() const
 	{
 		return team;
 	}
-	virtual Vec2I Locate() const
+	Vec2I Locate() const
 	{
 		return curLocation;
-	}		
+	}	
+	const Surface* GetSprite() const
+	{
+		return sprite;
+	}
+	const std::vector<Color>* GetSprSurf() const
+	{
+		return &sprSurf;
+	}
+	const std::vector<Vec2I>& getValidTiles() const
+	{
+		return validTiles;
+	}
 	virtual int HowManyLeft() const = 0; //should return the number of pieces left in this team
 	virtual bool IsValidLocation(Vec2I newLocation) const = 0; //original
 	virtual bool IsValidLocation(int newLocation) const = 0; //support
+	
 	//actions
 	virtual bool MoveTo(Vec2I newLocation) = 0;//original
 	virtual bool MoveTo(int newLocation) = 0;//support
+	virtual void GenerateValidMoves() {} // should be pure virtual
 	virtual void SendToPrison()
 	{
 		captured = true;
@@ -79,13 +104,17 @@ public:
 		Vec2I vLocation;
 		int iLocation;
 	};*/
+
 protected:
 	const pieceType type = NOT_DEFINED;
 	Vec2I curLocation;
 	Vec2I oldLocation;
 	const Team team;
 	Team enemyTeam;
+	std::vector<Color> sprSurf;
+	std::vector<Vec2I> validTiles;
 	bool captured = false; // the piece itself
 	//std::vector< CapturedPiece> capturedPieces; //enemy pieces captured by this piece
 	Board* const board;
+	Surface* const sprite;
 };

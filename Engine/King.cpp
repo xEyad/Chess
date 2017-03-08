@@ -1,8 +1,8 @@
 #include "King.h"
 
-King::King(Vec2I location, Team team, Board* const board)
+King::King(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
-	Piece(location, team, KING, board)
+	Piece(location, team, KING, board,sprite)
 {
 	//increment number of pieces
 	switch (team)
@@ -75,6 +75,19 @@ bool King::MoveTo(Vec2I newLocation)
 bool King::MoveTo(int newLocation)
 {
 	return MoveTo(TransLocation(newLocation));
+}
+
+void King::GenerateValidMoves()
+{
+	validTiles.clear();
+	for (int y = curLocation.y - 1; y <= curLocation.y + 1; y++)
+	{
+		for (int x = curLocation.x - 1; x <= curLocation.x + 1; x++)
+		{
+			if (IsValidLocation({ x,y }))
+				validTiles.push_back({ x,y });
+		}
+	}
 }
 
 King::~King()

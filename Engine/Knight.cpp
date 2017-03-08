@@ -2,9 +2,9 @@
 
 
 
-Knight::Knight(Vec2I location, Team team, Board* const board)
+Knight::Knight(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
-Piece(location, team, KNIGHT, board)
+Piece(location, team, KNIGHT, board,sprite)
 {
 	//increment number of pieces
 	switch (team)
@@ -70,6 +70,39 @@ bool Knight::MoveTo(Vec2I newLocation)
 	}
 	else
 		return false;
+}
+
+void Knight::GenerateValidMoves()
+{
+	validTiles.clear();
+	int x = curLocation.x;
+	int y = curLocation.y;
+	Vec2I p1(x + 2, y - 1);
+	Vec2I p2(x + 2, y + 1);
+	Vec2I p3(x - 2, y - 1);
+	Vec2I p4(x - 2, y + 1);
+
+	Vec2I p5(x + 1, y - 2);
+	Vec2I p6(x - 1, y - 2);
+	Vec2I p7(x - 1, y + 2);
+	Vec2I p8(x + 1, y + 2);
+
+	if (IsValidLocation(p1))
+		validTiles.push_back(p1);
+	if (IsValidLocation(p2))
+		validTiles.push_back(p2);
+	if (IsValidLocation(p3))
+		validTiles.push_back(p3);
+	if (IsValidLocation(p4))
+		validTiles.push_back(p4);
+	if (IsValidLocation(p5))
+		validTiles.push_back(p5);
+	if (IsValidLocation(p6))
+		validTiles.push_back(p6);
+	if (IsValidLocation(p7))
+		validTiles.push_back(p7);
+	if (IsValidLocation(p8))
+		validTiles.push_back(p8);
 }
 
 Knight::~Knight()

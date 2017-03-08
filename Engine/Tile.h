@@ -12,6 +12,7 @@ private:
 		pieceType piecetype = pieceType::NOT_DEFINED;
 		Team pieceTeam = Team::INVALID;
 	};
+
 private:
 	Tile(Vec2I location, Color c)
 		:
@@ -24,12 +25,14 @@ private:
 		state.piecetype = piecetype;
 		state.pieceTeam = team;
 	}
+
 public:
 	const Color color;
 	const Vec2I location;
 
 	const static int HEIGHT; //Graphical value
 	const static int WIDTH; //Graphical value
+
 private:
 	friend class Board;
 	Status state;

@@ -1,8 +1,8 @@
 #include "Bishop.h"
 
-Bishop::Bishop(Vec2I location, Team team, Board *const board)
+Bishop::Bishop(Vec2I location, Team team, Board *const board, Surface* const sprite)
 	:
-	Piece(location, team, BISHOP, board)
+	Piece(location, team, BISHOP, board,sprite)
 {
 	//increment n of pieces
 	switch (team)
@@ -209,6 +209,29 @@ bool Bishop::MoveTo(Vec2I newLocation)
 bool Bishop::MoveTo(int newLocation)
 {
 	return MoveTo(TransLocation(newLocation));
+}
+
+void Bishop::GenerateValidMoves()
+{
+	validTiles.clear();
+	//x increases
+	for (int upY = curLocation.y, downY = upY,  x = curLocation.x; x < board->rows; x++, upY--,downY++)
+	{
+		if (IsValidLocation({ x,upY }))
+			validTiles.push_back({ x,upY });
+
+		if (IsValidLocation({ x,downY }))
+			validTiles.push_back({ x,downY });
+	}
+	//x decreases
+	for (int upY = curLocation.y,  downY = upY,  x = curLocation.x; x >= 0; x--, upY--, downY++)
+	{
+		if (IsValidLocation({ x,upY }))
+			validTiles.push_back({ x,upY });
+
+		if (IsValidLocation({ x,downY }))
+			validTiles.push_back({ x,downY });
+	}
 }
 
 Bishop::~Bishop()

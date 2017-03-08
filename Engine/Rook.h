@@ -3,7 +3,7 @@
 class Rook : public Piece
 {
 public:
-	Rook(Vec2I location, Team team, Board* const board);
+	Rook(Vec2I location, Team team, Board* const board, Surface* const sprite);
 	virtual ~Rook();
 	
 	//getters
@@ -13,6 +13,7 @@ public:
 	//actions
 	virtual bool MoveTo(int newLocation);
 	virtual bool MoveTo(Vec2I newLocation);
+	virtual void GenerateValidMoves();
 private:
 	//getters
 	virtual bool IsWayClear(int newLocation) const;	

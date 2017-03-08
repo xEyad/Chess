@@ -1,15 +1,17 @@
 #include "Board.h"
 #include "Piece.h"
+#include "Pawn.h"
 #include <iostream>
 #include "GameDirector.h"
 
-const int Tile::HEIGHT = 90;
-const int Tile::WIDTH = 90;
-Board::Board(int rows, int columns)
+const int Tile::HEIGHT = 80;
+const int Tile::WIDTH = 80;
+Board::Board(int rows, int columns, Surface* const sprite)
 	:
 	rows(rows),
 	columns(columns),
-	director(nullptr)
+	director(nullptr),
+	sprite(sprite)
 {
 	//i should give tiles names (a2,b5) ... but thats for later
 
@@ -29,6 +31,14 @@ Board::Board(int rows, int columns)
 		if (i > 1) //so that i goes 0-1 to alternate between white and black
 			i = 0;
 	}
+	for (unsigned int x = 0; x < sprite->GetWidth(); x++)
+	{
+		for (unsigned int y = 0; y < sprite->GetHeight(); y++)
+		{
+			sprSurf.push_back(sprite->GetPixel(x, y));
+		}
+	}
+
 }
 
 std::shared_ptr<Tile> Board::GetTile(Vec2I location) const
@@ -79,6 +89,11 @@ const Tile::Status Board::GetTileState(Vec2I location) const
 		return s;
 	}
 }
+//graphical start point (in screen coordinate)
+Vec2I Board::GetTileStartPoint(Vec2I Tilelocation) const
+{
+	return Vec2I(topLeft.x + Tilelocation.x * Tile::WIDTH, topLeft.y + Tilelocation.y * Tile::HEIGHT);
+}
 
 bool Board::IsInsideTheBoard(Vec2I location) const
 {
@@ -113,20 +128,29 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	{
 		//if this has moved then the new tile is either empty or have enemy piece.
 		//if it contains a piece then we send it to prison.
-		auto p = director->getPiece(piece->Locate(), tile->state.piecetype, tile->state.pieceTeam);
-		p->SendToPrison();
-
+		std::shared_ptr<Piece> p = director->getPiece(piece->Locate(), tile->state.piecetype, tile->state.pieceTeam);
+		p->SendToPrison(); //should be deleted
 		//if captured piece is KING
 		if (p->GetType() == KING)
 		{
 			director->gameOver = true;
+		}
+		director->DestroyPiece(p);
+		//if pawn Transformed		
+		if (dynamic_cast<Pawn*>(piece) != nullptr && dynamic_cast<Pawn*>(piece)->isTransformed())
+		{
+			//clean this tile first
+			auto thisTile = GetTile(piece->Locate());
+			thisTile->applyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); //supposing that we left this tile empty
+			//then apply transformation
+			director->Transformed(piece);
 		}
 	}
 	
 	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
 }
 
-void Board::Draw( Graphics & gfx, Color edgesClr, Vec2I TopLeft)
+void Board::DrawGrid( Graphics & gfx, Color edgesClr, Vec2I TopLeft)
 {
 	int xx = 0;
 	int yy = 0;
@@ -148,7 +172,7 @@ void Board::Draw( Graphics & gfx, Color edgesClr, Vec2I TopLeft)
 	}
 }
 
-void Board::Draw(Graphics & gfx, Color edgesClr) const
+void Board::DrawGrid(Graphics & gfx, Color edgesClr) const
 {
 	int xx = 0;
 	int yy = 0;
@@ -169,33 +193,87 @@ void Board::Draw(Graphics & gfx, Color edgesClr) const
 	}
 }
 
+void Board::DrawSprite(Graphics &gfx) const
+{	
+	auto i = sprSurf.begin();
+	for (int x = 0; x < sprite->GetWidth(); x++)
+	{
+		for (int y = 0; y < sprite->GetHeight(); y++)
+		{
+			gfx.PutPixel(x, y, (*i++));
+		}
+	}
+
+}
+
 void Board::HighlightTile(Graphics & gfx, Vec2I mousePos, Color edgesClr) const
 {
-	//check if its inside any tile
-	int xx = 0;
-	int yy = 0;
-	Vec2I screenLocation = topLeft;
-	for (auto i = boardTiles.cbegin(); i < boardTiles.cend(); i++)
+	// check if its inside any tile
+	for (auto itr = boardTiles.cbegin(); itr < boardTiles.cend(); itr++)
 	{
 		//each tile location is topLeft corner of any Rect
-		Vec2I startPoint(screenLocation.x + xx, screenLocation.y + yy);
+		Vec2I startPoint(GetTileStartPoint((*itr)->location));
 		Vec2I endPoint(startPoint.x + Tile::WIDTH, startPoint.y + Tile::HEIGHT);
-		xx += Tile::WIDTH;
 
 		//if mouse is inside this rectangle (tile)
 		if (mousePos.x > startPoint.x && mousePos.x < endPoint.x && mousePos.y > startPoint.y && mousePos.y < endPoint.y)
-			gfx.DrawRect(RectI(startPoint, endPoint), edgesClr);
+			gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, 72, false); //change value to 80+ if you don't want the small square 
 
-		if ((*i)->location.x % (8 - 1) == 0 && (*i)->location.x != 0) //first one = 0, if we pass the 7 then its new row
-		{
-			//go to the beginning and down a little bit
-			xx = 0;
-			yy += Tile::HEIGHT;
-		}
+		
 	}
 }
 
-void Board::DrawPieces( Graphics & gfx) const
+void Board::HighlightTiles(Graphics & gfx, std::vector<Vec2I> tilesPos, Color edgesClr) const
+{
+	
+	for (auto i = tilesPos.cbegin(); i < tilesPos.cend(); i++)
+	{
+		//each tile location is topLeft corner of any Rect
+		Vec2I startPoint(GetTileStartPoint(*i));
+		Vec2I endPoint(startPoint.x + Tile::WIDTH, startPoint.y + Tile::HEIGHT);
+
+		gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, 72, false); //change value to 80+ if you don't want the small square 
+		gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, -72, true); //change value to 80+ if you don't want the small square 
+	}
+}
+
+void Board::DrawPiecesSprite( Graphics & gfx) const
+{
+	Color c;
+	Vec2I screenLocation = topLeft;
+	for (auto i = director->pieces.cbegin(); i < director->pieces.cend(); i++)
+	{
+		if (IsInsideTheBoard((*i)->Locate()))
+		{
+			Vec2I topLeftPoint(screenLocation.x + (*i)->Locate().x * Tile::WIDTH  , screenLocation.y + (*i)->Locate().y * Tile::HEIGHT  );
+			std::vector<Color> surf;
+
+			for (int x = 0; x < (*i)->GetSprite()->GetWidth(); x++)
+			{
+				for (int y = 0; y < (*i)->GetSprite()->GetHeight(); y++)
+				{
+					surf.push_back((*i)->GetSprite()->GetPixel(x, y));
+				}
+			}
+
+			auto ss = (*i)->GetSprSurf()->cbegin();
+			
+			for (int x = topLeftPoint.x; x < (*i)->GetSprite()->GetWidth() + topLeftPoint.x; x++)
+			{
+				for (int y = topLeftPoint.y; y < (*i)->GetSprite()->GetHeight() + topLeftPoint.y; y++)
+				{
+					if (!(ss->dword == 4294967295 ))//white
+						gfx.PutPixelClipped(x, y, (*ss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
+					ss++;
+				}
+			}
+		}
+		else
+			continue;
+	}
+}
+
+void Board::DrawPieces(Graphics & gfx) const
 {
 	Color c;
 	Vec2I screenLocation = topLeft;
@@ -228,14 +306,11 @@ void Board::DrawPieces( Graphics & gfx) const
 					c = Colors::Black;
 					break;
 			}
-			Vec2I centerPoint(screenLocation.x + (*i)->Locate().x * Tile::WIDTH + 45, screenLocation.y + (*i)->Locate().y * Tile::HEIGHT + 45);
+			Vec2I centerPoint(screenLocation.x + (*i)->Locate().x * Tile::WIDTH + (Tile::WIDTH / 2), screenLocation.y + (*i)->Locate().y * Tile::HEIGHT + (Tile::HEIGHT / 2));
 			int size = Tile::WIDTH / 4;
 			RectI r(centerPoint.y - size, centerPoint.y + size, centerPoint.x - size, centerPoint.x + size);
 			gfx.DrawColoredRect(r, c);
 		}
-		else
-			continue;
 	}
 }
-
 

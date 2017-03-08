@@ -21,31 +21,18 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Piece.h"
+#include "ChiliWin.h"
 
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	chessBoard(8, 8), //basic chess board	
+	chessBoard(8, 8,new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Grey\\Chess_Board_Stone2.png"))), //basic chess board	
 	Director(chessBoard,gfx,wnd.mouse),
-	pawn(Surface::FromFile(L"Resources\\pawnSmaller.bmp"))
+	fontus(L"times", 20.0f)
 {
 	//mo2ktn el 2byd makano ta7t daymn	
 	chessBoard.IntializeGameDirector(Director);
-
-	//just test cases
-	//auto p = Director.getPiece(11); //pawn
-	//if (p != nullptr)
-	//	p->MoveTo(19);
-
-	//p = Director.getPiece({ 3,0 }); //queen
-	//if (p != nullptr)
-	//{
-	//	p->MoveTo({ 3,2 });
-	//	p->MoveTo({ 1,4 });
-	//	p->MoveTo({ 1,5 });
-
-	//}
 }
 
 void Game::Go()
@@ -58,28 +45,33 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	//Director.HandleInput();
-	Director.CH_HandleInput();
+	Director.HandleInput(true); // change parameter for cheating
 }
 
 void Game::ComposeFrame()
 {		
+#if _DEBUG
+	Director.SetStage(true);
+#else
 	Director.SetStage();
+#endif // DEBUG
 
+	switch (Director.WhoseTurn())
+	{
+		case Team::BLACK:
+			gfx.DrawText(L"B", { 0.0f,10.0f }, fontus, Colors::Black);
+			break;
+		case Team::WHITE:
+			gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::White);
+			break;
+		default:
+			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, fontus, Colors::Red);
+			break;
+	}
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
-	{
-		const TextSurface::Font fontus(L"times", 50.0f);
-		gfx.DrawText(L"GAME OVER BITCH!", { 50.0f,400.0f }, fontus, Colors::Red);
+	{		
+		gfx.DrawText(L"GAME OVER BITCH!", { 0.0f,400.0f }, fontus, Colors::Cyan);
 	}
-	for (int x = 0; x < pawn.GetWidth(); x++)
-	{
-		for (int y = 0; y < pawn.GetHeight(); y++)
-		{
-			gfx.PutPixel(x+50,y+150,pawn.GetPixel(x, y));
-		}
-	}
-	
-
 }
 

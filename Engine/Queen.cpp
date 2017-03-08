@@ -1,8 +1,8 @@
 #include "Queen.h"
 
-Queen::Queen(Vec2I location, Team team, Board* const board)
+Queen::Queen(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
-	Piece(location, team, QUEEN, board)
+	Piece(location, team, QUEEN, board,sprite)
 {
 	//increment number of pieces
 	switch (team)
@@ -63,16 +63,11 @@ bool Queen::IsWayClear(Vec2I newLocation) const
 
 bool Queen::isValidRookMove(Vec2I newLocation) const
 {
-	int judge; //used to make us not check the tile we are currently on
 	if (newLocation.x == curLocation.x) //then its a vertical move (Y)
 	{
-		for (int i = min(curLocation.y, newLocation.y); i < max(curLocation.y, newLocation.y) - 1; i++)
-		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
-			if (Vec2I(curLocation.x, i) == curLocation)
-				judge = 1;
-			else
-				judge = 0;
-			if (board->GetTileState(Vec2I(curLocation.x, i + judge)).containPiece)
+		for (int i = min(curLocation.y, newLocation.y)+1; i < max(curLocation.y, newLocation.y) ; i++)
+		{//start from the lowest to bigger. checks if any of those tiles have a piece on it		
+			if (board->GetTileState(Vec2I(curLocation.x, i )).containPiece)
 				return false;
 		}
 		//if we get out of the loop then the way is clear
@@ -80,13 +75,9 @@ bool Queen::isValidRookMove(Vec2I newLocation) const
 	}
 	else if (newLocation.y == curLocation.y) //then its a horizontal move (X)
 	{
-		for (int i = min(curLocation.x, newLocation.x); i < max(curLocation.x, newLocation.x) - 1; i++)
+		for (int i = min(curLocation.x, newLocation.x) + 1; i < max(curLocation.x, newLocation.x) ; i++)
 		{//start from the lowest to bigger. checks if any of those tiles have a piece on it
-			if (Vec2I(i, curLocation.y) == curLocation)
-				judge = 1;
-			else
-				judge = 0;
-			if (board->GetTileState(Vec2I(i + 1, curLocation.y)).containPiece) //we dont check the last point
+			if (board->GetTileState(Vec2I(i , curLocation.y)).containPiece) //we dont check the last point
 				return false;
 		}
 		//if we get out of the loop then the way is clear
@@ -245,6 +236,42 @@ bool Queen::MoveTo(Vec2I newLocation)
 	}
 	else
 		return false;
+}
+
+void Queen::GenerateValidMoves()
+{
+	validTiles.clear();
+	//rook
+	for (auto x = 0; x < board->rows; x++)
+	{
+		if (IsValidLocation({ x,curLocation.y }))
+			validTiles.push_back({ x,curLocation.y });
+	}
+	for (auto y = 0; y < board->columns; y++)
+	{
+		if (IsValidLocation({ curLocation.x,y }))
+			validTiles.push_back({ curLocation.x,y });
+	}
+
+	//bishop
+	//x increases
+	for (int upY = curLocation.y, downY = upY, x = curLocation.x; x < board->rows; x++, upY--, downY++)
+	{
+		if (IsValidLocation({ x,upY }))
+			validTiles.push_back({ x,upY });
+
+		if (IsValidLocation({ x,downY }))
+			validTiles.push_back({ x,downY });
+	}
+	//x decreases
+	for (int upY = curLocation.y, downY = upY, x = curLocation.x; x >= 0; x--, upY--, downY++)
+	{
+		if (IsValidLocation({ x,upY }))
+			validTiles.push_back({ x,upY });
+
+		if (IsValidLocation({ x,downY }))
+			validTiles.push_back({ x,downY });
+	}
 }
 
 Queen::~Queen()
