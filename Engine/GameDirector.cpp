@@ -99,9 +99,9 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 			}
 		}
 	}
-	//generate valid moves for all pieces
-	for each (auto piece in pieces)
-		piece->GenerateValidMoves(); 
+	GenerateMovesForAllPieces();
+	BKingLoc = getPiece(KING, Team::BLACK)->Locate();
+	WKingLoc = getPiece(KING, Team::WHITE)->Locate();
 }
 
 std::shared_ptr<Piece> GameDirector::getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const
@@ -119,6 +119,16 @@ std::shared_ptr<Piece> GameDirector::getPiece(Vec2I location) const
 	for each (auto p in pieces)
 	{
 		if (p->Locate() == location)
+			return p;
+	}
+	return nullptr;
+}
+
+std::shared_ptr<Piece> GameDirector::getPiece(GlobalEnums::pieceType type, GlobalEnums::Team team) const
+{
+	for each (std::shared_ptr<Piece> p in pieces)
+	{
+		if (p->GetType() == type && p->GetTeam() == team)
 			return p;
 	}
 	return nullptr;
@@ -186,6 +196,7 @@ void GameDirector::HandleInput(bool cheatMode)
 			{
 				//move the piece (if its logical)
 				auto pieceInT1 = getPiece(t1->location);
+				auto pieceInT2 = getPiece(t2->location);
 
 				//check cheating mode
 				if (cheatMode)
@@ -193,24 +204,100 @@ void GameDirector::HandleInput(bool cheatMode)
 					if (pieceInT1 != nullptr)
 					{
 						if (pieceInT1->MoveTo(t2->location)) //if piece moved
-							for each (auto piece in pieces)
-								piece->GenerateValidMoves(); //generate valid moves for all pieces
+							GenerateMovesForAllPieces();
+
+						else if ((pieceInT1->GetType() == KING && pieceInT2->GetType() == ROOK) &&
+							(pieceInT1->GetTeam() == pieceInT2->GetTeam())) //if it is king and rook and same team
+						{
+							if (!std::dynamic_pointer_cast<King>(pieceInT1)->HasMovedBefore() &&  
+								!std::dynamic_pointer_cast<Rook>(pieceInT2)->HasMovedBefore())  //if they didn't move before
+							{
+								//start from left to right
+								int start = min(t1->location.x, t2->location.x) + 1;
+								int end = max(t1->location.x, t2->location.x);
+								int y = t1->location.y;
+								bool valid = true;
+								for (int x = start; x < end; x++)
+								{
+									//check if tiles in between got any pieces
+									if (board.GetTileState({ x,y }).containPiece)
+									{
+										valid = false;
+										break;
+									}
+								}
+								if (valid)
+								{
+									if (pieceInT1->Locate().x < pieceInT2->Locate().x) //means rook is on the right
+									{//t2 rook
+										pieceInT1->PutAt({ pieceInT1->Locate().x + 2,pieceInT1->Locate().y });
+										pieceInT2->PutAt({ pieceInT1->Locate().x - 1,pieceInT1->Locate().y });
+										GenerateMovesForAllPieces();
+
+									}
+									else
+									{
+										pieceInT1->PutAt({ pieceInT1->Locate().x - 2,pieceInT1->Locate().y });
+										pieceInT2->PutAt({ pieceInT1->Locate().x + 1,pieceInT1->Locate().y });
+										GenerateMovesForAllPieces();
+
+									}
+								}
+							}
+						}
+						else if ((pieceInT1->GetType() == ROOK && pieceInT2->GetType() == KING) &&
+							(pieceInT1->GetTeam() == pieceInT2->GetTeam())) //if it is king and rook and same team
+						{
+							if (!std::dynamic_pointer_cast<King>(pieceInT2)->HasMovedBefore() &&
+								!std::dynamic_pointer_cast<Rook>(pieceInT1)->HasMovedBefore())  //if they didn't move before
+							{
+								//start from left to right
+								int start = min(t1->location.x, t2->location.x) + 1;
+								int end = max(t1->location.x, t2->location.x);
+								int y = t1->location.y;
+								bool valid = true;
+								for (int x = start; x < end; x++)
+								{
+									//check if tiles in between got any pieces
+									if (board.GetTileState({ x,y }).containPiece)
+									{
+										valid = false;
+										break;
+									}
+								}
+								if (valid)
+								{
+									if (pieceInT2->Locate().x < pieceInT1->Locate().x) //means rook is on the right
+
+									{//t1 rook
+										pieceInT2->PutAt({ pieceInT2->Locate().x + 2,pieceInT2->Locate().y });
+										pieceInT1->PutAt({ pieceInT2->Locate().x - 1,pieceInT2->Locate().y });
+										GenerateMovesForAllPieces();
+									}
+									else
+									{
+										pieceInT2->PutAt({ pieceInT2->Locate().x - 2,pieceInT2->Locate().y });
+										pieceInT1->PutAt({ pieceInT2->Locate().x + 1,pieceInT2->Locate().y });
+										GenerateMovesForAllPieces();
+									}
+								}
+							}
+						}
+
+						 
 					}
 				}
 				else //not cheatMode
-				{					
+				{			
 					if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
 					{
 						if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
 						{
 							gameTurn++;	//turn ends
-							for each (auto piece in pieces)
-								piece->GenerateValidMoves(); //generate valid moves for all pieces								
-							
+							GenerateMovesForAllPieces();
 						}
 					}
 				}
-				
 			}
 			clickCounter = 0;
 			selectionMode = false;
@@ -231,9 +318,7 @@ std::shared_ptr<Piece> GameDirector::Transformed(Piece* p)
 		pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
 	}
 	DestroyPiece(p);
-	//generate valid moves for all pieces
-	for each (auto piece in pieces)
-		piece->GenerateValidMoves();
+	GenerateMovesForAllPieces();
 	return *(pieces.end() - 1); //pointer to the new piece
 }
 
@@ -261,6 +346,40 @@ bool GameDirector::DestroyPiece(std::shared_ptr<Piece> piece)
 		}
 	}
 	return false; //failure
+}
+
+void GameDirector::GenerateMovesForAllPieces()
+{
+	//if (threatningPiece && threatningPiece->isCaptured()) //if threat is gone
+	//{
+	//	BkingUnderThreat = false;
+	//	WkingUnderThreat = false;
+	//}
+	for each (auto piece in pieces)
+	{
+		piece->GenerateValidMoves();	
+
+		if (!BkingUnderThreat || !WkingUnderThreat) //if none under threat
+		{
+			for (auto itr = piece->getValidTiles().begin(); itr < piece->getValidTiles().end(); itr++)
+			{
+				if (*itr == BKingLoc)
+				{
+					BkingUnderThreat = true;
+					threatningPiece = piece;
+					break;
+				}
+				else if (*itr == WKingLoc)
+				{
+					WkingUnderThreat = true;
+					threatningPiece = piece;
+					break;
+				}
+			}
+		}
+		
+	}
+
 }
 
 //cheating functions 

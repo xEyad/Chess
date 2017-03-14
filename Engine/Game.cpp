@@ -67,6 +67,10 @@ void Game::ComposeFrame()
 			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, fontus, Colors::Red);
 			break;
 	}
+
+	if(Director.threatTest())
+		gfx.DrawText(L"A King under Threat", { 0.0f,10.0f }, fontus, Colors::Red);
+
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		

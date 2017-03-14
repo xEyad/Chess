@@ -144,6 +144,20 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 		piece = director->Transformed(piece).get();
 	}
 	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
+
+	//report kings' location
+	if (piece->GetType() == KING)
+	{
+		if (director)//not intialization
+		{
+			if (piece->GetTeam() == Team::BLACK)
+				director->BKingLoc = piece->Locate();
+
+			else if (piece->GetTeam() == Team::WHITE)
+				director->WKingLoc = piece->Locate();
+		}
+		
+	}
 }
 
 void Board::DrawGrid( Graphics & gfx, Color edgesClr, Vec2I TopLeft)
@@ -221,15 +235,17 @@ void Board::HighlightTile(Graphics & gfx, Vec2I mousePos, Color edgesClr) const
 
 void Board::HighlightTiles(Graphics & gfx, std::vector<Vec2I> tilesPos, Color edgesClr) const
 {
-	
 	for (auto i = tilesPos.cbegin(); i < tilesPos.cend(); i++)
 	{
 		//each tile location is topLeft corner of any Rect
 		Vec2I startPoint(GetTileStartPoint(*i));
 		Vec2I endPoint(startPoint.x + Tile::WIDTH, startPoint.y + Tile::HEIGHT);
-
-		gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, 72, false); //change value to 80+ if you don't want the small square 
-		gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, -72, true); //change value to 80+ if you don't want the small square 
+		Vec2I centerPoint(startPoint.x + (Tile::WIDTH / 2), startPoint.y + (Tile::HEIGHT / 2));
+		int size = Tile::WIDTH / 9;
+		RectI r(centerPoint.y - size, centerPoint.y + size, centerPoint.x - size, centerPoint.x + size);
+		//gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, 72, false); //change value to 80+ if you don't want the small square 
+		//gfx.DrawColoredRect(RectI(startPoint, endPoint), edgesClr, -72, true); //change value to 80+ if you don't want the small square 
+		gfx.DrawColoredRect(r, edgesClr);
 	}
 }
 

@@ -59,7 +59,6 @@ protected:
 
 public:
 	//getters
-	
 	pieceType GetType() const
 	{
 		return type;
@@ -72,6 +71,10 @@ public:
 	{
 		return curLocation;
 	}	
+	bool isCaptured() const
+	{
+		return captured;
+	}
 	const Surface* GetSprite() const
 	{
 		return sprite;
@@ -91,12 +94,39 @@ public:
 	//actions
 	virtual bool MoveTo(Vec2I newLocation) = 0;//original
 	virtual bool MoveTo(int newLocation) = 0;//support
-	virtual void GenerateValidMoves() {} // should be pure virtual
+	virtual void GenerateValidMoves() {}; // should be pure virtual
 	virtual void SendToPrison()
 	{
 		captured = true;
 		oldLocation = curLocation;
 		curLocation = Vec2I({ -1,-1 });
+	}
+	virtual bool PutAt(Vec2I newLocation)
+	{
+		if (board->IsInsideTheBoard(newLocation))
+		{
+			oldLocation = curLocation;
+			curLocation = newLocation;
+			ReportChange();
+			return true;
+		}
+		else
+			return false;
+	}
+	virtual bool PutAt(int newLocation)
+	{
+		return PutAt(TransLocation(newLocation));
+	}
+	virtual bool UndoMove()
+	{
+		if ((oldLocation != Vec2I(0, 0)) && oldLocation != curLocation)
+		{
+			curLocation = oldLocation;
+			ReportChange();
+			return true;
+		}
+		else
+			return false;
 	}
 	/*struct CapturedPiece
 	{

@@ -38,10 +38,12 @@ public:
 		return getPiece(TransLocation(location), type, team);
 	}
 	std::shared_ptr<Piece> getPiece(Vec2I location) const; //original
-	std::weak_ptr<Piece> getPiece(int location) const //support
+	std::shared_ptr<Piece> getPiece(int location) const //support
 	{
 		return getPiece(TransLocation(location));
 	}
+	std::shared_ptr<Piece> getPiece(GlobalEnums::pieceType type, GlobalEnums::Team team) const; //original
+
 	int getTurn() const
 	{
 		return gameTurn;
@@ -67,9 +69,12 @@ public:
 		//row = (location - column) / totalNumberOfRows    <= Y
 		return{ location % board_columns,(location - (location % board_columns)) / board_rows };
 	}
-	
+	bool threatTest()
+	{
+		return (BkingUnderThreat || WkingUnderThreat);
+	}
 	//actions
-
+	
 	//graphical actions
 	void SetStage(bool debugMode = false);
 	//logical actions
@@ -83,6 +88,8 @@ private:
 	friend class Board;
 	bool DestroyPiece(Piece* piece);
 	bool DestroyPiece(std::shared_ptr<Piece> piece);
+	//generates moves and checks if king is threatened
+	void GenerateMovesForAllPieces();
 private:
 	std::vector<std::shared_ptr<Piece>> pieces;
 	Board &board;
@@ -95,5 +102,10 @@ private:
 	std::shared_ptr<Piece> selectedPiece = nullptr;
 	Color highlight = Colors::Red;	
 	bool gameOver = false; //manipulated by board
+	Vec2I BKingLoc;
+	Vec2I WKingLoc;
+	bool WkingUnderThreat = false;
+	bool BkingUnderThreat = false;
+	std::shared_ptr<Piece> threatningPiece = nullptr;
 };
 
