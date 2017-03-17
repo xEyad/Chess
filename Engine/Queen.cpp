@@ -1,5 +1,4 @@
 #include "Queen.h"
-
 Queen::Queen(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
 	Piece(location, team, QUEEN, board,sprite)
@@ -225,18 +224,7 @@ bool Queen::isKingMove(Vec2I newLocation) const
 		return false;
 }
 
-bool Queen::MoveTo(Vec2I newLocation)
-{
-	if (IsValidLocation(newLocation))
-	{
-		oldLocation = curLocation;
-		curLocation = newLocation;
-		ReportChange();
-		return true;
-	}
-	else
-		return false;
-}
+
 
 void Queen::GenerateValidMoves()
 {
@@ -297,8 +285,4 @@ bool Queen::IsValidLocation(int newLocation) const
 bool Queen::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
-}
-bool Queen::MoveTo(int newLocation)
-{
-	return MoveTo(TransLocation(newLocation));
 }

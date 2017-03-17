@@ -26,7 +26,6 @@ namespace GlobalEnums
 	};
 }
 
-
 class GameDirector
 {
 public:
@@ -69,18 +68,27 @@ public:
 		//row = (location - column) / totalNumberOfRows    <= Y
 		return{ location % board_columns,(location - (location % board_columns)) / board_rows };
 	}
-	bool threatTest()
+	bool IsKingsSafe() const
 	{
-		return (BkingUnderThreat || WkingUnderThreat);
+		return !(BkingUnderThreat || WkingUnderThreat);
+	}
+	bool IsBlackKingSafe() const
+	{
+		return !BkingUnderThreat;
+	}
+	bool IsWhiteKingSafe() const
+	{
+		return !WkingUnderThreat;
 	}
 	//actions
 	
 	//graphical actions
 	void SetStage(bool debugMode = false);
+	void PawnPromotionScreen(Color edgesClr, GlobalEnums::Team team);
 	//logical actions
 	void HandleInput(bool cheatMode = false);  //mouse
 	std::shared_ptr<Piece> Transformed(Piece* p);
-
+	bool DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
 	//cheats
 
 	//friend functions
@@ -90,6 +98,7 @@ private:
 	bool DestroyPiece(std::shared_ptr<Piece> piece);
 	//generates moves and checks if king is threatened
 	void GenerateMovesForAllPieces();
+	void CheckKingsSafety();
 private:
 	std::vector<std::shared_ptr<Piece>> pieces;
 	Board &board;
@@ -107,5 +116,9 @@ private:
 	bool WkingUnderThreat = false;
 	bool BkingUnderThreat = false;
 	std::shared_ptr<Piece> threatningPiece = nullptr;
+	Surface* const BpromotionScreen;
+	Surface* const WpromotionScreen;
+	std::vector<Color> WpromSprSurf;
+	std::vector<Color> BpromSprSurf;
 };
 

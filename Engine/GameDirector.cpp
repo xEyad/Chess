@@ -7,24 +7,29 @@
 #include "Queen.h"
 #include "Knight.h"
 
-#define WPawnSprite  L"Resources\\Chess Pieces\\Wood\\PawnW.bmp"
-#define BPawnSprite  L"Resources\\Chess Pieces\\Wood\\PawnB.bmp"
-#define WRookSprite  L"Resources\\Chess Pieces\\Wood\\RookW.bmp"
-#define BRookSprite  L"Resources\\Chess Pieces\\Wood\\RookB.bmp"
+#define WPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnW.bmp"
+#define BPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnB.bmp"
+#define WRookSprite    L"Resources\\Chess Pieces\\Wood\\RookW.bmp"
+#define BRookSprite    L"Resources\\Chess Pieces\\Wood\\RookB.bmp"
 #define WKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightW.bmp"
 #define BKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightB.bmp"
 #define WBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopW.bmp"
 #define BBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopB.bmp"
-#define WQueenSprite  L"Resources\\Chess Pieces\\Wood\\QueenW.bmp"
-#define BQueenSprite  L"Resources\\Chess Pieces\\Wood\\QueenB.bmp"
-#define WKingSprite  L"Resources\\Chess Pieces\\Wood\\KingW.bmp"
-#define BKingSprite  L"Resources\\Chess Pieces\\Wood\\KingB.bmp"
+#define WQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenW.bmp"
+#define BQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenB.bmp"
+#define WKingSprite    L"Resources\\Chess Pieces\\Wood\\KingW.bmp"
+#define BKingSprite    L"Resources\\Chess Pieces\\Wood\\KingB.bmp"
+
+#define WPromotionScreen L"Resources\\Screens\\Promotion Screen Wood Black.png"
+#define BPromotionScreen L"Resources\\Screens\\Promotion Screen Wood White.png"
 
 GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	:
 	board(board),
 	gfx(gfx),
-	mouse(mouse)
+	mouse(mouse),
+	BpromotionScreen(new Surface(Surface::FromFile(BPromotionScreen))),
+	WpromotionScreen(new Surface(Surface::FromFile(WPromotionScreen)))
 {
 	//Rows are Y , Columns are X
 	board_rows = board.rows;
@@ -102,6 +107,23 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	GenerateMovesForAllPieces();
 	BKingLoc = getPiece(KING, Team::BLACK)->Locate();
 	WKingLoc = getPiece(KING, Team::WHITE)->Locate();
+
+	//generate promotion screen sprite
+	for (unsigned int x = 0; x < WpromotionScreen->GetWidth(); x++)
+	{
+		for (unsigned int y = 0; y < WpromotionScreen->GetHeight(); y++)
+		{
+			WpromSprSurf.push_back(WpromotionScreen->GetPixel(x, y));
+		}
+	}
+
+	for (unsigned int x = 0; x < BpromotionScreen->GetWidth(); x++)
+	{
+		for (unsigned int y = 0; y < BpromotionScreen->GetHeight(); y++)
+		{
+			BpromSprSurf.push_back(BpromotionScreen->GetPixel(x, y));
+		}
+	}
 }
 
 std::shared_ptr<Piece> GameDirector::getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const
@@ -163,6 +185,52 @@ void GameDirector::SetStage(bool debugMode)
 		highlight = Colors::Red;
 
 	board.HighlightTile(gfx, mouse.GetPos(), highlight);
+	//PawnPromotionScreen(Colors::Red,Team::WHITE);
+}
+
+void GameDirector::PawnPromotionScreen(Color edgesClr, GlobalEnums::Team team)
+{
+	Vec2I topLeft{ 20 + 340 - 179,20 + 340 - 99 };
+	Vec2I botRight{ topLeft.x + 79 * 4,topLeft.y + 79 };
+
+	if (team == Team::BLACK)
+	{
+		auto Bss = BpromSprSurf.cbegin();
+
+		for (unsigned int x = topLeft.x; x < BpromotionScreen->GetWidth() + topLeft.x; x++)
+		{
+			for (unsigned int y = topLeft.y; y < BpromotionScreen->GetHeight() + topLeft.y; y++)
+			{
+				if (!(Bss->dword == 4294967295))//white
+					gfx.PutPixelClipped(x, y, (*Bss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
+				Bss++;
+			}
+		}
+	}
+	else if (team == Team::WHITE)
+	{
+		auto Wss = WpromSprSurf.cbegin();
+
+		for (unsigned int x = topLeft.x; x < WpromotionScreen->GetWidth() + topLeft.x; x++)
+		{
+			for (unsigned int y = topLeft.y; y < WpromotionScreen->GetHeight() + topLeft.y; y++)
+			{
+				if (!(Wss->dword == 4294967295))//white
+					gfx.PutPixelClipped(x, y, (*Wss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
+				Wss++;
+			}
+		}
+	}
+
+	RectI rook	({ topLeft.x 		 , topLeft.y }, { topLeft.x + 80 , botRight.y });
+	RectI knight({ topLeft.x + 80	 , topLeft.y }, { topLeft.x + 80 * 2 , botRight.y });
+	RectI bishop({ topLeft.x + 80 * 2, topLeft.y }, { topLeft.x + 80 * 3 , botRight.y });
+	RectI queen	({ topLeft.x + 80 * 3, topLeft.y }, { topLeft.x + 80 * 4 , botRight.y });
+
+	gfx.DrawRect(rook, edgesClr);
+	gfx.DrawRect(knight, edgesClr);
+	gfx.DrawRect(bishop, edgesClr);
+	gfx.DrawRect(queen, edgesClr);
 }
 
 void GameDirector::HandleInput(bool cheatMode)
@@ -201,100 +269,138 @@ void GameDirector::HandleInput(bool cheatMode)
 				//check cheating mode
 				if (cheatMode)
 				{
-					if (pieceInT1 != nullptr)
+					if (IsKingsSafe())
 					{
-						if (pieceInT1->MoveTo(t2->location)) //if piece moved
-							GenerateMovesForAllPieces();
-
-						else if ((pieceInT1->GetType() == KING && pieceInT2->GetType() == ROOK) &&
-							(pieceInT1->GetTeam() == pieceInT2->GetTeam())) //if it is king and rook and same team
+						if (pieceInT1 != nullptr)
 						{
-							if (!std::dynamic_pointer_cast<King>(pieceInT1)->HasMovedBefore() &&  
-								!std::dynamic_pointer_cast<Rook>(pieceInT2)->HasMovedBefore())  //if they didn't move before
+							if (pieceInT1->MoveTo(t2->location)) //if piece moved
 							{
-								//start from left to right
-								int start = min(t1->location.x, t2->location.x) + 1;
-								int end = max(t1->location.x, t2->location.x);
-								int y = t1->location.y;
-								bool valid = true;
-								for (int x = start; x < end; x++)
-								{
-									//check if tiles in between got any pieces
-									if (board.GetTileState({ x,y }).containPiece)
-									{
-										valid = false;
-										break;
-									}
-								}
-								if (valid)
-								{
-									if (pieceInT1->Locate().x < pieceInT2->Locate().x) //means rook is on the right
-									{//t2 rook
-										pieceInT1->PutAt({ pieceInT1->Locate().x + 2,pieceInT1->Locate().y });
-										pieceInT2->PutAt({ pieceInT1->Locate().x - 1,pieceInT1->Locate().y });
-										GenerateMovesForAllPieces();
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
 
-									}
-									else
-									{
-										pieceInT1->PutAt({ pieceInT1->Locate().x - 2,pieceInT1->Locate().y });
-										pieceInT2->PutAt({ pieceInT1->Locate().x + 1,pieceInT1->Locate().y });
+								if((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) || 
+									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
-
+										CheckKingsSafety();
 									}
+							}
+
+							else if (DoEnPasset(pieceInT1, pieceInT2))
+							{
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+								if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+								{ //prevent player from putting his king in danger
+									pieceInT1->UndoMove();
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
 								}
 							}
 						}
-						else if ((pieceInT1->GetType() == ROOK && pieceInT2->GetType() == KING) &&
-							(pieceInT1->GetTeam() == pieceInT2->GetTeam())) //if it is king and rook and same team
+					}
+					else //king is already under threat
+					{
+						//block moves if it doesn't remove threats
+						if (pieceInT1 != nullptr)
 						{
-							if (!std::dynamic_pointer_cast<King>(pieceInT2)->HasMovedBefore() &&
-								!std::dynamic_pointer_cast<Rook>(pieceInT1)->HasMovedBefore())  //if they didn't move before
+							if (pieceInT1->MoveTo(t2->location)) //if piece moved
 							{
-								//start from left to right
-								int start = min(t1->location.x, t2->location.x) + 1;
-								int end = max(t1->location.x, t2->location.x);
-								int y = t1->location.y;
-								bool valid = true;
-								for (int x = start; x < end; x++)
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+								if (!IsKingsSafe())
 								{
-									//check if tiles in between got any pieces
-									if (board.GetTileState({ x,y }).containPiece)
-									{
-										valid = false;
-										break;
-									}
+									pieceInT1->UndoMove();
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
 								}
-								if (valid)
-								{
-									if (pieceInT2->Locate().x < pieceInT1->Locate().x) //means rook is on the right
+							}
 
-									{//t1 rook
-										pieceInT2->PutAt({ pieceInT2->Locate().x + 2,pieceInT2->Locate().y });
-										pieceInT1->PutAt({ pieceInT2->Locate().x - 1,pieceInT2->Locate().y });
-										GenerateMovesForAllPieces();
-									}
-									else
-									{
-										pieceInT2->PutAt({ pieceInT2->Locate().x - 2,pieceInT2->Locate().y });
-										pieceInT1->PutAt({ pieceInT2->Locate().x + 1,pieceInT2->Locate().y });
-										GenerateMovesForAllPieces();
-									}
+							else if (DoEnPasset(pieceInT1, pieceInT2))
+							{
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+								if (!IsKingsSafe())
+								{
+									pieceInT1->UndoMove();
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
 								}
 							}
 						}
-
-						 
+						
 					}
 				}
 				else //not cheatMode
 				{			
-					if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
+					if (IsKingsSafe())
 					{
-						if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
+						if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
+						{
+							if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
+							{
+								gameTurn++;	//turn ends
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+
+								if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+								{ //prevent player from putting his king in danger
+									pieceInT1->UndoMove();
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									gameTurn--;
+								}
+							}
+						}
+						else if (DoEnPasset(pieceInT1, pieceInT2))
 						{
 							gameTurn++;	//turn ends
 							GenerateMovesForAllPieces();
+							CheckKingsSafety();
+							if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+								(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+							{ //prevent player from putting his king in danger
+								pieceInT1->UndoMove();
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+								gameTurn--;
+							}
+						}
+					}
+					else //king is already under threat
+					{
+						if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
+						{
+							if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
+							{
+								gameTurn++;	//turn ends
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+
+								if (!IsKingsSafe())
+								{ //prevent player from putting his king in danger
+									pieceInT1->UndoMove();
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									gameTurn--;
+								}
+							}
+						}
+						else if (DoEnPasset(pieceInT1, pieceInT2))
+						{
+							gameTurn++;	//turn ends
+							GenerateMovesForAllPieces();
+							CheckKingsSafety();
+							if (!IsKingsSafe())
+							{ //prevent player from putting his king in danger
+								pieceInT1->UndoMove();
+								GenerateMovesForAllPieces();
+								CheckKingsSafety();
+								gameTurn--;
+							}
 						}
 					}
 				}
@@ -320,6 +426,68 @@ std::shared_ptr<Piece> GameDirector::Transformed(Piece* p)
 	DestroyPiece(p);
 	GenerateMovesForAllPieces();
 	return *(pieces.end() - 1); //pointer to the new piece
+}
+
+bool GameDirector::DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2)
+{
+	std::shared_ptr<King> king;
+	std::shared_ptr<Rook> rook;
+	if (std::dynamic_pointer_cast<King> (piece1) && piece1->GetType() == KING)
+	{
+		king = std::dynamic_pointer_cast<King> (piece1);
+		if (std::dynamic_pointer_cast<Rook> (piece2) && piece2->GetType() == ROOK)
+			rook = std::dynamic_pointer_cast<Rook> (piece2);
+		else //neither one of them is rook
+			return false;
+	}
+	else if (std::dynamic_pointer_cast<King> (piece2) && piece2->GetType() == KING)
+	{
+		king = std::dynamic_pointer_cast<King> (piece2);
+		if (std::dynamic_pointer_cast<Rook> (piece2) && piece1->GetType() == ROOK)
+			rook = std::dynamic_pointer_cast<Rook> (piece1);
+		else //neither one of them is rook
+			return false;
+	}
+	else //neither one of them is king
+		return false;
+
+	if ((king->GetTeam() == rook->GetTeam()) &&
+		!king->HasMovedBefore() && !rook->HasMovedBefore()) //if it is king and rook and same team and they didn't move before
+	{
+		//start from left to right
+		int start = min(king->Locate().x, rook->Locate().x) + 1;
+		int end = max(king->Locate().x, rook->Locate().x);
+		int y = king->Locate().y;
+		bool valid = true;
+		for (int x = start; x < end; x++)
+		{
+			//check if tiles in between got any pieces
+			if (board.GetTileState({ x,y }).containPiece)
+			{
+				valid = false;
+				break;
+			}
+		}
+		if (valid)
+		{
+			if (king->Locate().x < rook->Locate().x) //means rook is on the right
+			{//t2 rook
+				king->PutAt({ king->Locate().x + 2,y });
+				rook->PutAt({ king->Locate().x - 1,y });
+				return true;
+			}
+			else //rook is on left
+			{
+				king->PutAt({ king->Locate().x - 2,y });
+				rook->PutAt({ king->Locate().x + 1,y });
+				return true;
+			}
+		}
+		else
+			return false;
+	}
+	else
+		return false;
 }
 
 bool GameDirector::DestroyPiece(Piece* piece)
@@ -350,36 +518,37 @@ bool GameDirector::DestroyPiece(std::shared_ptr<Piece> piece)
 
 void GameDirector::GenerateMovesForAllPieces()
 {
-	//if (threatningPiece && threatningPiece->isCaptured()) //if threat is gone
-	//{
-	//	BkingUnderThreat = false;
-	//	WkingUnderThreat = false;
-	//}
+	//first we generate valid moves for all pieces
 	for each (auto piece in pieces)
 	{
 		piece->GenerateValidMoves();	
-
-		if (!BkingUnderThreat || !WkingUnderThreat) //if none under threat
-		{
-			for (auto itr = piece->getValidTiles().begin(); itr < piece->getValidTiles().end(); itr++)
-			{
-				if (*itr == BKingLoc)
-				{
-					BkingUnderThreat = true;
-					threatningPiece = piece;
-					break;
-				}
-				else if (*itr == WKingLoc)
-				{
-					WkingUnderThreat = true;
-					threatningPiece = piece;
-					break;
-				}
-			}
-		}
-		
 	}
-
 }
 
+void GameDirector::CheckKingsSafety()
+{
+	for each (auto piece in pieces)
+	{
+		//check if any king under threat
+		for (auto itr = piece->getValidTiles().begin(); itr < piece->getValidTiles().end(); itr++)
+		{
+			if (*itr == BKingLoc)
+			{
+				BkingUnderThreat = true;
+				threatningPiece = piece;
+				return;
+			}
+			else if (*itr == WKingLoc)
+			{
+				WkingUnderThreat = true;
+				threatningPiece = piece;
+				return;
+			}
+		}
+		//if we reached this point, then there is none under threat
+		WkingUnderThreat = false;
+		BkingUnderThreat = false;
+		threatningPiece = nullptr;
+	}
+}
 //cheating functions 

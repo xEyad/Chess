@@ -21,7 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Piece.h"
-
+#include "ChiliWin.h"
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -68,7 +68,7 @@ void Game::ComposeFrame()
 			break;
 	}
 
-	if(Director.threatTest())
+	if(!Director.IsKingsSafe())
 		gfx.DrawText(L"A King under Threat", { 0.0f,10.0f }, fontus, Colors::Red);
 
 	//just a demo on how to load text or Sprite

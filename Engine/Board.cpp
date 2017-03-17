@@ -155,8 +155,35 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 
 			else if (piece->GetTeam() == Team::WHITE)
 				director->WKingLoc = piece->Locate();
+		}		
+	}
+}
+void Board::ReadChange(Piece * piece, Vec2I locationGoingTo, bool Undo)
+{
+	auto curLocation = piece->LastTurn().curLocation; //location the pieace CAME BACK TO
+	//do changes to the tile which the piece moved FROM
+	 if (IsInsideTheBoard(locationGoingTo)) 
+	{
+		auto tileUndoed = GetTile(locationGoingTo);
+		tileUndoed->applyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); 
+	}
+
+	//do changes to the tile which the piece moved BACK TO (Logically it should be empty already)
+	auto tile = GetTile(curLocation);
+	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
+
+	//report kings' location
+	if (piece->GetType() == KING)
+	{
+		if (director)//not intialization
+		{
+			if (piece->GetTeam() == Team::BLACK)
+				director->BKingLoc = curLocation;
+
+			else if (piece->GetTeam() == Team::WHITE)
+				director->WKingLoc = curLocation;
 		}
-		
+
 	}
 }
 

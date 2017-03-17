@@ -1,5 +1,4 @@
 #include "King.h"
-
 King::King(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
 	Piece(location, team, KING, board,sprite)
@@ -59,23 +58,8 @@ bool King::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
 }
-bool King::MoveTo(Vec2I newLocation)
-{
-	if (IsValidLocation(newLocation))
-	{
-		oldLocation = curLocation;
-		curLocation = newLocation;
-		movedBefore = true;
-		ReportChange();
-		return true;
-	}
-	else
-		return false;
-}
-bool King::MoveTo(int newLocation)
-{
-	return MoveTo(TransLocation(newLocation));
-}
+
+
 
 void King::GenerateValidMoves()
 {

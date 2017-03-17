@@ -1,7 +1,6 @@
 #pragma once
 #include "Piece.h"
-class King :
-	public Piece
+class King :public Piece
 {
 public:
 	King(Vec2I location, Team team, Board* const board, Surface* const sprite);
@@ -15,8 +14,6 @@ public:
 		return movedBefore;
 	}
 	//actions
-	virtual bool MoveTo(Vec2I newLocation);
-	virtual bool MoveTo(int newLocation);
 	virtual void GenerateValidMoves();
 	virtual bool PutAt(Vec2I newLocation)
 	{
@@ -38,7 +35,6 @@ private:
 	virtual bool IsWayClear(Vec2I newLocation) const;//will be used only in the special case
 	virtual bool IsWayClear(int newLocation) const;
 private:
-	bool movedBefore = false;
 	static int nWhiteLeft;
 	static int nBlackLeft;
 };

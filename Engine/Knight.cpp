@@ -1,7 +1,6 @@
 #include "Knight.h"
 
 
-
 Knight::Knight(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
 Piece(location, team, KNIGHT, board,sprite)
@@ -59,18 +58,7 @@ bool Knight::IsWayClear(Vec2I newLocation) const
 }
 
 
-bool Knight::MoveTo(Vec2I newLocation)
-{
-	if (IsValidLocation(newLocation))
-	{
-		oldLocation = curLocation;
-		curLocation = newLocation;
-		ReportChange();
-		return true;
-	}
-	else
-		return false;
-}
+
 
 void Knight::GenerateValidMoves()
 {
@@ -127,8 +115,4 @@ bool Knight::IsValidLocation(int newLocation) const
 bool Knight::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
-}
-bool Knight::MoveTo(int newLocation)
-{
-	return MoveTo(TransLocation(newLocation));
 }

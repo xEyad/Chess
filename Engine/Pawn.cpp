@@ -83,10 +83,19 @@ bool Pawn::IsWayClear(Vec2I newLocation) const
 		return false;
 }
 
+void Pawn::CopyThisTurn()
+{
+	lastTurn.stepsCounter = this->stepsCounter;
+	lastTurn.curLocation = this->curLocation;
+	lastTurn.oldLocation = this->oldLocation;
+	lastTurn.captured = this->captured;
+	lastTurn.movedBefore = this->movedBefore;
+}
 bool Pawn::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
 	{
+		CopyThisTurn();
 		stepsCounter += abs(newLocation.y - curLocation.y);
 		oldLocation = curLocation;
 		curLocation = newLocation;		
@@ -99,7 +108,16 @@ bool Pawn::MoveTo(Vec2I newLocation)
 	else
 		return false;
 }
-
+void Pawn::UndoMove()
+{
+	Vec2I locationGoingTo = curLocation; //this is the location which the piece will leave empty, Board needs to know it
+	stepsCounter = lastTurn.stepsCounter;
+	curLocation = lastTurn.curLocation;
+	oldLocation = lastTurn.oldLocation;
+	captured = lastTurn.captured;
+	movedBefore = lastTurn.movedBefore;
+	board->ReadChange(this, locationGoingTo, true); //reporting change with reversed tiles locations
+}
 void Pawn::GenerateValidMoves()
 {
 	validTiles.clear();
@@ -158,10 +176,6 @@ bool Pawn::IsValidLocation(int newLocation) const
 bool Pawn::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
-}
-bool Pawn::MoveTo(int newLocation)
-{
-	return MoveTo(TransLocation(newLocation));
 }
 
 

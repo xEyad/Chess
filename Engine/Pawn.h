@@ -15,17 +15,16 @@ public:
 		return transformed;
 	}
 	//actions
-	virtual bool MoveTo(int newLocation);
-	virtual bool MoveTo(Vec2I newLocation);
+	virtual bool MoveTo(Vec2I newLocation) override;
+	virtual void UndoMove() override;
 	virtual void GenerateValidMoves();
 private:
 	//getters
 	virtual bool IsWayClear(Vec2I newLocation) const;//will be used only in the special case
 	virtual bool IsWayClear(int newLocation) const;
-
+	virtual void CopyThisTurn() override;
 private:
 	int stepsCounter = 0;
-	bool movedBefore = false;
 	bool transformed = false;
 	static int nWhiteLeft;
 	static int nBlackLeft;

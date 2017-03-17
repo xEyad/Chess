@@ -10,13 +10,8 @@ public:
 	virtual int HowManyLeft() const;
 	virtual bool IsValidLocation(int newLocation) const;
 	virtual bool IsValidLocation(Vec2I newLocation) const;
-	bool HasMovedBefore() const
-	{
-		return movedBefore;
-	}
+	
 	//actions
-	virtual bool MoveTo(int newLocation);
-	virtual bool MoveTo(Vec2I newLocation);
 	virtual bool PutAt(Vec2I newLocation)
 	{
 		if (board->IsInsideTheBoard(newLocation))
@@ -38,7 +33,6 @@ private:
 	virtual bool IsWayClear(Vec2I newLocation) const;
 
 private:
-	bool movedBefore = false;
 	static int nWhiteLeft;
 	static int nBlackLeft;
 };

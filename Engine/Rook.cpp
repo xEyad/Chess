@@ -1,5 +1,4 @@
 #include "Rook.h"
-
 Rook::Rook(Vec2I location, Team team, Board* const board, Surface* const sprite)
 	:
 	Piece(location, team, ROOK, board,sprite)
@@ -97,19 +96,7 @@ bool Rook::IsWayClear(Vec2I newLocation) const
 		return false;
 } 
 
-bool Rook::MoveTo(Vec2I newLocation)
-{
-	if (IsValidLocation(newLocation))
-	{
-		oldLocation = curLocation;
-		curLocation = newLocation;
-		movedBefore = true;
-		ReportChange();
-		return true;
-	}
-	else
-		return false;
-}
+
 
 void Rook::GenerateValidMoves()
 {
@@ -148,10 +135,7 @@ bool Rook::IsWayClear(int newLocation) const
 {
 	return IsWayClear(TransLocation(newLocation));
 }
-bool Rook::MoveTo(int newLocation)
-{
-	return MoveTo(TransLocation(newLocation));
-}
+
 
 
 int Rook::nWhiteLeft = 0;

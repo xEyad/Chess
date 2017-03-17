@@ -1,5 +1,4 @@
 #include "Bishop.h"
-
 Bishop::Bishop(Vec2I location, Team team, Board *const board, Surface* const sprite)
 	:
 	Piece(location, team, BISHOP, board,sprite)
@@ -194,22 +193,7 @@ bool Bishop::IsWayClear(int newLocation) const
 
 
 
-bool Bishop::MoveTo(Vec2I newLocation)
-{
-	if (IsValidLocation(newLocation))
-	{
-		oldLocation = curLocation;
-		curLocation = newLocation;
-		ReportChange();
-		return true;
-	}
-	else
-		return false;
-}
-bool Bishop::MoveTo(int newLocation)
-{
-	return MoveTo(TransLocation(newLocation));
-}
+
 
 void Bishop::GenerateValidMoves()
 {

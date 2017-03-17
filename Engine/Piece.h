@@ -10,6 +10,15 @@ using namespace GlobalEnums;
 class Piece
 {
 protected:
+	struct PreviousTurn
+	{
+		Vec2I curLocation = this->curLocation;
+		Vec2I oldLocation = this->oldLocation;
+		bool captured = this->captured;
+		bool movedBefore = this->movedBefore;
+		int stepsCounter = 0; //only used with pawn
+	}; //a variable here
+protected:
 	Piece(Vec2I location, Team team, pieceType type, Board* const board, Surface* const sprite)
 		:
 		curLocation(location),
@@ -90,10 +99,49 @@ public:
 	virtual int HowManyLeft() const = 0; //should return the number of pieces left in this team
 	virtual bool IsValidLocation(Vec2I newLocation) const = 0; //original
 	virtual bool IsValidLocation(int newLocation) const = 0; //support
-	
+	bool HasMovedBefore() const
+	{
+		return movedBefore;
+	}
+	PreviousTurn LastTurn() const
+	{
+		return lastTurn;
+	}
 	//actions
-	virtual bool MoveTo(Vec2I newLocation) = 0;//original
-	virtual bool MoveTo(int newLocation) = 0;//support
+	virtual bool MoveTo(Vec2I newLocation)//original
+	{
+		if (IsValidLocation(newLocation))
+		{
+			CopyThisTurn();
+			oldLocation = curLocation;
+			curLocation = newLocation;
+			movedBefore = true;
+			ReportChange();
+			return true;
+		}
+		else
+			return false;
+	}
+	virtual bool MoveTo(int newLocation) //support
+	{
+		return MoveTo(TransLocation(newLocation));
+	}
+	virtual void UndoMove()
+	{
+		Vec2I locationGoingTo = curLocation; //this is the location which the piece will leave empty, Board needs to know it
+		curLocation = lastTurn.curLocation;
+		oldLocation = lastTurn.oldLocation;
+		captured = lastTurn.captured;
+		movedBefore = lastTurn.movedBefore;
+		board->ReadChange(this, locationGoingTo, true); //reporting change with reversed tiles locations
+	}
+	virtual void CopyThisTurn() 
+	{
+		lastTurn.curLocation = this->curLocation;
+		lastTurn.oldLocation = this->oldLocation;
+		lastTurn.captured = this->captured;
+		lastTurn.movedBefore = this->movedBefore;
+	}
 	virtual void GenerateValidMoves() {}; // should be pure virtual
 	virtual void SendToPrison()
 	{
@@ -117,24 +165,16 @@ public:
 	{
 		return PutAt(TransLocation(newLocation));
 	}
-	virtual bool UndoMove()
-	{
-		if ((oldLocation != Vec2I(0, 0)) && oldLocation != curLocation)
-		{
-			curLocation = oldLocation;
-			ReportChange();
-			return true;
-		}
-		else
-			return false;
-	}
+
+
+	
+	
 	/*struct CapturedPiece
 	{
 		pieceType type;
 		Vec2I vLocation;
 		int iLocation;
 	};*/
-
 protected:
 	const pieceType type = NOT_DEFINED;
 	Vec2I curLocation;
@@ -144,6 +184,8 @@ protected:
 	std::vector<Color> sprSurf;
 	std::vector<Vec2I> validTiles;
 	bool captured = false; // the piece itself
+	bool movedBefore = false;
+	PreviousTurn lastTurn;
 	//std::vector< CapturedPiece> capturedPieces; //enemy pieces captured by this piece
 	Board* const board;
 	Surface* const sprite;
