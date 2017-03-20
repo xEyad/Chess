@@ -44,7 +44,7 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	Director.HandleInput(true); // change parameter for cheating
+	Director.HandleInput(false); // change parameter for cheating
 }
 
 void Game::ComposeFrame()
@@ -58,10 +58,12 @@ void Game::ComposeFrame()
 	switch (Director.WhoseTurn())
 	{
 		case Team::BLACK:
-			gfx.DrawText(L"B", { 0.0f,10.0f }, fontus, Colors::Orange);
+			gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Orange);
+			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Orange);
 			break;
 		case Team::WHITE:
 			gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::White);
+			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::White);
 			break;
 		default:
 			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, fontus, Colors::Red);

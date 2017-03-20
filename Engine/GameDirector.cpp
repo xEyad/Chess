@@ -28,6 +28,7 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	board(board),
 	gfx(gfx),
 	mouse(mouse),
+	font(L"times", 20.0f),
 	BpromotionScreen(new Surface(Surface::FromFile(BPromotionScreen))),
 	WpromotionScreen(new Surface(Surface::FromFile(WPromotionScreen)))
 {
@@ -156,6 +157,15 @@ std::shared_ptr<Piece> GameDirector::getPiece(GlobalEnums::pieceType type, Globa
 	return nullptr;
 }
 
+void GameDirector::EnterPromotionMode(Piece * p)
+{
+	if (dynamic_cast<Pawn*> (p))
+	{
+		promotionMode = true;
+		luckyPawn = dynamic_cast<Pawn*> (p);
+	}
+}
+
 void GameDirector::SetStage(bool debugMode)
 {
 	if (debugMode)
@@ -169,29 +179,35 @@ void GameDirector::SetStage(bool debugMode)
 	}
 
 	board.DrawGrid(gfx, Colors::LightGray, { 20,21 });
-	if (selectionMode)
+	if (promotionMode)
 	{
-		highlight = Colors::Magenta;
-		if (selectedPiece != nullptr)
-		{
-			if (selectedPiece != nullptr)
-			{
-				auto p = selectedPiece->getValidTiles();
-				board.HighlightTiles(gfx, p, Colors::Orange);
-			}
-		}
+		PawnPromotionScreen(mouse.GetPos(), luckyPawn->GetTeam(), Colors::Green, Colors::Black);
 	}
 	else
-		highlight = Colors::Red;
+	{
+		if (selectionMode)
+		{
+			highlight = Colors::Magenta;
+			if (selectedPiece != nullptr)
+			{
+				if (selectedPiece != nullptr)
+				{
+					auto p = selectedPiece->getValidTiles();
+					board.HighlightTiles(gfx, p, Colors::Orange);
+				}
+			}
+		}
+		else
+			highlight = Colors::Red;
 
-	board.HighlightTile(gfx, mouse.GetPos(), highlight);
-	//PawnPromotionScreen(Colors::Red,Team::WHITE);
+		board.HighlightTile(gfx, mouse.GetPos(), highlight);
+	}
 }
 
-void GameDirector::PawnPromotionScreen(Color edgesClr, GlobalEnums::Team team)
+void GameDirector::PawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team ,Color edgesClr, Color highlightClr)
 {
-	Vec2I topLeft{ 20 + 340 - 179,20 + 340 - 99 };
-	Vec2I botRight{ topLeft.x + 79 * 4,topLeft.y + 79 };
+	static Vec2I topLeft{ 20 + 340 - 179,20 + 340 - 99 };
+	static Vec2I botRight{ topLeft.x + 79 * 4,topLeft.y + 79 };
 
 	if (team == Team::BLACK)
 	{
@@ -222,129 +238,187 @@ void GameDirector::PawnPromotionScreen(Color edgesClr, GlobalEnums::Team team)
 		}
 	}
 
-	RectI rook	({ topLeft.x 		 , topLeft.y }, { topLeft.x + 80 , botRight.y });
-	RectI knight({ topLeft.x + 80	 , topLeft.y }, { topLeft.x + 80 * 2 , botRight.y });
-	RectI bishop({ topLeft.x + 80 * 2, topLeft.y }, { topLeft.x + 80 * 3 , botRight.y });
-	RectI queen	({ topLeft.x + 80 * 3, topLeft.y }, { topLeft.x + 80 * 4 , botRight.y });
+	static RectI rook	({ topLeft.x 		 , topLeft.y }, { topLeft.x + 80	 , botRight.y });
+	static RectI knight ({ topLeft.x + 80	 , topLeft.y }, { topLeft.x + 80 * 2 , botRight.y });
+	static RectI bishop ({ topLeft.x + 80 * 2, topLeft.y }, { topLeft.x + 80 * 3 , botRight.y });
+	static RectI queen	({ topLeft.x + 80 * 3, topLeft.y }, { topLeft.x + 80 * 4 , botRight.y });
+	promotionRects = { rook,knight,bishop,queen };
 
-	gfx.DrawRect(rook, edgesClr);
-	gfx.DrawRect(knight, edgesClr);
-	gfx.DrawRect(bishop, edgesClr);
-	gfx.DrawRect(queen, edgesClr);
+	gfx.DrawTextW(L"Choose The Type of promotion", {(float) topLeft.x - 20.0f,(float)topLeft.y - 40.0f }, font, highlightClr);
+	// check if mouse is inside any rect
+	for each (auto rec in promotionRects)
+	{
+		if (rec.Contains(mousPos))
+			gfx.DrawRect(rec, highlightClr);
+		else
+			gfx.DrawRect(rec, edgesClr);
+	}
 }
 
 void GameDirector::HandleInput(bool cheatMode)
 {
-	static int clickCounter = 0;
-	static std::shared_ptr<Tile> t1, t2;
-
-	//do highlights
-	if (clickCounter == 1)
-		selectionMode = true;	
-
-	const Mouse::Event e = mouse.Read();
-	if (e.GetType() == Mouse::Event::LPress) //update counter on left click
+	if (promotionMode)
 	{
-		if (clickCounter == 0) //first click
+		const Mouse::Event e = mouse.Read();
+		if (e.GetType() == Mouse::Event::LPress)
 		{
-			t1 = board.GetTileByMouse(mouse.GetPos()); //click 1 (get its coordinates)
-			if (t1)
+			
+			int loopCounter = 0;
+			for each (auto rec in promotionRects)
 			{
-				selectedPiece = getPiece(t1->location);
-				if (selectedPiece)
-					clickCounter++;
-			}
-			else
-				selectedPiece = nullptr;
-		}
-		else if (clickCounter >= 1)
-		{
-			t2 = board.GetTileByMouse(mouse.GetPos()); //click 2 (get its coordinates)
-			if (t1 != nullptr && t2 != nullptr && t1 != t2) //if the 2 clicks locations are valid
-			{
-				//move the piece (if its logical)
-				auto pieceInT1 = getPiece(t1->location);
-				auto pieceInT2 = getPiece(t2->location);
-
-				//check cheating mode
-				if (cheatMode)
+				if (rec.Contains(mouse.GetPos()))
 				{
-					if (IsKingsSafe())
+					switch (loopCounter)
 					{
-						if (pieceInT1 != nullptr)
-						{
-							if (pieceInT1->MoveTo(t2->location)) //if piece moved
-							{
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
+						case 0:
+							PromoteTo(ROOK);
+							promotionMode = false;
+							break;
+						case 1:
+							PromoteTo(KNIGHT);
+							promotionMode = false;
+							break;
+						case 2:
+							PromoteTo(BISHOP);
+							promotionMode = false;
+							break;
+						case 3:
+							PromoteTo(QUEEN);
+							promotionMode = false;
+							break;
+					}
+				}
+				loopCounter++;
+			}
+		}
+	}
+	else 
+	{
+		static int clickCounter = 0;
+		static std::shared_ptr<Tile> t1, t2;
 
-								if((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) || 
-									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+		//do highlights
+		if (clickCounter == 1)
+			selectionMode = true;
+
+		const Mouse::Event e = mouse.Read();
+		if (e.GetType() == Mouse::Event::LPress) //update counter on left click
+		{
+			if (clickCounter == 0) //first click
+			{
+				t1 = board.GetTileByMouse(mouse.GetPos()); //click 1 (get its coordinates)
+				if (t1)
+				{
+					selectedPiece = getPiece(t1->location);
+					if (selectedPiece)
+						clickCounter++;
+				}
+				else
+					selectedPiece = nullptr;
+			}
+			else if (clickCounter >= 1)
+			{
+				t2 = board.GetTileByMouse(mouse.GetPos()); //click 2 (get its coordinates)
+				if (t1 != nullptr && t2 != nullptr && t1 != t2) //if the 2 clicks locations are valid
+				{
+					//move the piece (if its logical)
+					auto pieceInT1 = getPiece(t1->location);
+					auto pieceInT2 = getPiece(t2->location);
+
+					//check cheating mode
+					if (cheatMode)
+					{
+						if (IsKingsSafe())
+						{
+							if (pieceInT1 != nullptr)
+							{
+								if (pieceInT1->MoveTo(t2->location)) //if piece moved
+								{
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
 									{ //prevent player from putting his king in danger
 										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
 										CheckKingsSafety();
 									}
-							}
+								}
 
-							else if (DoEnPasset(pieceInT1, pieceInT2))
-							{
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-								{ //prevent player from putting his king in danger
-									pieceInT1->UndoMove();
+								else if (DoEnPasset(pieceInT1, pieceInT2))
+								{
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+									}
 								}
 							}
 						}
-					}
-					else //king is already under threat
-					{
-						//block moves if it doesn't remove threats
-						if (pieceInT1 != nullptr)
+						else //king is already under threat
 						{
-							if (pieceInT1->MoveTo(t2->location)) //if piece moved
+							//block moves if it doesn't remove threats
+							if (pieceInT1 != nullptr)
 							{
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								if (!IsKingsSafe())
+								if (pieceInT1->MoveTo(t2->location)) //if piece moved
 								{
-									pieceInT1->UndoMove();
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
+									if (!IsKingsSafe())
+									{
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+									}
+								}
+
+								else if (DoEnPasset(pieceInT1, pieceInT2))
+								{
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									if (!IsKingsSafe())
+									{
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+									}
 								}
 							}
 
-							else if (DoEnPasset(pieceInT1, pieceInT2))
+						}
+					}
+					else //not cheatMode
+					{
+						if (IsKingsSafe())
+						{
+							if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
 							{
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								if (!IsKingsSafe())
+								if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
 								{
-									pieceInT1->UndoMove();
+									gameTurn++;	//turn ends
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
+
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+										gameTurn--;
+									}
 								}
 							}
-						}
-						
-					}
-				}
-				else //not cheatMode
-				{			
-					if (IsKingsSafe())
-					{
-						if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
-						{
-							if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
+							else if (DoEnPasset(pieceInT1, pieceInT2))
 							{
 								gameTurn++;	//turn ends
 								GenerateMovesForAllPieces();
 								CheckKingsSafety();
-
 								if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
 									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
 								{ //prevent player from putting his king in danger
@@ -355,31 +429,30 @@ void GameDirector::HandleInput(bool cheatMode)
 								}
 							}
 						}
-						else if (DoEnPasset(pieceInT1, pieceInT2))
+						else //king is already under threat
 						{
-							gameTurn++;	//turn ends
-							GenerateMovesForAllPieces();
-							CheckKingsSafety();
-							if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-								(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-							{ //prevent player from putting his king in danger
-								pieceInT1->UndoMove();
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								gameTurn--;
+							if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
+							{
+								if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
+								{
+									gameTurn++;	//turn ends
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+
+									if (!IsKingsSafe())
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+										gameTurn--;
+									}
+								}
 							}
-						}
-					}
-					else //king is already under threat
-					{
-						if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
-						{
-							if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
+							else if (DoEnPasset(pieceInT1, pieceInT2))
 							{
 								gameTurn++;	//turn ends
 								GenerateMovesForAllPieces();
 								CheckKingsSafety();
-
 								if (!IsKingsSafe())
 								{ //prevent player from putting his king in danger
 									pieceInT1->UndoMove();
@@ -389,41 +462,55 @@ void GameDirector::HandleInput(bool cheatMode)
 								}
 							}
 						}
-						else if (DoEnPasset(pieceInT1, pieceInT2))
-						{
-							gameTurn++;	//turn ends
-							GenerateMovesForAllPieces();
-							CheckKingsSafety();
-							if (!IsKingsSafe())
-							{ //prevent player from putting his king in danger
-								pieceInT1->UndoMove();
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								gameTurn--;
-							}
-						}
 					}
 				}
+				clickCounter = 0;
+				selectionMode = false;
 			}
-			clickCounter = 0;
-			selectionMode = false;
 		}
 	}
 }
 
-std::shared_ptr<Piece> GameDirector::Transformed(Piece* p)
+std::shared_ptr<Piece> GameDirector::PromoteTo(GlobalEnums::pieceType type)
 {	
-	assert(dynamic_cast<Pawn*> (p) != nullptr);
-	auto location = p->Locate();
-	if (p->GetTeam() == Team::BLACK)
+	auto location = luckyPawn->Locate();
+	if (luckyPawn->GetTeam() == Team::BLACK)
 	{
-		pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BQueenSprite)))));
+		switch (type)
+		{
+			case GlobalEnums::KNIGHT:
+				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BKnightSprite)))));
+				break;
+			case GlobalEnums::ROOK:
+				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BRookSprite)))));
+				break;
+			case GlobalEnums::BISHOP:
+				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BBishopSprite)))));
+				break;
+			case GlobalEnums::QUEEN:
+				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BQueenSprite)))));
+				break;
+		}
 	}
-	else if (p->GetTeam() == Team::WHITE)
+	else if (luckyPawn->GetTeam() == Team::WHITE)
 	{
-		pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
+		switch (type)
+		{
+			case GlobalEnums::KNIGHT:
+				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WKnightSprite)))));
+				break;
+			case GlobalEnums::ROOK:
+				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WRookSprite)))));
+				break;
+			case GlobalEnums::BISHOP:
+				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WBishopSprite)))));
+				break;
+			case GlobalEnums::QUEEN:
+				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WQueenSprite)))));
+				break;
+		}
 	}
-	DestroyPiece(p);
+	DestroyPiece(luckyPawn);
 	GenerateMovesForAllPieces();
 	return *(pieces.end() - 1); //pointer to the new piece
 }

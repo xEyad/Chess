@@ -141,7 +141,7 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	}
 	if (dynamic_cast<Pawn*>(piece) != nullptr && dynamic_cast<Pawn*>(piece)->isTransformed())
 	{
-		piece = director->Transformed(piece).get();
+		director->EnterPromotionMode(piece);
 	}
 	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
 

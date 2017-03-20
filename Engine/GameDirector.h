@@ -5,6 +5,7 @@
 #include "Graphics.h"
 //there should be no more than ONE object of this class
 class Piece;
+class Pawn;
 class Board;
 namespace GlobalEnums
 {
@@ -81,13 +82,14 @@ public:
 		return !WkingUnderThreat;
 	}
 	//actions
+	void EnterPromotionMode(Piece* p);
 	
 	//graphical actions
 	void SetStage(bool debugMode = false);
-	void PawnPromotionScreen(Color edgesClr, GlobalEnums::Team team);
+	void PawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team, Color edgesClr, Color highlightClr);
 	//logical actions
 	void HandleInput(bool cheatMode = false);  //mouse
-	std::shared_ptr<Piece> Transformed(Piece* p);
+	std::shared_ptr<Piece> PromoteTo(GlobalEnums::pieceType type);
 	bool DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
 	//cheats
 
@@ -104,6 +106,8 @@ private:
 	Board &board;
 	Graphics &gfx;
 	Mouse &mouse;
+	const TextSurface::Font font;
+
 	int board_rows;
 	int board_columns;
 	int gameTurn = 1; //odd is white's turn
@@ -116,6 +120,10 @@ private:
 	bool WkingUnderThreat = false;
 	bool BkingUnderThreat = false;
 	std::shared_ptr<Piece> threatningPiece = nullptr;
+
+	Pawn* luckyPawn = nullptr;
+	bool promotionMode = false;
+	std::vector<RectI> promotionRects;
 	Surface* const BpromotionScreen;
 	Surface* const WpromotionScreen;
 	std::vector<Color> WpromSprSurf;
