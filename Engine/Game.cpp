@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "Piece.h"
 #include "ChiliWin.h"
+#include <random>
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -44,11 +45,13 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	Director.HandleInput(false); // change parameter for cheating
+	if (!Director.isGameOver())
+		Director.HandleInput(true); // change parameter for cheating
 }
 
 void Game::ComposeFrame()
 {		
+
 #if _DEBUG
 	Director.SetStage(true);
 #else
@@ -58,25 +61,35 @@ void Game::ComposeFrame()
 	switch (Director.WhoseTurn())
 	{
 		case Team::BLACK:
-			gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Orange);
-			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Orange);
+			gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
+			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Green);
 			break;
 		case Team::WHITE:
-			gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::White);
-			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::White);
+			gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
+			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Green);
 			break;
 		default:
 			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, fontus, Colors::Red);
 			break;
 	}
 
-	if(!Director.IsKingsSafe())
-		gfx.DrawText(L"A King under Threat", { 0.0f,10.0f }, fontus, Colors::Red);
+	if (!Director.IsKingsSafe())
+		gfx.DrawText(L"King is under Threat", {Graphics::ScreenWidth/2 - 80.0f,0.0f }, TextSurface::Font(L"times", 15.0f), Colors::Green);
+	
 
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		
-		gfx.DrawText(L"GAME OVER BITCH!", { 0.0f,400.0f }, fontus, Colors::Cyan);
+		//std::random_device rd; // obtain a random number from hardware
+		//std::mt19937 eng(rd()); // seed the generator
+		//std::mt19937 eng2(rd()); // seed the generator
+		//std::uniform_int_distribution<> distr(0, 225); // define the range
+		//for (auto y = 10.0f; y < Graphics::ScreenHeight; y+=30)
+		//{
+		//	gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,y }, fontus, Colors::MakeRGB(distr(eng), distr(eng) + distr(eng2), distr(eng) - distr(eng2)));
+		//}
+		gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,Graphics::ScreenHeight / 2 + 30 }, fontus, Colors::Black);
+
 	}
 }
 
