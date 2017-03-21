@@ -46,7 +46,7 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	if (!Director.isGameOver())
-		Director.HandleInput(true); // change parameter for cheating
+		Director.HandleInput(false); // change parameter for cheating
 }
 
 void Game::ComposeFrame()

@@ -583,7 +583,7 @@ bool GameDirector::DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Pie
 	else if (std::dynamic_pointer_cast<King> (piece2) && piece2->GetType() == KING)
 	{
 		king = std::dynamic_pointer_cast<King> (piece2);
-		if (std::dynamic_pointer_cast<Rook> (piece2) && piece1->GetType() == ROOK)
+		if (std::dynamic_pointer_cast<Rook> (piece1) && piece1->GetType() == ROOK)
 			rook = std::dynamic_pointer_cast<Rook> (piece1);
 		else //neither one of them is rook
 			return false;
