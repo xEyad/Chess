@@ -346,7 +346,19 @@ void GameDirector::HandleInput(bool cheatMode)
 									}
 								}
 
-								else if (DoEnPasset(pieceInT1, pieceInT2))
+								else if (DoCastling(pieceInT1, pieceInT2))
+								{
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+									}
+								}
+								else if (DoEnPassant(pieceInT1, t2))
 								{
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
@@ -376,13 +388,24 @@ void GameDirector::HandleInput(bool cheatMode)
 										CheckKingsSafety();
 									}
 								}
-
-								else if (DoEnPasset(pieceInT1, pieceInT2))
+								else if (DoCastling(pieceInT1, pieceInT2))
 								{
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
 									if (!IsKingsSafe())
 									{
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+									}
+								}
+								else if (DoEnPassant(pieceInT1, t2))
+								{
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
 										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
 										CheckKingsSafety();
@@ -413,21 +436,36 @@ void GameDirector::HandleInput(bool cheatMode)
 										gameTurn--;
 									}
 								}
-							}
-							else if (DoEnPasset(pieceInT1, pieceInT2))
-							{
-								gameTurn++;	//turn ends
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-									(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-								{ //prevent player from putting his king in danger
-									pieceInT1->UndoMove();
+								else if (DoCastling(pieceInT1, pieceInT2))
+								{
+									gameTurn++;	//turn ends
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
-									gameTurn--;
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+										gameTurn--;
+									}
+								}
+								else if (DoEnPassant(pieceInT1, t2))
+								{
+									gameTurn++;	//turn ends
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+										gameTurn--;
+									}
 								}
 							}
+							
 						}
 						else //king is already under threat
 						{
@@ -447,20 +485,35 @@ void GameDirector::HandleInput(bool cheatMode)
 										gameTurn--;
 									}
 								}
-							}
-							else if (DoEnPasset(pieceInT1, pieceInT2))
-							{
-								gameTurn++;	//turn ends
-								GenerateMovesForAllPieces();
-								CheckKingsSafety();
-								if (!IsKingsSafe())
-								{ //prevent player from putting his king in danger
-									pieceInT1->UndoMove();
+								else if (DoCastling(pieceInT1, pieceInT2))
+								{
+									gameTurn++;	//turn ends
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
-									gameTurn--;
+									if (!IsKingsSafe())
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+										gameTurn--;
+									}
+								}
+								else if (DoEnPassant(pieceInT1, t2))
+								{
+									gameTurn++;	//turn ends
+									GenerateMovesForAllPieces();
+									CheckKingsSafety();
+									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+									{ //prevent player from putting his king in danger
+										pieceInT1->UndoMove();
+										GenerateMovesForAllPieces();
+										CheckKingsSafety();
+										gameTurn--;
+									}
 								}
 							}
+							
 						}
 					}
 				}
@@ -471,7 +524,7 @@ void GameDirector::HandleInput(bool cheatMode)
 	}
 }
 
-std::shared_ptr<Piece> GameDirector::PromoteTo(GlobalEnums::pieceType type)
+void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 {	
 	auto location = luckyPawn->Locate();
 	if (luckyPawn->GetTeam() == Team::BLACK)
@@ -512,10 +565,10 @@ std::shared_ptr<Piece> GameDirector::PromoteTo(GlobalEnums::pieceType type)
 	}
 	DestroyPiece(luckyPawn);
 	GenerateMovesForAllPieces();
-	return *(pieces.end() - 1); //pointer to the new piece
+	//return *(pieces.end() - 1); //pointer to the new piece
 }
 
-bool GameDirector::DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2)
+bool GameDirector::DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2)
 {
 	std::shared_ptr<King> king;
 	std::shared_ptr<Rook> rook;
@@ -549,7 +602,7 @@ bool GameDirector::DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Pie
 		for (int x = start; x < end; x++)
 		{
 			//check if tiles in between got any pieces
-			if (board.GetTileState({ x,y }).containPiece)
+			if (board.GetTileState({ x,y }).containPiece)  //should check for threats from any other piece
 			{
 				valid = false;
 				break;
@@ -574,6 +627,43 @@ bool GameDirector::DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Pie
 			return false;
 	}
 	else
+		return false;
+}
+
+bool GameDirector::DoEnPassant(std::shared_ptr<Piece> piece, std::shared_ptr<Tile> tile)
+{
+	std::shared_ptr<Pawn> defendor;
+	std::shared_ptr<Pawn> offensor;
+	std::shared_ptr<Tile> defendorTile;
+	//get the tile where the defendor should be
+	if (tile->location.y == 5)
+		defendorTile = board.GetTile({ tile->location.x,tile->location.y - 1 });
+	else if (tile->location.y == 2)
+		defendorTile = board.GetTile({ tile->location.x,tile->location.y + 1 });
+	else //the clicked tile doesn't mean any thing
+		return false;
+
+	// checks if both of them are pawns
+	if (std::dynamic_pointer_cast<Pawn> (piece) && std::dynamic_pointer_cast<Pawn>(getPiece(defendorTile->location)))
+	{
+		offensor = std::dynamic_pointer_cast<Pawn> (piece);
+		defendor = std::dynamic_pointer_cast<Pawn>(getPiece(defendorTile->location));
+		if (abs(offensor->Locate().x - defendor->Locate().x) == 1) //checks if they are 1 tile exactly next to each other
+		{
+			if (defendor->nStepsMoved() == 2) // just jumped
+			{
+				//if we reached this point , then all Conditions are met!
+				piece->PutAt(tile->location);
+				DestroyPiece(defendor);
+				return true;
+			}
+			else //not a first move or a move with no jump
+				return false;
+		}
+		else //they are far away from each other
+			return false;
+	}
+	else //one of them isn't Pawn
 		return false;
 }
 

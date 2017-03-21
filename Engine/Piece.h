@@ -153,6 +153,7 @@ public:
 	{
 		if (board->IsInsideTheBoard(newLocation))
 		{
+			CopyThisTurn();
 			oldLocation = curLocation;
 			curLocation = newLocation;
 			ReportChange();
@@ -165,7 +166,11 @@ public:
 	{
 		return PutAt(TransLocation(newLocation));
 	}
-
+	//use for special cases only
+	virtual void AddValidTile(Vec2I tileLocation)
+	{
+		validTiles.push_back(tileLocation);
+	}
 
 	
 	

@@ -91,6 +91,7 @@ void Pawn::CopyThisTurn()
 	lastTurn.captured = this->captured;
 	lastTurn.movedBefore = this->movedBefore;
 }
+
 bool Pawn::MoveTo(Vec2I newLocation)
 {
 	if (IsValidLocation(newLocation))
@@ -108,6 +109,7 @@ bool Pawn::MoveTo(Vec2I newLocation)
 	else
 		return false;
 }
+
 void Pawn::UndoMove()
 {
 	Vec2I locationGoingTo = curLocation; //this is the location which the piece will leave empty, Board needs to know it
@@ -118,6 +120,7 @@ void Pawn::UndoMove()
 	movedBefore = lastTurn.movedBefore;
 	board->ReadChange(this, locationGoingTo, true); //reporting change with reversed tiles locations
 }
+
 void Pawn::GenerateValidMoves()
 {
 	validTiles.clear();

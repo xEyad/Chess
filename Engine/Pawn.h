@@ -8,6 +8,10 @@ public:
 
 	//getters
 	virtual int HowManyLeft() const;
+	virtual int nStepsMoved() const
+	{
+		return stepsCounter;
+	}
 	virtual bool IsValidLocation(int newLocation) const;
 	virtual bool IsValidLocation(Vec2I newLocation) const;
 	bool isTransformed() const
@@ -22,6 +26,7 @@ private:
 	//getters
 	virtual bool IsWayClear(Vec2I newLocation) const;//will be used only in the special case
 	virtual bool IsWayClear(int newLocation) const;
+	//actions
 	virtual void CopyThisTurn() override;
 private:
 	int stepsCounter = 0;

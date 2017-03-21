@@ -7,6 +7,7 @@
 class Piece;
 class Pawn;
 class Board;
+class Tile;
 namespace GlobalEnums
 {
 	enum pieceType
@@ -89,8 +90,9 @@ public:
 	void PawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team, Color edgesClr, Color highlightClr);
 	//logical actions
 	void HandleInput(bool cheatMode = false);  //mouse
-	std::shared_ptr<Piece> PromoteTo(GlobalEnums::pieceType type);
-	bool DoEnPasset(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
+	void PromoteTo(GlobalEnums::pieceType type);
+	bool DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
+	bool DoEnPassant(std::shared_ptr<Piece> piece, std::shared_ptr<Tile> tile);
 	//cheats
 
 	//friend functions
