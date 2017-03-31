@@ -46,7 +46,7 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	if (!Director.isGameOver())
-		Director.HandleInput(false); // change parameter for cheating
+		Director.HandleInput(true); // change parameter for cheating
 }
 
 void Game::ComposeFrame()
@@ -73,7 +73,7 @@ void Game::ComposeFrame()
 			break;
 	}
 
-	if (!Director.IsKingsSafe())
+	if (!Director.AreKingsSafe())
 		gfx.DrawText(L"King is under Threat", {Graphics::ScreenWidth/2 - 80.0f,0.0f }, TextSurface::Font(L"times", 15.0f), Colors::Green);
 	
 

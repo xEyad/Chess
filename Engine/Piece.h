@@ -76,6 +76,11 @@ public:
 	{
 		return team;
 	}
+	Team GetEnemyTeam() const
+	{
+		return enemyTeam;
+	}
+
 	Vec2I Locate() const
 	{
 		return curLocation;

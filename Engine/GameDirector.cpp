@@ -157,6 +157,31 @@ std::shared_ptr<Piece> GameDirector::getPiece(GlobalEnums::pieceType type, Globa
 	return nullptr;
 }
 
+bool GameDirector::IsTileUnderThreatBy(Vec2I TileLocation, GlobalEnums::Team ThreatningTeam)
+{
+	for (auto i = pieces.begin(); i < pieces.end(); i++)
+	{
+		auto p = i->get();
+		for each (auto validTile in p->getValidTiles())
+		{
+			//if the piece can move to that tile and it is from enemy team (meaning tile is underThreat)
+			if (TileLocation == validTile && p->GetTeam() == ThreatningTeam) 
+				return true;
+		}
+	}
+	return false;
+}
+
+bool GameDirector::AreTilesUnderThreat(std::vector<Vec2I> Tileslocations, GlobalEnums::Team ThreatningTeam)
+{
+	for (auto i = Tileslocations.begin(); i < Tileslocations.end(); i++)
+	{
+		if (IsTileUnderThreatBy(*i, ThreatningTeam))
+			return true;
+	}
+	return false;
+}
+
 void GameDirector::EnterPromotionMode(Piece * p)
 {
 	if (dynamic_cast<Pawn*> (p))
@@ -328,7 +353,7 @@ void GameDirector::HandleInput(bool cheatMode)
 					//check cheating mode
 					if (cheatMode)
 					{
-						if (IsKingsSafe())
+						if (AreKingsSafe())
 						{
 							if (pieceInT1 != nullptr)
 							{
@@ -381,7 +406,7 @@ void GameDirector::HandleInput(bool cheatMode)
 								{
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
-									if (!IsKingsSafe())
+									if (!AreKingsSafe())
 									{
 										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
@@ -392,7 +417,7 @@ void GameDirector::HandleInput(bool cheatMode)
 								{
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
-									if (!IsKingsSafe())
+									if (!AreKingsSafe())
 									{
 										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
@@ -417,7 +442,7 @@ void GameDirector::HandleInput(bool cheatMode)
 					}
 					else //not cheatMode
 					{
-						if (IsKingsSafe())
+						if (AreKingsSafe())
 						{
 							if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
 							{
@@ -477,7 +502,7 @@ void GameDirector::HandleInput(bool cheatMode)
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
 
-									if (!IsKingsSafe())
+									if (!AreKingsSafe())
 									{ //prevent player from putting his king in danger
 										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
@@ -490,7 +515,7 @@ void GameDirector::HandleInput(bool cheatMode)
 									gameTurn++;	//turn ends
 									GenerateMovesForAllPieces();
 									CheckKingsSafety();
-									if (!IsKingsSafe())
+									if (!AreKingsSafe())
 									{ //prevent player from putting his king in danger
 										pieceInT1->UndoMove();
 										GenerateMovesForAllPieces();
@@ -602,7 +627,10 @@ bool GameDirector::DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Pie
 		for (int x = start; x < end; x++)
 		{
 			//check if tiles in between got any pieces
-			if (board.GetTileState({ x,y }).containPiece)  //should check for threats from any other piece
+			auto s = board.GetTileState({ x,y }).containPiece;
+			auto s2 = IsTileUnderThreatBy({ x,y },piece1->GetEnemyTeam());
+			//if (board.GetTileState({ x,y }).containPiece || IsTileUnderThreat({ x,y }))  //should check for threats from any other piece
+			if(s || s2)
 			{
 				valid = false;
 				break;

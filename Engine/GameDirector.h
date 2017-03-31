@@ -70,7 +70,7 @@ public:
 		//row = (location - column) / totalNumberOfRows    <= Y
 		return{ location % board_columns,(location - (location % board_columns)) / board_rows };
 	}
-	bool IsKingsSafe() const
+	bool AreKingsSafe() const
 	{
 		return !(BkingUnderThreat || WkingUnderThreat);
 	}
@@ -82,6 +82,8 @@ public:
 	{
 		return !WkingUnderThreat;
 	}
+	bool IsTileUnderThreatBy(Vec2I TileLocation,GlobalEnums::Team ThreatningTeam);
+	bool AreTilesUnderThreat(std::vector<Vec2I> Tileslocations, GlobalEnums::Team ThreatningTeam);
 	//actions
 	void EnterPromotionMode(Piece* p);
 	
@@ -93,6 +95,7 @@ public:
 	void PromoteTo(GlobalEnums::pieceType type);
 	bool DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
 	bool DoEnPassant(std::shared_ptr<Piece> piece, std::shared_ptr<Tile> tile);
+	
 	//cheats
 
 	//friend functions
