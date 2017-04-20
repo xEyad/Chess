@@ -170,9 +170,6 @@
     <ClCompile Include="Knight.cpp">
       <Filter>Source Files\Pieces</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bitmap.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>

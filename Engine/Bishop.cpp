@@ -1,4 +1,5 @@
 #include "Bishop.h"
+
 Bishop::Bishop(Vec2I location, Team team, Board *const board, Surface* const sprite)
 	:
 	Piece(location, team, BISHOP, board,sprite)

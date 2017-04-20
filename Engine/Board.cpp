@@ -79,7 +79,7 @@ std::shared_ptr<Tile> Board::GetTileByMouse(Vec2I mousePos) const
 const Tile::Status Board::GetTileState(Vec2I location) const
 {
 	if (IsInsideTheBoard(location))
-		return GetTile(location)->state;
+		return GetTile(location)->curState;
 	else
 	{
 		Tile::Status s;
@@ -110,7 +110,7 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	if (!IsInsideTheBoard(oldLocation))
 	{
 		auto Tile = GetTile(piece->Locate());
-		assert(!Tile->state.containPiece); //if it doesn't contain a piece then everything is OK
+		assert(!Tile->curState.containPiece); //if it doesn't contain a piece then everything is OK
 		//if your program crashed then thats what you did wrong:
 		//initialized more than 1 piece on same spot/Location		
 	}
@@ -119,31 +119,33 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	else if (IsInsideTheBoard(oldLocation)) //basically not intialization
 	{
 		auto prevTile = GetTile(oldLocation);
-		prevTile->applyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); //supposing that we left this tile empty
+		prevTile->ApplyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); //supposing that we left this tile empty
 	}
 
 	//do changes to the tile which the piece moved TO
 	auto tile = GetTile(piece->Locate());
-	if (tile->state.containPiece)
+	if (tile->curState.containPiece)
 	{
 		//if this has moved then the new tile is either empty or have enemy piece.
 		//if it contains a piece then we send it to prison.
-		std::shared_ptr<Piece> p = director->getPiece(piece->Locate(), tile->state.piecetype, tile->state.pieceTeam);
+		std::shared_ptr<Piece> p = director->getPiece(piece->Locate(), tile->curState.piecetype, tile->curState.pieceTeam);
 
 		if (p != nullptr)
 		{
-			p->SendToPrison(); //should be deleted
+			//p->SendToPrison(); //should be deleted
+
 		   //if captured piece is KING
 			if (p->GetType() == KING)
 				director->gameOver = true;
-			director->DestroyPiece(p);
+			director->MarkForDestruction(p);
 		}
 	}
+	// check for promotions
 	if (dynamic_cast<Pawn*>(piece) != nullptr && dynamic_cast<Pawn*>(piece)->isTransformed())
 	{
 		director->EnterPromotionMode(piece);
 	}
-	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
+	tile->ApplyChanges(true, piece->GetType(), piece->GetTeam());
 
 	//report kings' location
 	if (piece->GetType() == KING)
@@ -161,16 +163,17 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 void Board::ReadChange(Piece * piece, Vec2I locationGoingTo, bool Undo)
 {
 	auto curLocation = piece->LastTurn().curLocation; //location the pieace CAME BACK TO
+	director->RemoveDestructionMark();
 	//do changes to the tile which the piece moved FROM
-	 if (IsInsideTheBoard(locationGoingTo)) 
+	if (IsInsideTheBoard(locationGoingTo)) 
 	{
-		auto tileUndoed = GetTile(locationGoingTo);
-		tileUndoed->applyChanges(false, pieceType::NOT_DEFINED, Team::INVALID); 
+		auto tileToUndo = GetTile(locationGoingTo);
+		tileToUndo->UndoChanges();
 	}
 
 	//do changes to the tile which the piece moved BACK TO (Logically it should be empty already)
 	auto tile = GetTile(curLocation);
-	tile->applyChanges(true, piece->GetType(), piece->GetTeam());
+	tile->UndoChanges();
 
 	//report kings' location
 	if (piece->GetType() == KING)
@@ -185,6 +188,11 @@ void Board::ReadChange(Piece * piece, Vec2I locationGoingTo, bool Undo)
 		}
 
 	}
+}
+
+void Board::ResetTile(Vec2I TileLocation)
+{
+	GetTile(TileLocation)->Reset();
 }
 
 void Board::DrawGrid( Graphics & gfx, Color edgesClr, Vec2I TopLeft)

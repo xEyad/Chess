@@ -61,11 +61,11 @@ void Game::ComposeFrame()
 	switch (Director.WhoseTurn())
 	{
 		case Team::BLACK:
-			gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
+			//gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
 			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Green);
 			break;
 		case Team::WHITE:
-			gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
+			//gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
 			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Green);
 			break;
 		default:
@@ -76,7 +76,8 @@ void Game::ComposeFrame()
 	if (!Director.AreKingsSafe())
 		gfx.DrawText(L"King is under Threat", {Graphics::ScreenWidth/2 - 80.0f,0.0f }, TextSurface::Font(L"times", 15.0f), Colors::Green);
 	
-
+	std::wstring turnNumber = std::wstring(L"Turn ") + std::to_wstring(Director.getTurn());
+	gfx.DrawText(turnNumber, { 0.0f,0.0f }, fontus, Colors::Orange);
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		

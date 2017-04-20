@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 #include "Vec2.h"
 #include "Mouse.h"
 #include "Graphics.h"
+
 //there should be no more than ONE object of this class
 class Piece;
 class Pawn;
@@ -30,6 +32,12 @@ namespace GlobalEnums
 
 class GameDirector
 {
+	struct DEFENDOR
+	{
+		std::shared_ptr<Pawn> pawn;
+		int turnRegistered;
+		Vec2I locationOfDefense;
+	};
 public:
 	GameDirector(Board &board, Graphics &gfx,Mouse &mouse);
 	//getters
@@ -86,7 +94,7 @@ public:
 	bool AreTilesUnderThreat(std::vector<Vec2I> Tileslocations, GlobalEnums::Team ThreatningTeam);
 	//actions
 	void EnterPromotionMode(Piece* p);
-	
+	void RerollTurn(std::shared_ptr<Piece> piece);
 	//graphical actions
 	void SetStage(bool debugMode = false);
 	void PawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team, Color edgesClr, Color highlightClr);
@@ -95,12 +103,15 @@ public:
 	void PromoteTo(GlobalEnums::pieceType type);
 	bool DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
 	bool DoEnPassant(std::shared_ptr<Piece> piece, std::shared_ptr<Tile> tile);
-	
+	void CheckForEnPassants();
 	//cheats
 
 	//friend functions
 private:
 	friend class Board;
+	void MarkForDestruction(std::shared_ptr<Piece> pieceToDestroy);
+	void RemoveDestructionMark();
+	void DestroyMarkedPiece();
 	bool DestroyPiece(Piece* piece);
 	bool DestroyPiece(std::shared_ptr<Piece> piece);
 	//generates moves and checks if king is threatened
@@ -125,7 +136,7 @@ private:
 	bool WkingUnderThreat = false;
 	bool BkingUnderThreat = false;
 	std::shared_ptr<Piece> threatningPiece = nullptr;
-
+	std::shared_ptr<Piece> pieceToDestroy = nullptr;
 	Pawn* luckyPawn = nullptr;
 	bool promotionMode = false;
 	std::vector<RectI> promotionRects;
@@ -133,5 +144,9 @@ private:
 	Surface* const WpromotionScreen;
 	std::vector<Color> WpromSprSurf;
 	std::vector<Color> BpromSprSurf;
+	std::vector <std::shared_ptr<Pawn>>	whiteOffensors; //white pawns on 4th row  
+	std::vector <std::shared_ptr<Pawn>>	blackOffensors; //black pawns on 5th row  
+	std::vector <DEFENDOR>				whiteDefendors; //white pawns on 5th row  
+	std::vector <DEFENDOR>				blackDefendors; //black pawns on 4th row 
 };
 

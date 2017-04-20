@@ -2,6 +2,8 @@
 #include "Colors.h"
 #include "Vec2.h"
 #include "GameDirector.h" // for Global enums
+
+
 using namespace GlobalEnums;
 class Tile
 {
@@ -19,13 +21,27 @@ private:
 		color(c),
 		location(location)
 	{}
-	void applyChanges(bool containPiece, pieceType piecetype, Team team)
+	void ApplyChanges(bool containPiece, pieceType piecetype, Team team)
 	{
-		state.containPiece = containPiece;
-		state.piecetype = piecetype;
-		state.pieceTeam = team;
+		//backup this state
+		prevState.containPiece	=	curState.containPiece;
+		prevState.piecetype		=	curState.piecetype;
+		prevState.pieceTeam		=	curState.pieceTeam;
+		//apply changes
+		curState.containPiece = containPiece;
+		curState.piecetype = piecetype;
+		curState.pieceTeam = team;
 	}
-
+	void UndoChanges()
+	{
+		curState.containPiece	= prevState.containPiece;
+		curState.piecetype = prevState.piecetype;
+		curState.pieceTeam = prevState.pieceTeam;
+	}
+	void Reset()
+	{
+		ApplyChanges(false, pieceType::NOT_DEFINED, Team::INVALID);
+	}
 public:
 	const Color color;
 	const Vec2I location;
@@ -35,7 +51,8 @@ public:
 
 private:
 	friend class Board;
-	Status state;
+	Status curState;
+	Status prevState;
 
 };
 

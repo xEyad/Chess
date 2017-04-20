@@ -151,8 +151,8 @@ public:
 	virtual void SendToPrison()
 	{
 		captured = true;
-		oldLocation = curLocation;
-		curLocation = Vec2I({ -1,-1 });
+		//oldLocation = curLocation;
+		//curLocation = Vec2I({ -1,-1 });
 	}
 	virtual bool PutAt(Vec2I newLocation)
 	{
