@@ -39,7 +39,7 @@ private:
 	std::vector<std::shared_ptr<Tile>> boardTiles; //array of shared pointers of type Tile 
 	GameDirector* director;
 	Vec2I topLeft = { 0,0 }; //top left point that drawing of the board starts at
-	Surface* const sprite;
+	Surface*  sprite;
 	std::vector<Color> sprSurf;
 public:
 	const int rows; 

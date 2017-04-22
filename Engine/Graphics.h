@@ -71,6 +71,8 @@ public:
 		PutPixel(point.x, point.y, c);
 	void PutPixel(int x, int y, Color c);
 	}
+	void PutPixelAlpha(int x, int y, Color c);
+	void PutPixelAlpha(Vec2I point, Color c);
 	void PutPixelClipped(int x, int y, Color c, RectI clipRect)
 	{
 		if (y > clipRect.top &&
@@ -82,6 +84,18 @@ public:
 	void PutPixelClipped(Vec2I point, Color c,  RectI clipRect)
 	{
 		PutPixelClipped(point.x, point.y, c, clipRect);
+	}
+	void PutPixelAlphaClipped(int x, int y, Color c, RectI clipRect)
+	{
+		if (y > clipRect.top &&
+			y < clipRect.bottom &&
+			x > clipRect.left &&
+			x < clipRect.right)
+			PutPixelAlpha(x, y, c);
+	}
+	void PutPixelAlphaClipped(Vec2I point, Color c, RectI clipRect)
+	{
+		PutPixelAlphaClipped(point.x, point.y, c, clipRect);
 	}
 
 	//another functions

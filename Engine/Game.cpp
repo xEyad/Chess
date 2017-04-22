@@ -51,7 +51,6 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {		
-
 #if _DEBUG
 	Director.SetStage(true);
 #else
@@ -81,14 +80,14 @@ void Game::ComposeFrame()
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		
-		//std::random_device rd; // obtain a random number from hardware
-		//std::mt19937 eng(rd()); // seed the generator
-		//std::mt19937 eng2(rd()); // seed the generator
-		//std::uniform_int_distribution<> distr(0, 225); // define the range
-		//for (auto y = 10.0f; y < Graphics::ScreenHeight; y+=30)
-		//{
-		//	gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,y }, fontus, Colors::MakeRGB(distr(eng), distr(eng) + distr(eng2), distr(eng) - distr(eng2)));
-		//}
+		std::random_device rd; // obtain a random number from hardware
+		std::mt19937 eng(rd()); // seed the generator
+		std::mt19937 eng2(rd()); // seed the generator
+		std::uniform_int_distribution<> distr(0, 225); // define the range
+		for (auto y = 10.0f; y < Graphics::ScreenHeight; y+=30)
+		{
+			gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,y }, fontus, Colors::MakeRGB(distr(eng), distr(eng) + distr(eng2), distr(eng) - distr(eng2)));
+		}
 		gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,Graphics::ScreenHeight / 2 + 30 }, fontus, Colors::Black);
 
 	}

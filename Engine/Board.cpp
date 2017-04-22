@@ -288,38 +288,30 @@ void Board::DrawPiecesSprite( Graphics & gfx) const
 {
 	Color c;
 	Vec2I screenLocation = topLeft;
-	for (auto i = director->pieces.cbegin(); i < director->pieces.cend(); i++)
+	for (auto pPiece = director->pieces.cbegin(); pPiece < director->pieces.cend() ; pPiece++)
 	{
-		if (IsInsideTheBoard((*i)->Locate()))
+		if (IsInsideTheBoard((*pPiece)->Locate()))
 		{
-			Vec2I topLeftPoint(screenLocation.x + (*i)->Locate().x * Tile::WIDTH  , screenLocation.y + (*i)->Locate().y * Tile::HEIGHT  );
-			std::vector<Color> surf;
-
-			for (unsigned int x = 0; x < (*i)->GetSprite()->GetWidth(); x++)
-			{
-				for (unsigned int y = 0; y < (*i)->GetSprite()->GetHeight(); y++)
-				{
-					surf.push_back((*i)->GetSprite()->GetPixel(x, y));
-				}
-			}
-
-			auto ss = (*i)->GetSprSurf()->cbegin();
+			//top left point of the tile which the piece is on
+			Vec2I topLeftPoint(screenLocation.x + (*pPiece)->Locate().x * Tile::WIDTH  , screenLocation.y + (*pPiece)->Locate().y * Tile::HEIGHT  );
 			
-			for (unsigned int x = topLeftPoint.x; x < (*i)->GetSprite()->GetWidth() + topLeftPoint.x; x++)
+			int xPieceSpr = 0;
+			int yPieceSpr = 0;
+			for (unsigned int x = topLeftPoint.x; x < (*pPiece)->GetSprite()->GetWidth()-1 + topLeftPoint.x; x++)
 			{
-				for (unsigned int y = topLeftPoint.y; y < (*i)->GetSprite()->GetHeight() + topLeftPoint.y; y++)
-				{
-					if (!(ss->dword == 4294967295 ))//white
-						gfx.PutPixelClipped(x, y, (*ss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-					ss++;
+				for (unsigned int y = topLeftPoint.y; y < (*pPiece)->GetSprite()->GetHeight()-1 + topLeftPoint.y; y++)
+				{								
+					gfx.PutPixelAlphaClipped(x, y, (*pPiece)->GetSprite()->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
+					yPieceSpr++;				
 				}
+				xPieceSpr++;
+				yPieceSpr = 0;
 			}
 		}
 		else
 			continue;
 	}
 }
-
 void Board::DrawPieces(Graphics & gfx) const
 {
 	Color c;

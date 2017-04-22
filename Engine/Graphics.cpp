@@ -302,6 +302,20 @@ void Graphics::PutPixel( int x,int y,Color c )
 	sysBuffer.PutPixel(x, y, c);
 }
 
+void Graphics::PutPixelAlpha(int x, int y, Color c)
+{
+	assert(x >= 0);
+	assert(x < int(Graphics::ScreenWidth));
+	assert(y >= 0);
+	assert(y < int(Graphics::ScreenHeight));
+	sysBuffer.PutPixelAlpha(x, y, c);
+}
+
+void Graphics::PutPixelAlpha(Vec2I point, Color c)
+{
+	PutPixelAlpha(point.x, point.y, c);
+}
+
 void Graphics::DrawLine(int x1, int y1, int x2, int y2, Color c)
 {
 	

@@ -38,7 +38,7 @@ void Surface::PutPixelAlpha( unsigned int x,unsigned int y,Color c )
 	assert( y >= 0 );
 	assert( x < width );
 	assert( y < height );
-	// load source pixel
+	// load source pixel , pixel from this surface which we want to blend
 	const Color d = GetPixel( x,y );
 
 	// blend channels

@@ -9,18 +9,18 @@
 
 
 
-#define WPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnW.bmp"
-#define BPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnB.bmp"
-#define WRookSprite    L"Resources\\Chess Pieces\\Wood\\RookW.bmp"
-#define BRookSprite    L"Resources\\Chess Pieces\\Wood\\RookB.bmp"
-#define WKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightW.bmp"
-#define BKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightB.bmp"
-#define WBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopW.bmp"
-#define BBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopB.bmp"
-#define WQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenW.bmp"
-#define BQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenB.bmp"
-#define WKingSprite    L"Resources\\Chess Pieces\\Wood\\KingW.bmp"
-#define BKingSprite    L"Resources\\Chess Pieces\\Wood\\KingB.bmp"
+#define WPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnW.png"
+#define BPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnB.png"
+#define WRookSprite    L"Resources\\Chess Pieces\\Wood\\RookW.png"
+#define BRookSprite    L"Resources\\Chess Pieces\\Wood\\RookB.png"
+#define WKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightW.png"
+#define BKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightB.png"
+#define WBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopW.png"
+#define BBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopB.png"
+#define WQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenW.png"
+#define BQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenB.png"
+#define WKingSprite    L"Resources\\Chess Pieces\\Wood\\KingW.png"
+#define BKingSprite    L"Resources\\Chess Pieces\\Wood\\KingB.png"
 
 #define WPromotionScreen L"Resources\\Screens\\Promotion Screen Wood Black.png"
 #define BPromotionScreen L"Resources\\Screens\\Promotion Screen Wood White.png"
@@ -221,7 +221,7 @@ void GameDirector::SetStage(bool debugMode)
 {
 	if (debugMode)
 	{
-		board.DrawPieces(gfx);
+		board.DrawPieces(gfx);	
 	}
 	else //release mode
 	{

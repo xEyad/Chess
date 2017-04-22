@@ -35,13 +35,6 @@ protected:
 
 		ReportChange();
 
-		for (unsigned int x = 0; x < sprite->GetWidth(); x++)
-		{
-			for (unsigned int y = 0; y < sprite->GetHeight(); y++)
-			{
-				sprSurf.push_back(sprite->GetPixel(x, y));
-			}
-		}
 		GenerateValidMoves();
 
 	}
@@ -89,13 +82,9 @@ public:
 	{
 		return captured;
 	}
-	const Surface* GetSprite() const
+	 Surface* GetSprite() const
 	{
 		return sprite;
-	}
-	const std::vector<Color>* GetSprSurf() const
-	{
-		return &sprSurf;
 	}
 	const std::vector<Vec2I>& getValidTiles() const
 	{
@@ -191,7 +180,6 @@ protected:
 	Vec2I oldLocation;
 	const Team team;
 	Team enemyTeam;
-	std::vector<Color> sprSurf;
 	std::vector<Vec2I> validTiles;
 	bool captured = false; // the piece itself
 	bool movedBefore = false;
