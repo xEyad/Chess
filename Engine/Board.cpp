@@ -190,6 +190,14 @@ void Board::ReadChange(Piece * piece, Vec2I locationGoingTo, bool Undo)
 	}
 }
 
+void Board::ResetAllTiles()
+{
+	for each (auto tile in boardTiles)
+	{
+		tile->Reset();
+	}
+}
+
 void Board::ResetTile(Vec2I TileLocation)
 {
 	GetTile(TileLocation)->Reset();

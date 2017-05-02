@@ -21,6 +21,7 @@ public:
 	//used only with UndoMove
 	void ReadChange(Piece * piece, Vec2I locationGoingTo, bool Undo); 
 
+	void ResetAllTiles();
 	void ResetTile(Vec2I TileLocation);
 	void DrawGrid(Graphics &gfx, Color edgesClr, Vec2I topLeft);
 	void DrawGrid(Graphics &gfx, Color edgesClr) const;

@@ -46,7 +46,22 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	if (!Director.isGameOver())
+	{
 		Director.HandleInput(true); // change parameter for cheating
+
+		switch (wnd.kbd.ReadKey().GetCode())
+		{
+			case VK_F1:
+				Director.QuickSaveGame();
+				break;
+			case VK_F2:
+				Director.QuickLoadGame();
+				break;
+			default:
+				break;
+		}
+			
+	}
 }
 
 void Game::ComposeFrame()
@@ -89,7 +104,6 @@ void Game::ComposeFrame()
 			gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,y }, fontus, Colors::MakeRGB(distr(eng), distr(eng) + distr(eng2), distr(eng) - distr(eng2)));
 		}
 		gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,Graphics::ScreenHeight / 2 + 30 }, fontus, Colors::Black);
-
 	}
 }
 

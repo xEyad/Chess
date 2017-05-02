@@ -22,8 +22,60 @@
 #define WKingSprite    L"Resources\\Chess Pieces\\Wood\\KingW.png"
 #define BKingSprite    L"Resources\\Chess Pieces\\Wood\\KingB.png"
 
-#define WPromotionScreen L"Resources\\Screens\\Promotion Screen Wood Black.png"
-#define BPromotionScreen L"Resources\\Screens\\Promotion Screen Wood White.png"
+#define WPromotionScreen L"Resources\\Screens\\Promotion Screen Wood White.png"
+#define BPromotionScreen L"Resources\\Screens\\Promotion Screen Wood Black.png"
+
+std::wstring GetPieceSprite(pieceType type , Team team)
+{
+	if (team == Team::BLACK)
+	{
+		switch (type)
+		{
+			case GlobalEnums::PAWN:
+				return BPawnSprite;
+			case GlobalEnums::KNIGHT:
+				return BKnightSprite;
+			case GlobalEnums::ROOK:
+				return BRookSprite;
+			case GlobalEnums::BISHOP:
+				return BBishopSprite;
+			case GlobalEnums::QUEEN:
+				return BQueenSprite;
+			case GlobalEnums::KING:
+				return BKingSprite;
+			case GlobalEnums::NOT_DEFINED:
+				return L"NOT_DEFINED";
+			default:
+				break;
+		}
+	}
+	else if (team == Team::WHITE)
+	{
+		switch (type)
+		{
+			case GlobalEnums::PAWN:
+				return WPawnSprite;
+			case GlobalEnums::KNIGHT:
+				return WKnightSprite;
+			case GlobalEnums::ROOK:
+				return WRookSprite;
+			case GlobalEnums::BISHOP:
+				return WBishopSprite;
+			case GlobalEnums::QUEEN:
+				return WQueenSprite;
+			case GlobalEnums::KING:
+				return WKingSprite;
+			case GlobalEnums::NOT_DEFINED:
+				return L"NOT_DEFINED";
+			default:
+				break;
+		}
+	}
+	else
+	{
+		return L"ERROR";
+	}
+}
 
 GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	:
@@ -110,23 +162,18 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	GenerateMovesForAllPieces();
 	BKingLoc = getPiece(KING, Team::BLACK)->Locate();
 	WKingLoc = getPiece(KING, Team::WHITE)->Locate();
+}
 
-	//generate promotion screen sprite
-	for (unsigned int x = 0; x < WpromotionScreen->GetWidth(); x++)
-	{
-		for (unsigned int y = 0; y < WpromotionScreen->GetHeight(); y++)
-		{
-			WpromSprSurf.push_back(WpromotionScreen->GetPixel(x, y));
-		}
-	}
-
-	for (unsigned int x = 0; x < BpromotionScreen->GetWidth(); x++)
-	{
-		for (unsigned int y = 0; y < BpromotionScreen->GetHeight(); y++)
-		{
-			BpromSprSurf.push_back(BpromotionScreen->GetPixel(x, y));
-		}
-	}
+GameDirector::GameDirector(Board & board, Graphics & gfx, Mouse & mouse, std::string saveFile)
+	:
+	board(board),
+	gfx(gfx),
+	mouse(mouse),
+	font(L"times", 20.0f),
+	BpromotionScreen(new Surface(Surface::FromFile(BPromotionScreen))),
+	WpromotionScreen(new Surface(Surface::FromFile(WPromotionScreen)))
+{
+	LoadGame(saveFile);
 }
 
 std::shared_ptr<Piece> GameDirector::getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const
@@ -201,6 +248,105 @@ void GameDirector::RerollTurn(std::shared_ptr<Piece> piece)
 	CheckKingsSafety();
 }
 
+void GameDirector::SaveGame(std::string saveFile)
+{
+	using namespace std;
+	//open file
+	ofstream file(saveFile);
+
+	//save operation
+	for each (auto piece in pieces)
+	{		
+		string type(GetTextForpieceType(piece->GetType()));
+		string team(GetTextForTeam((int)piece->GetTeam()));
+		string location(to_string(piece->Locate().x) + ' '+ to_string(piece->Locate().y));
+		
+		string line(type + ' ' + team + ' ' + location );
+		file << line << " \n" ;
+	}	
+	file.close();
+}
+
+void GameDirector::QuickSaveGame()
+{
+	SaveGame("../Quick Save.txt");
+}
+
+void GameDirector::LoadGame(std::string saveFile)
+{	
+	using namespace std;
+	//open file
+	ifstream loadFile(saveFile);
+	//check if its there
+	if (loadFile)
+	{
+		//clear remove all pieces from the game
+		pieces.clear();
+		board.ResetAllTiles();		
+		string type,team,locationX, locationY;
+		int round = 0;
+	
+		//Read operation
+		while (loadFile)
+		{
+			if (round == 0)
+				loadFile >> type;
+			else if (round == 1)
+				loadFile >> team;
+			else if (round == 2)
+				loadFile >> locationX;
+			else if (round == 3)
+				loadFile >> locationY;
+
+			round++;
+			//means we got all the data we want
+			if (round > 3)
+			{
+				int x = std::stoi(locationX);
+				int y = std::stoi(locationY);
+				auto Team = GetTeamFromText(team);
+				auto pieceType = GetPieceTypeFromText(type);
+				//check type
+				switch (pieceType)
+				{
+					case GlobalEnums::PAWN:
+						pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						break;
+					case GlobalEnums::KNIGHT:
+						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						break;
+					case GlobalEnums::ROOK:
+						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						break;
+					case GlobalEnums::BISHOP:
+						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						break;
+					case GlobalEnums::QUEEN:
+						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						break;
+					case GlobalEnums::KING:
+						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						break;
+					case GlobalEnums::NOT_DEFINED:
+						break;
+					default:
+						break;
+				}
+				round = 0;
+			}
+		}
+		GenerateMovesForAllPieces();
+		BKingLoc = getPiece(KING, Team::BLACK)->Locate();
+		WKingLoc = getPiece(KING, Team::WHITE)->Locate();
+		loadFile.close();
+	}
+}
+
+void GameDirector::QuickLoadGame()
+{
+	LoadGame("../Quick Save.txt");
+}
+
 void GameDirector::MarkForDestruction(std::shared_ptr<Piece> pieceToDestroy)
 {
 	this->pieceToDestroy = pieceToDestroy;
@@ -219,6 +365,7 @@ void GameDirector::DestroyMarkedPiece()
 
 void GameDirector::SetStage(bool debugMode)
 {
+	
 	if (debugMode)
 	{
 		board.DrawPieces(gfx);	
@@ -232,7 +379,7 @@ void GameDirector::SetStage(bool debugMode)
 	board.DrawGrid(gfx, Colors::LightGray, { 20,21 });
 	if (promotionMode)
 	{
-		PawnPromotionScreen(mouse.GetPos(), luckyPawn->GetTeam(), Colors::Green, Colors::Black);
+		DrawPawnPromotionScreen(mouse.GetPos(), luckyPawn->GetTeam(), Colors::Green, Colors::Black);
 	}
 	else
 	{
@@ -253,39 +400,68 @@ void GameDirector::SetStage(bool debugMode)
 
 		board.HighlightTile(gfx, mouse.GetPos(), highlight);
 	}
+	//DrawStartMenu(mouse.GetPos());
 }
 
-void GameDirector::PawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team ,Color edgesClr, Color highlightClr)
+void GameDirector::DrawStartMenu(Vec2I mousePos)
+{
+	//screen background coordinates
+	static Vec2I topLeft{ 0,0 };
+	static Vec2I botRight{ (int) Graphics::ScreenWidth,(int)Graphics::ScreenHeight };
+
+	//buttons
+	static Button startBtn({ (int)(Graphics::ScreenWidth / 2 - 80.0),(int)(Graphics::ScreenHeight / 2 + 30) } ,100,50,L"Start" );
+
+	//drawing
+	for ( int x = topLeft.x; x < botRight.x; x++)
+	{
+		for ( int y = topLeft.y; y < botRight.y; y++)
+		{
+			gfx.PutPixel(x, y, Colors::Black);
+		}
+	}
+
+	if(startBtn.GetBoundingBox().Contains(mousePos))
+		startBtn.Draw(gfx, font, 15,10,Colors::Red);
+	else
+		startBtn.Draw(gfx, font, 15, 10, Colors::Green);
+
+
+}
+
+void GameDirector::DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team ,Color edgesClr, Color highlightClr)
 {
 	static Vec2I topLeft{ 20 + 340 - 179,20 + 340 - 99 };
 	static Vec2I botRight{ topLeft.x + 79 * 4,topLeft.y + 79 };
 
 	if (team == Team::BLACK)
 	{
-		auto Bss = BpromSprSurf.cbegin();
-
+		int xPieceSpr = 0;
+		int yPieceSpr = 0;
 		for (unsigned int x = topLeft.x; x < BpromotionScreen->GetWidth() + topLeft.x; x++)
 		{
 			for (unsigned int y = topLeft.y; y < BpromotionScreen->GetHeight() + topLeft.y; y++)
-			{
-				if (!(Bss->dword == 4294967295))//white
-					gfx.PutPixelClipped(x, y, (*Bss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-				Bss++;
+			{				
+				gfx.PutPixelAlphaClipped(x, y, BpromotionScreen->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
+				yPieceSpr++;
 			}
+			xPieceSpr++;
+			yPieceSpr = 0;
 		}
 	}
 	else if (team == Team::WHITE)
 	{
-		auto Wss = WpromSprSurf.cbegin();
-
+		int xPieceSpr = 0;
+		int yPieceSpr = 0;
 		for (unsigned int x = topLeft.x; x < WpromotionScreen->GetWidth() + topLeft.x; x++)
 		{
 			for (unsigned int y = topLeft.y; y < WpromotionScreen->GetHeight() + topLeft.y; y++)
-			{
-				if (!(Wss->dword == 4294967295))//white
-					gfx.PutPixelClipped(x, y, (*Wss), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-				Wss++;
+			{				
+				gfx.PutPixelAlphaClipped(x, y, WpromotionScreen->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
+				yPieceSpr++;
 			}
+			xPieceSpr++;
+			yPieceSpr = 0;
 		}
 	}
 
@@ -585,16 +761,16 @@ void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 		switch (type)
 		{
 			case GlobalEnums::KNIGHT:
-				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WKnightSprite)))));
+				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WKnightSprite)))));
 				break;
 			case GlobalEnums::ROOK:
-				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WRookSprite)))));
+				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WRookSprite)))));
 				break;
 			case GlobalEnums::BISHOP:
-				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WBishopSprite)))));
+				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WBishopSprite)))));
 				break;
 			case GlobalEnums::QUEEN:
-				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(WQueenSprite)))));
+				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
 				break;
 		}
 	}
@@ -885,4 +1061,6 @@ void GameDirector::CheckKingsSafety()
 		threatningPiece = nullptr;
 	}
 }
+
+
 //cheating functions 
