@@ -3,7 +3,7 @@
 class Pawn : public Piece
 {
 public:
-	Pawn(Vec2I location,Team team,  Board * const board, Surface* const sprite);
+	Pawn(Vec2I location, Team team, Board * const board, Surface* const sprite,int nStepsMoved = 0);
 	virtual ~Pawn();
 
 	//getters

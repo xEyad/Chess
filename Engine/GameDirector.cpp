@@ -260,8 +260,13 @@ void GameDirector::SaveGame(std::string saveFile)
 		string type(GetTextForpieceType(piece->GetType()));
 		string team(GetTextForTeam((int)piece->GetTeam()));
 		string location(to_string(piece->Locate().x) + ' '+ to_string(piece->Locate().y));
-		
-		string line(type + ' ' + team + ' ' + location );
+		string nStepsMoved;
+		if (dynamic_pointer_cast<Pawn> (piece))
+			nStepsMoved = to_string(dynamic_pointer_cast<Pawn> (piece)->nStepsMoved());
+		else
+			nStepsMoved = '0';
+
+		string line(type + ' ' + team + ' ' + location + ' ' + nStepsMoved );
 		file << line << " \n" ;
 	}	
 	file.close();
@@ -283,7 +288,7 @@ void GameDirector::LoadGame(std::string saveFile)
 		//clear remove all pieces from the game
 		pieces.clear();
 		board.ResetAllTiles();		
-		string type,team,locationX, locationY;
+		string type,team,locationX, locationY,nStepsMoved;
 		int round = 0;
 	
 		//Read operation
@@ -297,20 +302,22 @@ void GameDirector::LoadGame(std::string saveFile)
 				loadFile >> locationX;
 			else if (round == 3)
 				loadFile >> locationY;
-
+			else if (round == 4)
+				loadFile >> nStepsMoved;
 			round++;
 			//means we got all the data we want
-			if (round > 3)
+			if (round > 4)
 			{
 				int x = std::stoi(locationX);
 				int y = std::stoi(locationY);
+				int steps = std::stoi(nStepsMoved);
 				auto Team = GetTeamFromText(team);
 				auto pieceType = GetPieceTypeFromText(type);
 				//check type
 				switch (pieceType)
 				{
 					case GlobalEnums::PAWN:
-						pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))), steps)));
 						break;
 					case GlobalEnums::KNIGHT:
 						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
@@ -776,7 +783,7 @@ void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 	}
 	DestroyPiece(luckyPawn);
 	GenerateMovesForAllPieces();
-	//return *(pieces.end() - 1); //pointer to the new piece
+	CheckKingsSafety();
 }
 
 bool GameDirector::DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2)
@@ -1017,7 +1024,7 @@ bool GameDirector::DestroyPiece(std::shared_ptr<Piece> piece)
 {
 	for (auto itr = pieces.begin(); itr < pieces.end(); itr++)
 	{
-		if ((*itr)->Locate() == piece->Locate() && (*itr)->GetType() == piece->GetType())
+		if ((*itr)->Locate() == piece->Locate() && (*itr)->GetTeam() == piece->GetTeam() && (*itr)->GetType() == piece->GetType())
 		{
 			pieces.erase(itr);
 			return true; //success

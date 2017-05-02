@@ -110,7 +110,7 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	if (!IsInsideTheBoard(oldLocation))
 	{
 		auto Tile = GetTile(piece->Locate());
-		assert(!Tile->curState.containPiece); //if it doesn't contain a piece then everything is OK
+		//assert(!Tile->curState.containPiece); //if it doesn't contain a piece then everything is OK
 		//if your program crashed then thats what you did wrong:
 		//initialized more than 1 piece on same spot/Location		
 	}
