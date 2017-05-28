@@ -12,7 +12,7 @@
 class Piece;
 class Pawn;
 class Board;
-class Tile;
+class GiveMeTile;
 namespace GlobalEnums
 {
 	enum pieceType
@@ -142,18 +142,21 @@ public:
 	void SetStage(bool debugMode = false);
 	void DrawStartMenu(Vec2I mousPos);
 	void DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team, Color edgesClr, Color highlightClr);
+	void DrawWhoseTurn(Color clr);
+	void DrawTurn(Color clr);
+	void DrawThreatWarning(Color clr);
 	//logical actions
 	void HandleInput(bool cheatMode = false);  //mouse
 	void PromoteTo(GlobalEnums::pieceType type);
 	bool DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
-	bool DoEnPassant(std::shared_ptr<Piece> piece, std::shared_ptr<Tile> tile);
+	bool DoEnPassant(std::shared_ptr<Piece> piece, Vec2I tileLoc);
 	void CheckForEnPassants();
 	//cheats
-
+	
 	
 	//friend functions
 private:
-	friend class Board;
+	friend Board;
 	void MarkForDestruction(std::shared_ptr<Piece> pieceToDestroy);
 	void RemoveDestructionMark();
 	void DestroyMarkedPiece();

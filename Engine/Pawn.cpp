@@ -124,6 +124,8 @@ void Pawn::UndoMove()
 
 void Pawn::GenerateValidMoves()
 {
+	if (captured)
+		return;
 	validTiles.clear();
 	if (team == Team::BLACK)
 	{

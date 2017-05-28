@@ -228,6 +228,8 @@ bool Queen::isKingMove(Vec2I newLocation) const
 
 void Queen::GenerateValidMoves()
 {
+	if (captured)
+		return;
 	validTiles.clear();
 	//rook
 	for (auto x = 0; x < board->rows; x++)

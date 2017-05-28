@@ -100,6 +100,8 @@ bool Rook::IsWayClear(Vec2I newLocation) const
 
 void Rook::GenerateValidMoves()
 {
+	if (captured)
+		return;
 	validTiles.clear();
 	for (auto x = 0; x < board->rows; x++)
 	{

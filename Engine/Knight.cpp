@@ -62,6 +62,8 @@ bool Knight::IsWayClear(Vec2I newLocation) const
 
 void Knight::GenerateValidMoves()
 {
+	if (captured)
+		return;
 	validTiles.clear();
 	int x = curLocation.x;
 	int y = curLocation.y;

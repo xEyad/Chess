@@ -46,7 +46,7 @@ std::wstring GetPieceSprite(pieceType type , Team team)
 			case GlobalEnums::NOT_DEFINED:
 				return L"NOT_DEFINED";
 			default:
-				break;
+				return L"ERROR";
 		}
 	}
 	else if (team == Team::WHITE)
@@ -68,7 +68,7 @@ std::wstring GetPieceSprite(pieceType type , Team team)
 			case GlobalEnums::NOT_DEFINED:
 				return L"NOT_DEFINED";
 			default:
-				break;
+				return L"ERROR";
 		}
 	}
 	else
@@ -138,10 +138,10 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 					case 63 - 2:
 						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WBishopSprite)))));
 						break;
-					case 63 - 3:
+					case 63 - 4:
 						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
 						break;
-					case 63 - 4:
+					case 63 - 3:
 						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WKingSprite)))));
 						break;
 					case 63 - 5:
@@ -251,6 +251,7 @@ void GameDirector::RerollTurn(std::shared_ptr<Piece> piece)
 void GameDirector::SaveGame(std::string saveFile)
 {
 	using namespace std;
+	//save pieces location
 	//open file
 	ofstream file(saveFile);
 
@@ -269,7 +270,10 @@ void GameDirector::SaveGame(std::string saveFile)
 		string line(type + ' ' + team + ' ' + location + ' ' + nStepsMoved );
 		file << line << " \n" ;
 	}	
+
+	file << "turn "<<gameTurn << "\n";
 	file.close();
+	
 }
 
 void GameDirector::QuickSaveGame()
@@ -282,13 +286,14 @@ void GameDirector::LoadGame(std::string saveFile)
 	using namespace std;
 	//open file
 	ifstream loadFile(saveFile);
+
 	//check if its there
 	if (loadFile)
 	{
 		//clear remove all pieces from the game
 		pieces.clear();
 		board.ResetAllTiles();		
-		string type,team,locationX, locationY,nStepsMoved;
+		string type,team,locationX, locationY,nStepsMoved, turn;
 		int round = 0;
 	
 		//Read operation
@@ -341,10 +346,20 @@ void GameDirector::LoadGame(std::string saveFile)
 				}
 				round = 0;
 			}
+
+			loadFile >> turn;
+			if (turn == "turn")
+				loadFile >> gameTurn;			
+			else
+			{
+				for each(auto c in turn)
+					loadFile.unget();   // remove the extracted characters 1 by 1
+				loadFile.unget();		// remove the white space behind it
+			}
 		}
 		GenerateMovesForAllPieces();
 		BKingLoc = getPiece(KING, Team::BLACK)->Locate();
-		WKingLoc = getPiece(KING, Team::WHITE)->Locate();
+		WKingLoc = getPiece(KING, Team::WHITE)->Locate();		
 		loadFile.close();
 	}
 }
@@ -357,6 +372,7 @@ void GameDirector::QuickLoadGame()
 void GameDirector::MarkForDestruction(std::shared_ptr<Piece> pieceToDestroy)
 {
 	this->pieceToDestroy = pieceToDestroy;
+	pieceToDestroy->ClearValideTiles();
 }
 
 void GameDirector::RemoveDestructionMark()
@@ -376,19 +392,22 @@ void GameDirector::SetStage(bool debugMode)
 	if (debugMode)
 	{
 		board.DrawPieces(gfx);	
+		board.DrawLabels(gfx, Colors::White);
+
 	}
 	else //release mode
 	{
 		board.DrawSprite(gfx);
 		board.DrawPiecesSprite(gfx);
-	}
+		board.DrawLabels(gfx, Colors::White);
 
-	board.DrawGrid(gfx, Colors::LightGray, { 20,21 });
+	}
+	board.DrawGrid(gfx, Colors::LightGray);
 	if (promotionMode)
 	{
 		DrawPawnPromotionScreen(mouse.GetPos(), luckyPawn->GetTeam(), Colors::Green, Colors::Black);
 	}
-	else
+	else //which is whatever will be drawn
 	{
 		if (selectionMode)
 		{
@@ -406,8 +425,12 @@ void GameDirector::SetStage(bool debugMode)
 			highlight = Colors::Red;
 
 		board.HighlightTile(gfx, mouse.GetPos(), highlight);
+		DrawWhoseTurn(Colors::Green);
+		DrawTurn(Colors::Orange);
+		DrawThreatWarning(Colors::Green);
 	}
 	//DrawStartMenu(mouse.GetPos());
+
 }
 
 void GameDirector::DrawStartMenu(Vec2I mousePos)
@@ -489,6 +512,36 @@ void GameDirector::DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team
 	}
 }
 
+void GameDirector::DrawWhoseTurn(Color clr)
+{
+	switch (WhoseTurn())
+	{
+		case Team::BLACK:
+			//gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
+			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, font, clr);
+			break;
+		case Team::WHITE:
+			//gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
+			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, font, clr);
+			break;
+		default:
+			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, font, Colors::Red);
+			break;
+	}
+}
+
+void GameDirector::DrawTurn(Color clr)
+{
+	std::wstring turnNumber = std::wstring(L"Turn ") + std::to_wstring(getTurn());
+	gfx.DrawText(turnNumber, { 0.0f,0.0f }, font, clr );
+}
+
+void GameDirector::DrawThreatWarning(Color clr)
+{
+	if (!AreKingsSafe())
+		gfx.DrawText(L"King is under Threat", { Graphics::ScreenWidth / 2 - 80.0f,0.0f }, TextSurface::Font(L"times", 15.0f), clr);
+}
+
 void GameDirector::HandleInput(bool cheatMode)
 {
 	if (promotionMode)
@@ -529,7 +582,7 @@ void GameDirector::HandleInput(bool cheatMode)
 	else 
 	{
 		static int clickCounter = 0;
-		static std::shared_ptr<Tile> t1, t2;
+		static std::shared_ptr<Board::Tile> t1, t2;
 
 		//do highlights
 		if (clickCounter == 1)
@@ -591,7 +644,7 @@ void GameDirector::HandleInput(bool cheatMode)
 										RerollTurn(pieceInT1);
 									}
 								}
-								else if (DoEnPassant(pieceInT1, t2))
+								else if (DoEnPassant(pieceInT1, t2->location))
 								{
 									gameTurn++;
 									GenerateMovesForAllPieces();
@@ -630,7 +683,7 @@ void GameDirector::HandleInput(bool cheatMode)
 										RerollTurn(pieceInT1);
 									}
 								}
-								else if (DoEnPassant(pieceInT1, t2))
+								else if (DoEnPassant(pieceInT1, t2->location))
 								{									
 									gameTurn++;
 									GenerateMovesForAllPieces();
@@ -676,7 +729,7 @@ void GameDirector::HandleInput(bool cheatMode)
 										RerollTurn(pieceInT1);
 									}
 								}
-								else if (DoEnPassant(pieceInT1, t2))
+								else if (DoEnPassant(pieceInT1, t2->location))
 								{
 									gameTurn++;	//turn ends
 									GenerateMovesForAllPieces();
@@ -716,7 +769,7 @@ void GameDirector::HandleInput(bool cheatMode)
 										RerollTurn(pieceInT1);
 									}
 								}
-								else if (DoEnPassant(pieceInT1, t2))
+								else if (DoEnPassant(pieceInT1, t2->location))
 								{
 									gameTurn++;	//turn ends
 									GenerateMovesForAllPieces();
@@ -851,8 +904,9 @@ bool GameDirector::DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Pie
 		return false;
 }
 
-bool GameDirector::DoEnPassant(std::shared_ptr<Piece> piece, std::shared_ptr<Tile> tile)
+bool GameDirector::DoEnPassant(std::shared_ptr<Piece> piece, Vec2I tileLoc)
 {
+	auto tile = board.GetTile(tileLoc);
 	if (std::dynamic_pointer_cast<Pawn>(piece))
 	{
 		auto pawn = std::dynamic_pointer_cast<Pawn>(piece);
@@ -1049,6 +1103,7 @@ void GameDirector::CheckKingsSafety()
 		//check if any king under threat
 		for (auto itr = piece->getValidTiles().begin(); itr < piece->getValidTiles().end(); itr++)
 		{
+			
 			if (*itr == BKingLoc)
 			{
 				BkingUnderThreat = true;

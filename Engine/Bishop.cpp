@@ -198,6 +198,8 @@ bool Bishop::IsWayClear(int newLocation) const
 
 void Bishop::GenerateValidMoves()
 {
+	if (captured)
+		return;
 	validTiles.clear();
 	//x increases
 	for (int upY = curLocation.y, downY = upY,  x = curLocation.x; x < board->rows; x++, upY--,downY++)

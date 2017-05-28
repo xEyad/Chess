@@ -161,11 +161,18 @@ public:
 		return PutAt(TransLocation(newLocation));
 	}
 	//use for special cases only
+
 	virtual void AddValidTile(Vec2I tileLocation)
 	{
 		validTiles.push_back(tileLocation);
 	}
-
+	//used after destroying a piece (or marking it)
+	virtual void ClearValideTiles()
+	{
+		
+		
+		validTiles.clear();
+	}
 	
 	
 	/*struct CapturedPiece

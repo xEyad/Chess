@@ -4,8 +4,8 @@
 #include <iostream>
 #include "GameDirector.h"
 
-const int Tile::HEIGHT = 80;
-const int Tile::WIDTH = 80;
+const int Board::Tile::HEIGHT = 80;
+const int Board::Tile::WIDTH = 80;
 Board::Board(int rows, int columns, Surface* const sprite)
 	:
 	rows(rows),
@@ -41,7 +41,16 @@ Board::Board(int rows, int columns, Surface* const sprite)
 
 }
 
-std::shared_ptr<Tile> Board::GetTile(Vec2I location) const
+Board::Board(Board&& board)
+	:
+	rows(board.rows),
+	columns(board.columns),
+	director(board.director),
+	sprite(board.sprite),
+	boardTiles(std::move(board.boardTiles)),
+	sprSurf(std::move(board.sprSurf))
+{	}
+std::shared_ptr<Board::Tile> Board::GetTile(Vec2I location) const
 {
 	for each (std::shared_ptr<Tile> t in boardTiles)
 	{
@@ -50,7 +59,7 @@ std::shared_ptr<Tile> Board::GetTile(Vec2I location) const
 	}
 	return nullptr;
 }
-std::shared_ptr<Tile> Board::GetTileByMouse(Vec2I mousePos) const
+std::shared_ptr<Board::Tile> Board::GetTileByMouse(Vec2I mousePos) const
 {
 	//check if its inside any tile
 	int xx = 0;
@@ -76,7 +85,7 @@ std::shared_ptr<Tile> Board::GetTileByMouse(Vec2I mousePos) const
 	}
 	return nullptr;
 }
-const Tile::Status Board::GetTileState(Vec2I location) const
+const Board::Tile::Status Board::GetTileState(Vec2I location) const
 {
 	if (IsInsideTheBoard(location))
 		return GetTile(location)->curState;
@@ -132,7 +141,7 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 
 		if (p != nullptr)
 		{
-			//p->SendToPrison(); //should be deleted
+			p->SendToPrison(); //should be deleted
 
 		   //if captured piece is KING
 			if (p->GetType() == KING)
@@ -245,6 +254,37 @@ void Board::DrawGrid(Graphics & gfx, Color edgesClr) const
 		}
 	}
 }
+
+void Board::DrawLabels(Graphics & gfx, Color labelsClr) const
+{
+	TextSurface::Font fonto(L"times", 15.0f);
+
+	for (int cols = 0; cols < 8; cols++)
+	{
+		Vec2I start(topLeft.x+35,topLeft.y);
+		int offSetX = Tile::WIDTH;
+		int offSetY = -21;
+
+		Vec2I topRowLabels(start.x + offSetX*cols, start.y + offSetY); 
+		Vec2I botRowLabels(topRowLabels.x, start.y - offSetY * 4 - 7 + topRowLabels.y + Tile::HEIGHT * (columns -1));
+
+		gfx.DrawText(std::to_wstring(cols), topRowLabels, fonto, labelsClr);
+		gfx.DrawText(std::to_wstring(cols), botRowLabels, fonto, labelsClr);
+	}
+	for (int rows = 0; rows < 8; rows++)
+	{
+		Vec2I start(topLeft.x , topLeft.y + 35);
+		int offSetX = -20;
+		int offSetY = Tile::HEIGHT;
+
+		Vec2I topRowLabels(start.x + offSetX, start.y + offSetY*rows); 
+		Vec2I botRowLabels(topRowLabels.x + Tile::WIDTH * (this->rows - 1) - offSetX * 5 + 3, topRowLabels.y);
+
+		gfx.DrawText(std::to_wstring(rows), topRowLabels, fonto, labelsClr);
+		gfx.DrawText(std::to_wstring(rows), botRowLabels, fonto, labelsClr);
+	}
+}
+
 
 void Board::DrawSprite(Graphics &gfx) const
 {	

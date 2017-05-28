@@ -23,6 +23,8 @@
 #include "Piece.h"
 #include "ChiliWin.h"
 #include <random>
+#include <iostream>
+#include "Pawn.h"
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -72,26 +74,6 @@ void Game::ComposeFrame()
 	Director.SetStage();
 #endif // DEBUG
 
-	switch (Director.WhoseTurn())
-	{
-		case Team::BLACK:
-			//gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
-			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Green);
-			break;
-		case Team::WHITE:
-			//gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
-			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, fontus, Colors::Green);
-			break;
-		default:
-			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, fontus, Colors::Red);
-			break;
-	}
-
-	if (!Director.AreKingsSafe())
-		gfx.DrawText(L"King is under Threat", {Graphics::ScreenWidth/2 - 80.0f,0.0f }, TextSurface::Font(L"times", 15.0f), Colors::Green);
-	
-	std::wstring turnNumber = std::wstring(L"Turn ") + std::to_wstring(Director.getTurn());
-	gfx.DrawText(turnNumber, { 0.0f,0.0f }, fontus, Colors::Orange);
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		
