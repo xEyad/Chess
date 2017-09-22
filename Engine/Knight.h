@@ -1,7 +1,6 @@
 #pragma once
 #include "Piece.h"
-class Knight :
-	public Piece
+class Knight :	public Piece
 {
 public:
 	Knight(Vec2I location, Team team, Board* const board, Surface* const sprite);
@@ -14,10 +13,6 @@ public:
 	//actions
 	virtual void GenerateValidMoves();
 
-private:
-	//getters
-	virtual bool IsWayClear(Vec2I newLocation) const; //isn't used
-	virtual bool IsWayClear(int newLocation) const;
 private:
 	static int nWhiteLeft;
 	static int nBlackLeft;

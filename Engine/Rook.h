@@ -1,5 +1,6 @@
 #pragma once
 #include "Piece.h"
+#include "RookLeg.h"
 class Rook : public Piece
 {
 public:
@@ -27,10 +28,6 @@ public:
 		return PutAt(TransLocation(newLocation));
 	}
 	virtual void GenerateValidMoves();
-private:
-	//getters
-	virtual bool IsWayClear(int newLocation) const;	
-	virtual bool IsWayClear(Vec2I newLocation) const;
 
 private:
 	static int nWhiteLeft;

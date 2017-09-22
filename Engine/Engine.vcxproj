@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="BiDirection.h" />
     <ClInclude Include="Bishop.h" />
+    <ClInclude Include="BishopLeg.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="ChiliException.h" />
@@ -155,15 +156,19 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="King.h" />
+    <ClInclude Include="KingLeg.h" />
     <ClInclude Include="Knight.h" />
+    <ClInclude Include="LocationValidator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="Queen.h" />
+    <ClInclude Include="QueenLeg.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rook.h" />
+    <ClInclude Include="RookLeg.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TextSurface.h" />
     <ClInclude Include="Timer.h" />
@@ -171,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bishop.cpp" />
+    <ClCompile Include="BishopLeg.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="DXErr.cpp" />
@@ -180,13 +186,17 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="King.cpp" />
+    <ClCompile Include="KingLeg.cpp" />
     <ClCompile Include="Knight.cpp" />
+    <ClCompile Include="LocationValidator.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Queen.cpp" />
+    <ClCompile Include="QueenLeg.cpp" />
     <ClCompile Include="Rook.cpp" />
+    <ClCompile Include="RookLeg.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TextSurface.cpp" />
     <ClCompile Include="Timer.cpp" />

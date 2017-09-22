@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{7449bcf3-02f1-4956-8a3b-bd2ca1a2ce1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Pieces\utility">
+      <UniqueIdentifier>{f0353136-8808-482c-8cae-355c270adce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pieces\utility">
+      <UniqueIdentifier>{3783e5ec-cbda-4440-972d-0fef63479ab2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -117,6 +123,21 @@
     <ClInclude Include="TextSurface.h">
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
+    <ClInclude Include="LocationValidator.h">
+      <Filter>Header Files\Pieces\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="RookLeg.h">
+      <Filter>Header Files\Pieces\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="QueenLeg.h">
+      <Filter>Header Files\Pieces\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="KingLeg.h">
+      <Filter>Header Files\Pieces\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="BishopLeg.h">
+      <Filter>Header Files\Pieces\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -178,6 +199,21 @@
     </ClCompile>
     <ClCompile Include="GDIPlusManager.cpp">
       <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="LocationValidator.cpp">
+      <Filter>Source Files\Pieces\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="BishopLeg.cpp">
+      <Filter>Source Files\Pieces\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="QueenLeg.cpp">
+      <Filter>Source Files\Pieces\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="RookLeg.cpp">
+      <Filter>Source Files\Pieces\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="KingLeg.cpp">
+      <Filter>Source Files\Pieces\utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

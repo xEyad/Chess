@@ -40,9 +40,6 @@ protected:
 	}
 	virtual ~Piece(){}
 
-	//getters
-	virtual bool IsWayClear(Vec2I newLocation) const = 0; //it checks if the way to the new location (not the newLocation itself) contains other pieces or not
-	virtual bool IsWayClear(int newLocation) const = 0;//support	
 	inline int TransLocation(Vec2I location) const
 	{
 		return location.y * board->rows + location.x;

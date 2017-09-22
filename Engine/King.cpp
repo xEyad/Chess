@@ -34,29 +34,11 @@ int King::HowManyLeft() const
 
 bool King::IsValidLocation(Vec2I newLocation) const
 {
-	if (board->IsInsideTheBoard(newLocation))
-	{
-		int xDiff = abs(newLocation.x - curLocation.x);
-		int yDiff = abs(newLocation.y - curLocation.y);
-		if (xDiff <= 1 && yDiff <= 1 && board->GetTileState(newLocation).pieceTeam != team)
-			return true;
-		else
-			return false;
-	}
-	else
-		return false;
+	return KingLeg(curLocation, enemyTeam, *board).IsValidLocation(newLocation);
 }
 bool King::IsValidLocation(int newLocation) const
 {
 	return IsValidLocation(TransLocation(newLocation));
-}
-bool King::IsWayClear(Vec2I newLocation) const
-{
-	return false;
-}
-bool King::IsWayClear(int newLocation) const
-{
-	return IsWayClear(TransLocation(newLocation));
 }
 
 

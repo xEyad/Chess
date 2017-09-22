@@ -52,10 +52,6 @@ bool Knight::IsValidLocation(Vec2I newLocation) const
 		return false;
 }
 
-bool Knight::IsWayClear(Vec2I newLocation) const
-{
-		return false;
-}
 
 
 
@@ -113,8 +109,4 @@ int Knight::nBlackLeft = 0;
 bool Knight::IsValidLocation(int newLocation) const
 {
 	return IsValidLocation(TransLocation(newLocation));
-}
-bool Knight::IsWayClear(int newLocation) const
-{
-	return IsWayClear(TransLocation(newLocation));
 }

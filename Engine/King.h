@@ -1,5 +1,6 @@
 #pragma once
 #include "Piece.h"
+#include "KingLeg.h"
 class King :public Piece
 {
 public:
@@ -30,10 +31,6 @@ public:
 		return PutAt(TransLocation(newLocation));
 	}
 
-private:
-	//getters
-	virtual bool IsWayClear(Vec2I newLocation) const;//will be used only in the special case
-	virtual bool IsWayClear(int newLocation) const;
 private:
 	static int nWhiteLeft;
 	static int nBlackLeft;

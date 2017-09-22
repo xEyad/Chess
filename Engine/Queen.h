@@ -1,5 +1,6 @@
 #pragma once
 #include "Piece.h"
+#include "QueenLeg.h"
 class Queen :
 	public Piece
 {
@@ -15,13 +16,6 @@ public:
 	//actions
 	virtual void GenerateValidMoves();
 
-private:
-	//getters
-	virtual bool IsWayClear(Vec2I newLocation) const; 
-	virtual bool IsWayClear(int newLocation) const;
-	bool isValidRookMove(Vec2I newLocation) const;
-	bool isValidBishopMove(Vec2I newLocation) const;
-	bool isKingMove(Vec2I newLocation) const;
 
 private:
 	static int nWhiteLeft;
