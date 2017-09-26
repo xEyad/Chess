@@ -66,6 +66,12 @@ public:
 	Board(Board&& board); //move constructor
 	Board(Board& board) = delete;
 	//getters
+	const std::vector<std::shared_ptr<Tile>>* GetAllTiles() const
+	{
+		return &boardTiles;
+	}
+	static int GetTileWidth();
+	static int GetTileHeight();
 	std::shared_ptr<Tile> GetTile(Vec2I location) const; 
 	std::shared_ptr<Tile> GetTileByMouse(Vec2I mousePos) const;
 	const Tile::Status GetTileState(Vec2I location) const;	
@@ -101,8 +107,6 @@ private:
 	std::vector<std::shared_ptr<Tile>> boardTiles; //array of shared pointers of type Tile 
 	GameDirector* director;
 	Vec2I topLeft = { 20,21 }; //top left point that drawing of the board starts at
-	Surface*  sprite;
-	std::vector<Color> sprSurf;
 public:
 	const int rows; 
 	const int columns;

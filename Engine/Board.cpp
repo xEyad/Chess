@@ -4,14 +4,15 @@
 #include <iostream>
 #include "GameDirector.h"
 
+#include "BoardPainter.h"
+#include "PiecesPainter.h"
 const int Board::Tile::HEIGHT = 80;
 const int Board::Tile::WIDTH = 80;
 Board::Board(int rows, int columns, Surface* const sprite)
 	:
 	rows(rows),
 	columns(columns),
-	director(nullptr),
-	sprite(sprite)
+	director(nullptr)
 {
 	//i should give tiles names (a2,b5) ... but thats for later
 
@@ -31,13 +32,6 @@ Board::Board(int rows, int columns, Surface* const sprite)
 		if (i > 1) //so that i goes 0-1 to alternate between white and black
 			i = 0;
 	}
-	for (unsigned int x = 0; x < sprite->GetWidth(); x++)
-	{
-		for (unsigned int y = 0; y < sprite->GetHeight(); y++)
-		{
-			sprSurf.push_back(sprite->GetPixel(x, y));
-		}
-	}
 
 }
 
@@ -46,10 +40,19 @@ Board::Board(Board&& board)
 	rows(board.rows),
 	columns(board.columns),
 	director(board.director),
-	sprite(board.sprite),
-	boardTiles(std::move(board.boardTiles)),
-	sprSurf(std::move(board.sprSurf))
+	boardTiles(std::move(board.boardTiles))
 {	}
+
+int Board::GetTileWidth() 
+{
+	return Tile::WIDTH;
+}
+
+int Board::GetTileHeight() 
+{
+	return Tile::HEIGHT;
+}
+
 std::shared_ptr<Board::Tile> Board::GetTile(Vec2I location) const
 {
 	for each (std::shared_ptr<Tile> t in boardTiles)
@@ -214,45 +217,14 @@ void Board::ResetTile(Vec2I TileLocation)
 
 void Board::DrawGrid( Graphics & gfx, Color edgesClr, Vec2I TopLeft)
 {
-	int xx = 0;
-	int yy = 0;
-	topLeft = TopLeft;
-	Vec2I screenLocation = topLeft;
-	for (auto i = boardTiles.cbegin(); i < boardTiles.cend(); i++)
-	{
-		//each tile location is topLeft corner of any Rect
-		Vec2I startPoint(screenLocation.x + xx,screenLocation.y + yy);
-		Vec2I endPoint(startPoint.x + Tile::WIDTH, startPoint.y + Tile::HEIGHT);
-		gfx.DrawRect(RectI(startPoint, endPoint), edgesClr);
-		xx += Tile::WIDTH;
-		if ((*i)->location.x % (rows-1) == 0 && (*i)->location.x != 0) //first one = 0, if we pass the 7 then its new row
-		{
-			//go to the beginning and down a little bit
-			xx = 0;
-			yy += Tile::HEIGHT;
-		}
-	}
+	static BoardPainter painter(gfx);
+	painter.DrawGrid(*this, TopLeft, edgesClr);
 }
 
 void Board::DrawGrid(Graphics & gfx, Color edgesClr) const
 {
-	int xx = 0;
-	int yy = 0;
-	Vec2I screenLocation = topLeft;
-	for (auto i = boardTiles.cbegin(); i < boardTiles.cend(); i++)
-	{
-		//each tile location is topLeft corner of any Rect
-		Vec2I startPoint(screenLocation.x + xx, screenLocation.y + yy);
-		Vec2I endPoint(startPoint.x + Tile::WIDTH, startPoint.y + Tile::HEIGHT);
-		gfx.DrawRect(RectI(startPoint, endPoint), edgesClr);
-		xx += Tile::WIDTH;
-		if ((*i)->location.x % (rows - 1) == 0 && (*i)->location.x != 0) //first one = 0, if we pass the 7 then its new row
-		{
-			//go to the beginning and down a little bit
-			xx = 0;
-			yy += Tile::HEIGHT;
-		}
-	}
+	static BoardPainter painter(gfx);
+	painter.DrawGrid(*this, topLeft, edgesClr);	
 }
 
 void Board::DrawLabels(Graphics & gfx, Color labelsClr) const
@@ -288,15 +260,8 @@ void Board::DrawLabels(Graphics & gfx, Color labelsClr) const
 
 void Board::DrawSprite(Graphics &gfx) const
 {	
-	auto i = sprSurf.begin();
-	for (unsigned int x = 0; x < sprite->GetWidth(); x++)
-	{
-		for (unsigned int y = 0; y < sprite->GetHeight(); y++)
-		{
-			gfx.PutPixel(x, y, (*i++));
-		}
-	}
-
+	static BoardPainter painter(gfx);
+	painter.DrawSprite(2);
 }
 
 void Board::HighlightTile(Graphics & gfx, Vec2I mousePos, Color edgesClr) const
@@ -334,70 +299,12 @@ void Board::HighlightTiles(Graphics & gfx, std::vector<Vec2I> tilesPos, Color ed
 
 void Board::DrawPiecesSprite( Graphics & gfx) const
 {
-	Color c;
-	Vec2I screenLocation = topLeft;
-	for (auto pPiece = director->pieces.cbegin(); pPiece < director->pieces.cend() ; pPiece++)
-	{
-		if (IsInsideTheBoard((*pPiece)->Locate()))
-		{
-			//top left point of the tile which the piece is on
-			Vec2I topLeftPoint(screenLocation.x + (*pPiece)->Locate().x * Tile::WIDTH  , screenLocation.y + (*pPiece)->Locate().y * Tile::HEIGHT  );
-			
-			int xPieceSpr = 0;
-			int yPieceSpr = 0;
-			for (unsigned int x = topLeftPoint.x; x < (*pPiece)->GetSprite()->GetWidth()-1 + topLeftPoint.x; x++)
-			{
-				for (unsigned int y = topLeftPoint.y; y < (*pPiece)->GetSprite()->GetHeight()-1 + topLeftPoint.y; y++)
-				{								
-					gfx.PutPixelAlphaClipped(x, y, (*pPiece)->GetSprite()->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-					yPieceSpr++;				
-				}
-				xPieceSpr++;
-				yPieceSpr = 0;
-			}
-		}
-		else
-			continue;
-	}
+	static PiecesPainter pp(gfx, director->getPieces());
+	pp.DrawPiecesSprites(topLeft,1);	
 }
 void Board::DrawPieces(Graphics & gfx) const
 {
-	Color c;
-	Vec2I screenLocation = topLeft;
-	for (auto i = director->pieces.cbegin(); i < director->pieces.cend(); i++)
-	{
-		if (IsInsideTheBoard((*i)->Locate()))
-		{
-			//give it a color based on its type
-			switch ((*i)->GetType())
-			{
-				case QUEEN:
-					c = Colors::Red;
-					break;
-				case KING:
-					c = Colors::Magenta;
-					break;
-				case BISHOP:
-					c = Colors::Cyan;
-					break;
-				case ROOK:
-					c = Colors::Yellow;
-					break;
-				case PAWN:
-					c = Colors::Green;
-					break;
-				case KNIGHT:
-					c = Colors::LightGray;
-					break;
-				default:
-					c = Colors::Black;
-					break;
-			}
-			Vec2I centerPoint(screenLocation.x + (*i)->Locate().x * Tile::WIDTH + (Tile::WIDTH / 2), screenLocation.y + (*i)->Locate().y * Tile::HEIGHT + (Tile::HEIGHT / 2));
-			int size = Tile::WIDTH / 4;
-			RectI r(centerPoint.y - size, centerPoint.y + size, centerPoint.x - size, centerPoint.x + size);
-			gfx.DrawColoredRect(r, c);
-		}
-	}
+	static PiecesPainter pp(gfx, director->getPieces());
+	pp.DrawPiecesSquares(topLeft);
 }
 

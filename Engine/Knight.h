@@ -3,7 +3,7 @@
 class Knight :	public Piece
 {
 public:
-	Knight(Vec2I location, Team team, Board* const board, Surface* const sprite);
+	Knight(Vec2I location, Team team, Board* const board);
 	~Knight();
 	//getters
 	virtual int HowManyLeft() const; //should return the number of pieces left in this team

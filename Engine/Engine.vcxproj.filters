@@ -40,6 +40,18 @@
     <Filter Include="Source Files\Pieces\utility">
       <UniqueIdentifier>{3783e5ec-cbda-4440-972d-0fef63479ab2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Game Screens">
+      <UniqueIdentifier>{a606b963-6465-4c0e-8b3b-103136e98073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Screens">
+      <UniqueIdentifier>{9fb1fd29-ec50-40d1-b1f0-652e5f5f7a96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Painters">
+      <UniqueIdentifier>{3af1b94f-1235-4b89-a317-10ed93050bdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Painters">
+      <UniqueIdentifier>{fb4dc267-c6c3-4a6c-9dfb-712dc2d24254}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -138,6 +150,30 @@
     <ClInclude Include="BishopLeg.h">
       <Filter>Header Files\Pieces\utility</Filter>
     </ClInclude>
+    <ClInclude Include="GameScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseInputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PromotionScreen.h">
+      <Filter>Header Files\Game Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="WhitePromotionScreen.h">
+      <Filter>Header Files\Game Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackPromotionScreen.h">
+      <Filter>Header Files\Game Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Painter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoardPainter.h">
+      <Filter>Header Files\Painters</Filter>
+    </ClInclude>
+    <ClInclude Include="PiecesPainter.h">
+      <Filter>Header Files\Painters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -214,6 +250,30 @@
     </ClCompile>
     <ClCompile Include="KingLeg.cpp">
       <Filter>Source Files\Pieces\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseInputHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WhitePromotionScreen.cpp">
+      <Filter>Source Files\Game Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="PromotionScreen.cpp">
+      <Filter>Source Files\Game Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackPromotionScreen.cpp">
+      <Filter>Source Files\Game Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="Painter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoardPainter.cpp">
+      <Filter>Source Files\Painters</Filter>
+    </ClCompile>
+    <ClCompile Include="PiecesPainter.cpp">
+      <Filter>Source Files\Painters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

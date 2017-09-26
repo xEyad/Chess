@@ -4,7 +4,7 @@
 class Rook : public Piece
 {
 public:
-	Rook(Vec2I location, Team team, Board* const board, Surface* const sprite);
+	Rook(Vec2I location, Team team, Board* const board);
 	virtual ~Rook();
 	
 	//getters

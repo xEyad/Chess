@@ -4,7 +4,7 @@
 class Bishop : public Piece
 {
 public:
-	Bishop(Vec2I location, Team team, Board *const board, Surface* const sprite);
+	Bishop(Vec2I location, Team team, Board *const board);
 	~Bishop();
 
 	//getters 

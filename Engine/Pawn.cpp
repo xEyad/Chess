@@ -1,7 +1,7 @@
 #include "Pawn.h"
-Pawn::Pawn(Vec2I location, Team team, Board *const board, Surface* const sprite, int nStepsMoved)
+Pawn::Pawn(Vec2I location, Team team, Board *const board, int nStepsMoved)
 	:
-	Piece(location, team, PAWN, board, sprite),
+	Piece(location, team, PAWN, board),
 	stepsCounter(nStepsMoved)
 {
 	//increment n of pieces

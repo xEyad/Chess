@@ -1,7 +1,7 @@
 #include "Rook.h"
-Rook::Rook(Vec2I location, Team team, Board* const board, Surface* const sprite)
+Rook::Rook(Vec2I location, Team team, Board* const board)
 	:
-	Piece(location, team, ROOK, board,sprite)
+	Piece(location, team, ROOK, board)
 {
 	//increment number of pieces
 	switch (team)

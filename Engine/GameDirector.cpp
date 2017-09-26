@@ -8,83 +8,12 @@
 #include "Knight.h"
 
 
-
-#define WPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnW.png"
-#define BPawnSprite    L"Resources\\Chess Pieces\\Wood\\PawnB.png"
-#define WRookSprite    L"Resources\\Chess Pieces\\Wood\\RookW.png"
-#define BRookSprite    L"Resources\\Chess Pieces\\Wood\\RookB.png"
-#define WKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightW.png"
-#define BKnightSprite  L"Resources\\Chess Pieces\\Wood\\KnightB.png"
-#define WBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopW.png"
-#define BBishopSprite  L"Resources\\Chess Pieces\\Wood\\BishopB.png"
-#define WQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenW.png"
-#define BQueenSprite   L"Resources\\Chess Pieces\\Wood\\QueenB.png"
-#define WKingSprite    L"Resources\\Chess Pieces\\Wood\\KingW.png"
-#define BKingSprite    L"Resources\\Chess Pieces\\Wood\\KingB.png"
-
-#define WPromotionScreen L"Resources\\Screens\\Promotion Screen Wood White.png"
-#define BPromotionScreen L"Resources\\Screens\\Promotion Screen Wood Black.png"
-
-std::wstring GetPieceSprite(pieceType type , Team team)
-{
-	if (team == Team::BLACK)
-	{
-		switch (type)
-		{
-			case GlobalEnums::PAWN:
-				return BPawnSprite;
-			case GlobalEnums::KNIGHT:
-				return BKnightSprite;
-			case GlobalEnums::ROOK:
-				return BRookSprite;
-			case GlobalEnums::BISHOP:
-				return BBishopSprite;
-			case GlobalEnums::QUEEN:
-				return BQueenSprite;
-			case GlobalEnums::KING:
-				return BKingSprite;
-			case GlobalEnums::NOT_DEFINED:
-				return L"NOT_DEFINED";
-			default:
-				return L"ERROR";
-		}
-	}
-	else if (team == Team::WHITE)
-	{
-		switch (type)
-		{
-			case GlobalEnums::PAWN:
-				return WPawnSprite;
-			case GlobalEnums::KNIGHT:
-				return WKnightSprite;
-			case GlobalEnums::ROOK:
-				return WRookSprite;
-			case GlobalEnums::BISHOP:
-				return WBishopSprite;
-			case GlobalEnums::QUEEN:
-				return WQueenSprite;
-			case GlobalEnums::KING:
-				return WKingSprite;
-			case GlobalEnums::NOT_DEFINED:
-				return L"NOT_DEFINED";
-			default:
-				return L"ERROR";
-		}
-	}
-	else
-	{
-		return L"ERROR";
-	}
-}
-
 GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	:
 	board(board),
 	gfx(gfx),
 	mouse(mouse),
-	font(L"times", 20.0f),
-	BpromotionScreen(new Surface(Surface::FromFile(BPromotionScreen))),
-	WpromotionScreen(new Surface(Surface::FromFile(WPromotionScreen)))
+	font(L"times", 20.0f)
 {
 	//Rows are Y , Columns are X
 	board_rows = board.rows;
@@ -98,60 +27,60 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 			int location = row * boardWidth + col; //for easier manipulation			
 												   
 			if (location >= 8 && location <= 15)
-				pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BPawnSprite)))));
+				pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ col,row }, Team::BLACK, &board)));
 			else if (location >= 48 && location <= 55)
-				pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WPawnSprite)))));
+				pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ col,row }, Team::WHITE, &board )));
 			else
 			{
 				switch (location)
 				{
 					case 0:
-						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BRookSprite)))));
+						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 1:
-						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BKnightSprite)))));
+						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 2:
-						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BBishopSprite)))));
+						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 3:
-						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BQueenSprite)))));
+						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 4:
-						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BKingSprite)))));
+						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 5:
-						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BBishopSprite)))));
+						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::BLACK, &board)));
 						break;
 					case 6:
-						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BKnightSprite)))));
+						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 7:
-						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::BLACK, &board, new Surface(Surface::FromFile(BRookSprite)))));
+						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::BLACK, &board )));
 						break;
 					case 63 - 0:
-						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WRookSprite)))));
+						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 1:
-						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WKnightSprite)))));
+						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 2:
-						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WBishopSprite)))));
+						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 4:
-						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
+						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 3:
-						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WKingSprite)))));
+						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 5:
-						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WBishopSprite)))));
+						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 6:
-						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WKnightSprite)))));
+						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					case 63 - 7:
-						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::WHITE, &board, new Surface(Surface::FromFile(WRookSprite)))));
+						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ col,row }, Team::WHITE, &board )));
 						break;
 					default:
 						break;
@@ -169,9 +98,7 @@ GameDirector::GameDirector(Board & board, Graphics & gfx, Mouse & mouse, std::st
 	board(board),
 	gfx(gfx),
 	mouse(mouse),
-	font(L"times", 20.0f),
-	BpromotionScreen(new Surface(Surface::FromFile(BPromotionScreen))),
-	WpromotionScreen(new Surface(Surface::FromFile(WPromotionScreen)))
+	font(L"times", 20.0f)
 {
 	LoadGame(saveFile);
 }
@@ -204,6 +131,11 @@ std::shared_ptr<Piece> GameDirector::getPiece(GlobalEnums::pieceType type, Globa
 			return p;
 	}
 	return nullptr;
+}
+
+const std::vector<std::shared_ptr<Piece>>* GameDirector::getPieces() const
+{
+	return &pieces;
 }
 
 bool GameDirector::IsTileUnderThreatBy(Vec2I TileLocation, GlobalEnums::Team ThreatningTeam)
@@ -322,22 +254,22 @@ void GameDirector::LoadGame(std::string saveFile)
 				switch (pieceType)
 				{
 					case GlobalEnums::PAWN:
-						pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))), steps)));
+						pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ x,y }, Team, &board , steps)));
 						break;
 					case GlobalEnums::KNIGHT:
-						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ x,y }, Team, &board )));
 						break;
 					case GlobalEnums::ROOK:
-						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ x,y }, Team, &board )));
 						break;
 					case GlobalEnums::BISHOP:
-						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ x,y }, Team, &board )));
 						break;
 					case GlobalEnums::QUEEN:
-						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ x,y }, Team, &board )));
 						break;
 					case GlobalEnums::KING:
-						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ x,y }, Team, &board, new Surface(Surface::FromFile(GetPieceSprite(pieceType, Team))))));
+						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ x,y }, Team, &board )));
 						break;
 					case GlobalEnums::NOT_DEFINED:
 						break;
@@ -461,55 +393,31 @@ void GameDirector::DrawStartMenu(Vec2I mousePos)
 
 void GameDirector::DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team ,Color edgesClr, Color highlightClr)
 {
-	static Vec2I topLeft{ 20 + 340 - 179,20 + 340 - 99 };
-	static Vec2I botRight{ topLeft.x + 79 * 4,topLeft.y + 79 };
-
+	static int width = 79 * 4;
+	static int height = 79 ;
+	
 	if (team == Team::BLACK)
 	{
-		int xPieceSpr = 0;
-		int yPieceSpr = 0;
-		for (unsigned int x = topLeft.x; x < BpromotionScreen->GetWidth() + topLeft.x; x++)
-		{
-			for (unsigned int y = topLeft.y; y < BpromotionScreen->GetHeight() + topLeft.y; y++)
-			{				
-				gfx.PutPixelAlphaClipped(x, y, BpromotionScreen->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-				yPieceSpr++;
-			}
-			xPieceSpr++;
-			yPieceSpr = 0;
-		}
+		BlackPromotionScreen bps(width, height, gfx);
+		bps.Draw({ 20 + 80 * 2, 20 + 80 * 4 + 1 });
+		promotionRects = bps.PromotionRects();
 	}
+
 	else if (team == Team::WHITE)
 	{
-		int xPieceSpr = 0;
-		int yPieceSpr = 0;
-		for (unsigned int x = topLeft.x; x < WpromotionScreen->GetWidth() + topLeft.x; x++)
-		{
-			for (unsigned int y = topLeft.y; y < WpromotionScreen->GetHeight() + topLeft.y; y++)
-			{				
-				gfx.PutPixelAlphaClipped(x, y, WpromotionScreen->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-				yPieceSpr++;
-			}
-			xPieceSpr++;
-			yPieceSpr = 0;
-		}
+		WhitePromotionScreen wps(width, height, gfx);
+		wps.Draw({ 20 + 80 * 2 ,20 + 80 * 3 + 1 });
+		promotionRects = wps.PromotionRects();
 	}
 
-	static RectI rook	({ topLeft.x 		 , topLeft.y }, { topLeft.x + 80	 , botRight.y });
-	static RectI knight ({ topLeft.x + 80	 , topLeft.y }, { topLeft.x + 80 * 2 , botRight.y });
-	static RectI bishop ({ topLeft.x + 80 * 2, topLeft.y }, { topLeft.x + 80 * 3 , botRight.y });
-	static RectI queen	({ topLeft.x + 80 * 3, topLeft.y }, { topLeft.x + 80 * 4 , botRight.y });
-	promotionRects = { rook,knight,bishop,queen };
-
-	gfx.DrawTextW(L"Choose The Type of promotion", {(float) topLeft.x - 20.0f,(float)topLeft.y - 40.0f }, font, highlightClr);
-	// check if mouse is inside any rect
+	//check if mouse is inside any rect	
 	for each (auto rec in promotionRects)
 	{
 		if (rec.Contains(mousPos))
 			gfx.DrawRect(rec, highlightClr);
 		else
 			gfx.DrawRect(rec, edgesClr);
-	}
+	}	
 }
 
 void GameDirector::DrawWhoseTurn(Color clr)
@@ -803,16 +711,16 @@ void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 		switch (type)
 		{
 			case GlobalEnums::KNIGHT:
-				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BKnightSprite)))));
+				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::BLACK, &board)));
 				break;
 			case GlobalEnums::ROOK:
-				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BRookSprite)))));
+				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::BLACK, &board)));
 				break;
 			case GlobalEnums::BISHOP:
-				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BBishopSprite)))));
+				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::BLACK, &board)));
 				break;
 			case GlobalEnums::QUEEN:
-				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::BLACK, &board, new Surface(Surface::FromFile(BQueenSprite)))));
+				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::BLACK, &board)));
 				break;
 		}
 	}
@@ -821,16 +729,16 @@ void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 		switch (type)
 		{
 			case GlobalEnums::KNIGHT:
-				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WKnightSprite)))));
+				pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ location }, Team::WHITE, &board)));
 				break;
 			case GlobalEnums::ROOK:
-				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WRookSprite)))));
+				pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ location }, Team::WHITE, &board)));
 				break;
 			case GlobalEnums::BISHOP:
-				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WBishopSprite)))));
+				pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ location }, Team::WHITE, &board)));
 				break;
 			case GlobalEnums::QUEEN:
-				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::WHITE, &board, new Surface(Surface::FromFile(WQueenSprite)))));
+				pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ location }, Team::WHITE, &board)));
 				break;
 		}
 	}

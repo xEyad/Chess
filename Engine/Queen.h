@@ -5,7 +5,7 @@ class Queen :
 	public Piece
 {
 public:
-	Queen(Vec2I location, Team team, Board* const board, Surface* const sprite);
+	Queen(Vec2I location, Team team, Board* const board);
 	~Queen();
 
 	//getters

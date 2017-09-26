@@ -1,9 +1,9 @@
 #include "Knight.h"
 
 
-Knight::Knight(Vec2I location, Team team, Board* const board, Surface* const sprite)
+Knight::Knight(Vec2I location, Team team, Board* const board)
 	:
-Piece(location, team, KNIGHT, board,sprite)
+Piece(location, team, KNIGHT, board)
 {
 	//increment number of pieces
 	switch (team)

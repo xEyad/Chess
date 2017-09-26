@@ -4,7 +4,7 @@
 class King :public Piece
 {
 public:
-	King(Vec2I location, Team team, Board* const board, Surface* const sprite);
+	King(Vec2I location, Team team, Board* const board);
 	~King();
 	//getters
 	virtual int HowManyLeft() const; //should return the number of pieces left in this team

@@ -1,8 +1,8 @@
 #include "Bishop.h"
 
-Bishop::Bishop(Vec2I location, Team team, Board *const board, Surface* const sprite)
+Bishop::Bishop(Vec2I location, Team team, Board *const board)
 	:
-	Piece(location, team, BISHOP, board,sprite)
+	Piece(location, team, BISHOP, board)
 {
 	//increment n of pieces
 	switch (team)

@@ -145,13 +145,16 @@
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="BishopLeg.h" />
     <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="BlackPromotionScreen.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardPainter.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameDirector.h" />
+    <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
@@ -161,8 +164,12 @@
     <ClInclude Include="LocationValidator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseInputHandler.h" />
+    <ClInclude Include="Painter.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Piece.h" />
+    <ClInclude Include="PiecesPainter.h" />
+    <ClInclude Include="PromotionScreen.h" />
     <ClInclude Include="Queen.h" />
     <ClInclude Include="QueenLeg.h" />
     <ClInclude Include="Rect.h" />
@@ -173,15 +180,19 @@
     <ClInclude Include="TextSurface.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vec2.h" />
+    <ClInclude Include="WhitePromotionScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="BishopLeg.cpp" />
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="BlackPromotionScreen.cpp" />
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BoardPainter.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDirector.cpp" />
+    <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -192,7 +203,11 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="MouseInputHandler.cpp" />
+    <ClCompile Include="Painter.cpp" />
     <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="PiecesPainter.cpp" />
+    <ClCompile Include="PromotionScreen.cpp" />
     <ClCompile Include="Queen.cpp" />
     <ClCompile Include="QueenLeg.cpp" />
     <ClCompile Include="Rook.cpp" />
@@ -200,6 +215,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TextSurface.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WhitePromotionScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FramebufferPS.hlsl">

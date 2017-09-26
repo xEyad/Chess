@@ -25,6 +25,8 @@
 #include <random>
 #include <iostream>
 #include "Pawn.h"
+#include "BoardPainter.h"
+#include "PiecesPainter.h"
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -73,7 +75,15 @@ void Game::ComposeFrame()
 #else
 	Director.SetStage();
 #endif // DEBUG
+	
+	/*BoardPainter s(gfx);
+	s.DrawSprite(4);
+	s.DrawGrid(chessBoard, { 20,21 });
 
+	PiecesPainter p(gfx, Director.getPieces());
+	p.DrawPiecesSprites({ 20,21 });*/
+
+	//BlackPromotionScreen(79 * 4, 79, gfx).Draw({ 20 + 80 * 2, 20 + 80 * 4 +1});
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		

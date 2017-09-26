@@ -1,7 +1,7 @@
 #include "King.h"
-King::King(Vec2I location, Team team, Board* const board, Surface* const sprite)
+King::King(Vec2I location, Team team, Board* const board)
 	:
-	Piece(location, team, KING, board,sprite)
+	Piece(location, team, KING, board)
 {
 	//increment number of pieces
 	switch (team)

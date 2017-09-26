@@ -1,7 +1,7 @@
 #include "Queen.h"
-Queen::Queen(Vec2I location, Team team, Board* const board, Surface* const sprite)
+Queen::Queen(Vec2I location, Team team, Board* const board)
 	:
-	Piece(location, team, QUEEN, board,sprite)
+	Piece(location, team, QUEEN, board)
 {
 	//increment number of pieces
 	switch (team)

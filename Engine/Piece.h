@@ -19,14 +19,13 @@ protected:
 		int stepsCounter = 0; //only used with pawn
 	}; //a variable here
 protected:
-	Piece(Vec2I location, Team team, pieceType type, Board* const board, Surface* const sprite)
+	Piece(Vec2I location, Team team, pieceType type, Board* const board)
 		:
 		curLocation(location),
 		oldLocation({-1,-1}),
 		team(team),
 		type(type),
-		board(board),
-		sprite(sprite)
+		board(board)
 	{
 		if (team == Team::BLACK)
 			enemyTeam = Team::WHITE;
@@ -79,10 +78,7 @@ public:
 	{
 		return captured;
 	}
-	 Surface* GetSprite() const
-	{
-		return sprite;
-	}
+	
 	const std::vector<Vec2I>& getValidTiles() const
 	{
 		return validTiles;
@@ -190,5 +186,4 @@ protected:
 	PreviousTurn lastTurn;
 	//std::vector< CapturedPiece> capturedPieces; //enemy pieces captured by this piece
 	Board* const board;
-	Surface* const sprite;
 };
