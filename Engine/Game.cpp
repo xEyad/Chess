@@ -27,6 +27,7 @@
 #include "Pawn.h"
 #include "BoardPainter.h"
 #include "PiecesPainter.h"
+#include "ScreenPainter.h"
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -83,7 +84,8 @@ void Game::ComposeFrame()
 	PiecesPainter p(gfx, Director.getPieces());
 	p.DrawPiecesSprites({ 20,21 });*/
 
-	//BlackPromotionScreen(79 * 4, 79, gfx).Draw({ 20 + 80 * 2, 20 + 80 * 4 +1});
+	//BlackPromotionScreen bps(79 * 4, 79, gfx);
+	//ScreenPainter(gfx).DrawScreen(bps, { 20 + 80 * 2, 20 + 80 * 4  + 1 });
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		

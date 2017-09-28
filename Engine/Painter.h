@@ -5,7 +5,7 @@ class Painter
 {
 public:
 	Painter(Graphics &gfx);
-	~Painter();
+	virtual ~Painter() = 0;
 
 protected:
 	Graphics &gfx;

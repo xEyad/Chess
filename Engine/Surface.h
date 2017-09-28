@@ -145,3 +145,15 @@ protected:
 	unsigned int height;
 	unsigned int pitch; // pitch is in PIXELS, not bytes!
 };
+
+
+struct GuidedSurface
+{
+	GuidedSurface(Surface* s, Vec2I topLeftOffset)
+		:
+		surface(s),
+		topLeftOffset(topLeftOffset)
+	{	}
+	Surface* surface;
+	Vec2I topLeftOffset;
+};

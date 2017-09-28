@@ -148,6 +148,7 @@
     <ClInclude Include="BlackPromotionScreen.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoardPainter.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rook.h" />
     <ClInclude Include="RookLeg.h" />
+    <ClInclude Include="ScreenPainter.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TextSurface.h" />
     <ClInclude Include="Timer.h" />
@@ -212,6 +214,7 @@
     <ClCompile Include="QueenLeg.cpp" />
     <ClCompile Include="Rook.cpp" />
     <ClCompile Include="RookLeg.cpp" />
+    <ClCompile Include="ScreenPainter.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TextSurface.cpp" />
     <ClCompile Include="Timer.cpp" />

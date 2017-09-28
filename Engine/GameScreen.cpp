@@ -2,23 +2,15 @@
 
 
 
-GameScreen::GameScreen(int width, int height, Graphics & gfx)
+GameScreen::GameScreen(int width, int height)
 	:
 	width(width),
-	height(height),
-	gfx(gfx),
-	currentTopLeft({-1,-1})
+	height(height)
 {
 }
 
 GameScreen::~GameScreen()
 {
-}
-
-void GameScreen::Draw(Vec2I topLeft)
-{
-	currentTopLeft = topLeft;
-	screenRect = RectI(topLeft, { topLeft.x + width, topLeft.y + height });
 }
 
 int GameScreen::Width() const
@@ -31,13 +23,24 @@ int GameScreen::Height() const
 	return height;
 }
 
-Vec2I GameScreen::CurrentTopLeft() const
-{
-	return currentTopLeft;
-}
 
 RectI GameScreen::Rect() const
 {
 	return screenRect;
+}
+
+const  std::vector<GuidedSurface> GameScreen::GuidedSprites() const
+{
+	return sprites;
+}
+
+//const std::vector< TextSurface::Font> GameScreen::Fonts() const
+//{
+//	return fonts;
+//}
+
+const std::vector<GuidedButton> GameScreen::MappedButtons() const
+{
+	return buttons;
 }
 

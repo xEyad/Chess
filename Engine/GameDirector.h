@@ -10,6 +10,7 @@
 #include "Graphics.h"
 #include "BlackPromotionScreen.h"
 #include "WhitePromotionScreen.h"
+#include "ScreenPainter.h"
 //there should be no more than ONE object of this class
 //GameDirector responsibility is to check for the pieces special conditions and game rules ONLY
 class Piece;
@@ -193,48 +194,6 @@ private:
 	Pawn* luckyPawn = nullptr;
 	bool promotionMode = false;
 	std::vector<RectI> promotionRects; //M
-	//buttons //M
-	class Button
-	{
-	public:
-		Button(Vec2I location, unsigned int width, unsigned int height, std::wstring text)
-			:
-			location(location),
-			width(width),
-			height(height),
-			text(text),
-			botRight({ location.x + int(width) ,location.y + int(height) }),
-			boundingBox(location,botRight)
-		{}
-		RectI GetBoundingBox() const
-		{
-			return boundingBox;
-		}
-		void Draw(Graphics &gfx, const TextSurface::Font &font, unsigned int offsetX = 0, unsigned int offsetY = 0, Color backgroundClr = Colors::Black, Color textClr = Colors::White)
-		{
-			for ( int x = location.x; x < botRight.x ; x++)
-			{
-				for ( int y = location.y; y < botRight.y ; y++)
-				{
-					gfx.PutPixel(x, y, backgroundClr);
-				}
-			}
-			if(offsetX > width)
-				offsetX = 0;
-			if (offsetY > height)
-				offsetY = 0;
-
-			gfx.DrawText(L"Start", Vec2I(location.x + offsetX, location.y + offsetY ), font, textClr);
-		}
-
-		
-	private:
-		Vec2I location;
-		Vec2I botRight;
-		unsigned int width;
-		unsigned int height;
-		std::wstring text;
-		const RectI boundingBox;
-	};
+	
 };
 

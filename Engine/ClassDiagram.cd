@@ -17,7 +17,7 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>MANBAAKSQIqXoAJAgEAAAFOAhAgAYCCgYCBQKgKJAYE=</HashCode>
+      <HashCode>MANBAAKSQIqToAJAgEAAAFOAhAgAYCCgYCBQKgKJAYE=</HashCode>
       <FileName>GameDirector.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -31,7 +31,7 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>iSAAAQAAAGAQAAgAAABAAAARABAAAQAACEAgAChAEAI=</HashCode>
+      <HashCode>iSAAAQAAAGARAAgAAABQAAARgAAAAQAACEAgAChAEAI=</HashCode>
       <FileName>Board.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -45,7 +45,7 @@
       </Struct>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>oBAAECBAAOQFEAAIABAQAQEAABAZAAUAaBAAICQAAUA=</HashCode>
+      <HashCode>oBAAECBAAOQFAAAIABAQAQEAAAAZAAUAaBAAICQAAUA=</HashCode>
       <FileName>Piece.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -82,6 +82,48 @@
     <TypeIdentifier>
       <HashCode>AAAAAABAAMAgAABIAAIAAQAAAAAAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>King.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BoardPainter">
+    <Position X="1.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAGAAAEAAAAAAAAAAABAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>BoardPainter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PiecesPainter">
+    <Position X="3.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQAAAAACIAAEMBAAAAAQAAAAAAGAgggCSECAAgAAAA=</HashCode>
+      <FileName>PiecesPainter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Painter">
+    <Position X="8.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAhAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Painter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScreen">
+    <Position X="10.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAgJAAAggwAQAIAAEAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameScreen.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PromotionScreen">
+    <Position X="12.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAIAABAAAAAAAgAAAAAAAAAAABAAAAAAAAAAAAAIABQ=</HashCode>
+      <FileName>PromotionScreen.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhitePromotionScreen">
+    <Position X="14.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAgAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>WhitePromotionScreen.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

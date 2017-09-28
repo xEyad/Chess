@@ -367,26 +367,26 @@ void GameDirector::SetStage(bool debugMode)
 
 void GameDirector::DrawStartMenu(Vec2I mousePos)
 {
-	//screen background coordinates
-	static Vec2I topLeft{ 0,0 };
-	static Vec2I botRight{ (int) Graphics::ScreenWidth,(int)Graphics::ScreenHeight };
+	////screen background coordinates
+	//static Vec2I topLeft{ 0,0 };
+	//static Vec2I botRight{ (int) Graphics::ScreenWidth,(int)Graphics::ScreenHeight };
 
-	//buttons
-	static Button startBtn({ (int)(Graphics::ScreenWidth / 2 - 80.0),(int)(Graphics::ScreenHeight / 2 + 30) } ,100,50,L"Start" );
+	////buttons
+	//static Button startBtn({ (int)(Graphics::ScreenWidth / 2 - 80.0),(int)(Graphics::ScreenHeight / 2 + 30) } ,100,50,L"Start" );
 
-	//drawing
-	for ( int x = topLeft.x; x < botRight.x; x++)
-	{
-		for ( int y = topLeft.y; y < botRight.y; y++)
-		{
-			gfx.PutPixel(x, y, Colors::Black);
-		}
-	}
+	////drawing
+	//for ( int x = topLeft.x; x < botRight.x; x++)
+	//{
+	//	for ( int y = topLeft.y; y < botRight.y; y++)
+	//	{
+	//		gfx.PutPixel(x, y, Colors::Black);
+	//	}
+	//}
 
-	if(startBtn.GetBoundingBox().Contains(mousePos))
-		startBtn.Draw(gfx, font, 15,10,Colors::Red);
-	else
-		startBtn.Draw(gfx, font, 15, 10, Colors::Green);
+	//if(startBtn.GetBoundingBox().Contains(mousePos))
+	//	startBtn.Draw(gfx, font, 15,10,Colors::Red);
+	//else
+	//	startBtn.Draw(gfx, font, 15, 10, Colors::Green);
 
 
 }
@@ -395,29 +395,29 @@ void GameDirector::DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team
 {
 	static int width = 79 * 4;
 	static int height = 79 ;
-	
+	static ScreenPainter sp(gfx);
 	if (team == Team::BLACK)
 	{
-		BlackPromotionScreen bps(width, height, gfx);
-		bps.Draw({ 20 + 80 * 2, 20 + 80 * 4 + 1 });
-		promotionRects = bps.PromotionRects();
+		BlackPromotionScreen bps(width, height);
+		sp.DrawScreen(bps, { 20 + 80 * 2, 20 + 80 * 4 + 1 });
+		//promotionRects = bps.PromotionRects();
 	}
 
 	else if (team == Team::WHITE)
 	{
-		WhitePromotionScreen wps(width, height, gfx);
-		wps.Draw({ 20 + 80 * 2 ,20 + 80 * 3 + 1 });
-		promotionRects = wps.PromotionRects();
+		WhitePromotionScreen wps(width, height);
+		sp.DrawScreen(wps, { 20 + 80 * 2 ,20 + 80 * 3 + 1 });
+		//promotionRects = wps.PromotionRects();
 	}
 
 	//check if mouse is inside any rect	
-	for each (auto rec in promotionRects)
+	/*for each (auto rec in promotionRects)
 	{
 		if (rec.Contains(mousPos))
 			gfx.DrawRect(rec, highlightClr);
 		else
 			gfx.DrawRect(rec, edgesClr);
-	}	
+	}*/	
 }
 
 void GameDirector::DrawWhoseTurn(Color clr)

@@ -415,6 +415,38 @@ void Graphics::FillRect(const RectI rect, Color c ,int shrink, bool fillEdges)
 	}
 }
 
+void Graphics::DrawSprite(const Surface * sprite, Vec2I topLeftLocation)
+{
+	int xPieceSpr = 0;
+	int yPieceSpr = 0;
+	for (unsigned int x = topLeftLocation.x; x < sprite->GetWidth() + topLeftLocation.x; x++)
+	{
+		for (unsigned int y = topLeftLocation.y; y < sprite->GetHeight() + topLeftLocation.y; y++)
+		{
+			PutPixelAlpha(x, y, sprite->GetPixel(xPieceSpr, yPieceSpr));
+			yPieceSpr++;
+		}
+		xPieceSpr++;
+		yPieceSpr = 0;
+	}
+}
+
+void Graphics::DrawSpriteClipped(const Surface * sprite, Vec2I topLeftLocation, RectI clipRect)
+{
+	int xPieceSpr = 0;
+	int yPieceSpr = 0;
+	for (unsigned int x = topLeftLocation.x; x < sprite->GetWidth() + topLeftLocation.x; x++)
+	{
+		for (unsigned int y = topLeftLocation.y; y < sprite->GetHeight() + topLeftLocation.y; y++)
+		{
+			PutPixelAlphaClipped(x, y, sprite->GetPixel(xPieceSpr, yPieceSpr), clipRect);
+			yPieceSpr++;
+		}
+		xPieceSpr++;
+		yPieceSpr = 0;
+	}
+}
+
 Graphics::Exception::Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line )
 	:
 	ChiliException( file,line,note ),

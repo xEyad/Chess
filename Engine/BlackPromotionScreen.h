@@ -3,10 +3,7 @@
 class BlackPromotionScreen :	public PromotionScreen
 {
 public:
-	BlackPromotionScreen(int width, int height, Graphics& gfx, Color textClr = Colors::Orange);
+	BlackPromotionScreen(int width, int height, Color textClr = Colors::Orange);
 	~BlackPromotionScreen();
-	virtual void Draw(Vec2I topLeft) override;
-private:
-	Surface* const BpromotionScreen;
 };
 

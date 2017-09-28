@@ -1,17 +1,23 @@
 #pragma once
 #include "GameScreen.h"
-#include "Surface.h"
+
 class PromotionScreen :	public GameScreen
 {
 public:
-	PromotionScreen(int width, int height, Graphics& gfx, Color textClr);
-	~PromotionScreen();
-	virtual void Draw(Vec2I topLeft) override;
-	std::vector<RectI> PromotionRects() const;
+	PromotionScreen(int width, int height, Color textClr);
+	~PromotionScreen() = 0;
 
+
+
+protected:
+	std::shared_ptr<Surface> sprite;
+	Vec2I spriteOffset;
 private:
-	std::vector<RectI> promotionRects;
 	const TextSurface::Font font;
 	Color textClr;
+	GuidedButton rookBtn;
+	GuidedButton knightBtn;
+	GuidedButton bishopBtn;
+	GuidedButton queenBtn;
 };
 
