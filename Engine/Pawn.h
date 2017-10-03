@@ -14,9 +14,9 @@ public:
 	}
 	virtual bool IsValidLocation(int newLocation) const;
 	virtual bool IsValidLocation(Vec2I newLocation) const;
-	bool isTransformed() const
+	bool isTransformed() const 
 	{
-		return transformed;
+		return transformed == true;
 	}
 	//actions
 	virtual bool MoveTo(Vec2I newLocation) override;

@@ -174,11 +174,14 @@
     <ClInclude Include="PiecesPainter.h">
       <Filter>Header Files\Painters</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScreenPainter.h">
       <Filter>Header Files\Painters</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files\Utility classes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="ScreenPainter.cpp">
       <Filter>Source Files\Painters</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

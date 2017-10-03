@@ -3,7 +3,7 @@
 class WhitePromotionScreen :	public PromotionScreen
 {
 public:
-	WhitePromotionScreen(int width, int height, Color textClr = Colors::Orange);
+	WhitePromotionScreen(Color textClr = Colors::Orange);
 	~WhitePromotionScreen();
 };
 

@@ -178,7 +178,7 @@ Surface* PiecesPainter::GetSprite(Piece * pPiece)
 				return wKingSpr;
 				break;
 			default:
-				break;
+				return nullptr;
 		}
 	}
 
@@ -205,7 +205,9 @@ Surface* PiecesPainter::GetSprite(Piece * pPiece)
 				return bKingSpr;
 				break;
 			default:
-				break;
+				return nullptr;
 		}
 	}
+	else
+		return nullptr;
 }

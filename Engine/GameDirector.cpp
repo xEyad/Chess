@@ -8,12 +8,9 @@
 #include "Knight.h"
 
 
-GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
+GameDirector::GameDirector(Board &board)
 	:
-	board(board),
-	gfx(gfx),
-	mouse(mouse),
-	font(L"times", 20.0f)
+	board(board)
 {
 	//Rows are Y , Columns are X
 	board_rows = board.rows;
@@ -93,12 +90,9 @@ GameDirector::GameDirector(Board &board,Graphics &gfx, Mouse &mouse)
 	WKingLoc = getPiece(KING, Team::WHITE)->Locate();
 }
 
-GameDirector::GameDirector(Board & board, Graphics & gfx, Mouse & mouse, std::string saveFile)
+GameDirector::GameDirector(Board & board,std::string saveFile)
 	:
-	board(board),
-	gfx(gfx),
-	mouse(mouse),
-	font(L"times", 20.0f)
+	board(board)
 {
 	LoadGame(saveFile);
 }
@@ -138,6 +132,27 @@ const std::vector<std::shared_ptr<Piece>>* GameDirector::getPieces() const
 	return &pieces;
 }
 
+
+GameDirector::DirectorEvent GameDirector::ReadEvent()
+{
+	if (IsThereEvents())
+	{
+		DirectorEvent e = gameEvents.front();
+		gameEvents.pop();
+		return e;
+	}
+	else
+		return DirectorEvent();
+}
+
+bool GameDirector::IsThereEvents() const
+{
+	if(gameEvents.size() > 0u)
+		return true;
+	else
+		return false;
+}
+
 bool GameDirector::IsTileUnderThreatBy(Vec2I TileLocation, GlobalEnums::Team ThreatningTeam)
 {
 	for (auto i = pieces.begin(); i < pieces.end(); i++)
@@ -167,14 +182,18 @@ void GameDirector::EnterPromotionMode(Piece * p)
 {
 	if (dynamic_cast<Pawn*> (p))
 	{
-		promotionMode = true;
 		luckyPawn = dynamic_cast<Pawn*> (p);
 	}
 }
 
+bool GameDirector::WillKingBeDead(std::shared_ptr<Piece> movingPiece) const
+{
+	return (WkingUnderThreat && movingPiece->GetTeam() == Team::WHITE) ||
+		(BkingUnderThreat && movingPiece->GetTeam() == Team::BLACK);
+}
+
 void GameDirector::RerollTurn(std::shared_ptr<Piece> piece)
 {
-	gameTurn--;
 	piece->UndoMove();
 	GenerateMovesForAllPieces();
 	CheckKingsSafety();
@@ -203,7 +222,7 @@ void GameDirector::SaveGame(std::string saveFile)
 		file << line << " \n" ;
 	}	
 
-	file << "turn "<<gameTurn << "\n";
+	//file << "turn "<<gameTurn << "\n";
 	file.close();
 	
 }
@@ -279,9 +298,9 @@ void GameDirector::LoadGame(std::string saveFile)
 				round = 0;
 			}
 
-			loadFile >> turn;
-			if (turn == "turn")
-				loadFile >> gameTurn;			
+			//loadFile >> turn;
+			//if (turn == "turn")
+				//loadFile >> gameTurn;			
 			else
 			{
 				for each(auto c in turn)
@@ -318,53 +337,6 @@ void GameDirector::DestroyMarkedPiece()
 		DestroyPiece(pieceToDestroy);
 }
 
-void GameDirector::SetStage(bool debugMode)
-{
-	
-	if (debugMode)
-	{
-		board.DrawPieces(gfx);	
-		board.DrawLabels(gfx, Colors::White);
-
-	}
-	else //release mode
-	{
-		board.DrawSprite(gfx);
-		board.DrawPiecesSprite(gfx);
-		board.DrawLabels(gfx, Colors::White);
-
-	}
-	board.DrawGrid(gfx, Colors::LightGray);
-	if (promotionMode)
-	{
-		DrawPawnPromotionScreen(mouse.GetPos(), luckyPawn->GetTeam(), Colors::Green, Colors::Black);
-	}
-	else //which is whatever will be drawn
-	{
-		if (selectionMode)
-		{
-			highlight = Colors::Magenta;
-			if (selectedPiece != nullptr)
-			{
-				if (selectedPiece != nullptr)
-				{
-					auto p = selectedPiece->getValidTiles();
-					board.HighlightTiles(gfx, p, Colors::Orange);
-				}
-			}
-		}
-		else
-			highlight = Colors::Red;
-
-		board.HighlightTile(gfx, mouse.GetPos(), highlight);
-		DrawWhoseTurn(Colors::Green);
-		DrawTurn(Colors::Orange);
-		DrawThreatWarning(Colors::Green);
-	}
-	//DrawStartMenu(mouse.GetPos());
-
-}
-
 void GameDirector::DrawStartMenu(Vec2I mousePos)
 {
 	////screen background coordinates
@@ -391,317 +363,204 @@ void GameDirector::DrawStartMenu(Vec2I mousePos)
 
 }
 
-void GameDirector::DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team ,Color edgesClr, Color highlightClr)
-{
-	static int width = 79 * 4;
-	static int height = 79 ;
-	static ScreenPainter sp(gfx);
-	if (team == Team::BLACK)
+
+void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Location,GlobalEnums::Team teamToPlay,int gameTurn )
+{	
+	if (tile1Location != tile2Location) //if the 2 clicks locations are valid
 	{
-		BlackPromotionScreen bps(width, height);
-		sp.DrawScreen(bps, { 20 + 80 * 2, 20 + 80 * 4 + 1 });
-		//promotionRects = bps.PromotionRects();
-	}
+		//move the piece (if its logical)
+		auto pieceInT1 = getPiece(tile1Location);
+		auto pieceInT2 = getPiece(tile2Location);
 
-	else if (team == Team::WHITE)
-	{
-		WhitePromotionScreen wps(width, height);
-		sp.DrawScreen(wps, { 20 + 80 * 2 ,20 + 80 * 3 + 1 });
-		//promotionRects = wps.PromotionRects();
-	}
-
-	//check if mouse is inside any rect	
-	/*for each (auto rec in promotionRects)
-	{
-		if (rec.Contains(mousPos))
-			gfx.DrawRect(rec, highlightClr);
-		else
-			gfx.DrawRect(rec, edgesClr);
-	}*/	
-}
-
-void GameDirector::DrawWhoseTurn(Color clr)
-{
-	switch (WhoseTurn())
-	{
-		case Team::BLACK:
-			//gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
-			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, font, clr);
-			break;
-		case Team::WHITE:
-			//gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
-			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, font, clr);
-			break;
-		default:
-			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, font, Colors::Red);
-			break;
-	}
-}
-
-void GameDirector::DrawTurn(Color clr)
-{
-	std::wstring turnNumber = std::wstring(L"Turn ") + std::to_wstring(getTurn());
-	gfx.DrawText(turnNumber, { 0.0f,0.0f }, font, clr );
-}
-
-void GameDirector::DrawThreatWarning(Color clr)
-{
-	if (!AreKingsSafe())
-		gfx.DrawText(L"King is under Threat", { Graphics::ScreenWidth / 2 - 80.0f,0.0f }, TextSurface::Font(L"times", 15.0f), clr);
-}
-
-void GameDirector::HandleInput(bool cheatMode)
-{
-	if (promotionMode)
-	{
-		const Mouse::Event e = mouse.Read();
-		if (e.GetType() == Mouse::Event::LPress)
+		if (AreKingsSafe())
 		{
-			
-			int loopCounter = 0;
-			for each (auto rec in promotionRects)
+			if (pieceInT1 != nullptr && teamToPlay == pieceInT1->GetTeam())
 			{
-				if (rec.Contains(mouse.GetPos()))
+				if (pieceInT1->MoveTo(tile2Location)) //if moving succeed (if it actually moved!)
 				{
-					switch (loopCounter)
-					{
-						case 0:
-							PromoteTo(ROOK);
-							promotionMode = false;
-							break;
-						case 1:
-							PromoteTo(KNIGHT);
-							promotionMode = false;
-							break;
-						case 2:
-							PromoteTo(BISHOP);
-							promotionMode = false;
-							break;
-						case 3:
-							PromoteTo(QUEEN);
-							promotionMode = false;
-							break;
+					//do turn					
+					gameEvents.push(DirectorEvent::TurnPassed);
+					GenerateMovesForAllPieces();
+					CheckKingsSafety();
+
+					if (WillKingBeDead(pieceInT1))
+					{ //prevent player from putting his king in danger
+						RerollTurn(pieceInT1);
+						gameEvents.pop();
 					}
 				}
-				loopCounter++;
+				else if (DoCastling(pieceInT1, pieceInT2))
+				{
+					gameEvents.push(DirectorEvent::TurnPassed);
+					GenerateMovesForAllPieces();
+					CheckKingsSafety();
+
+					if (WillKingBeDead(pieceInT1))
+					{ //prevent player from putting his king in danger
+						RerollTurn(pieceInT1);
+						gameEvents.pop();
+					}
+				}
+				else if (DoEnPassant(pieceInT1, tile2Location))
+				{
+					gameEvents.push(DirectorEvent::TurnPassed);
+					GenerateMovesForAllPieces();
+					CheckKingsSafety();
+					if (WillKingBeDead(pieceInT1))
+					{ //prevent player from putting his king in danger
+						RerollTurn(pieceInT1);
+						gameEvents.pop();
+					}
+				}
 			}
+
 		}
-	}
-	else 
-	{
-		static int clickCounter = 0;
-		static std::shared_ptr<Board::Tile> t1, t2;
-
-		//do highlights
-		if (clickCounter == 1)
-			selectionMode = true;
-
-		const Mouse::Event e = mouse.Read();
-		if (e.GetType() == Mouse::Event::LPress) //update counter on left click
+		else //king is already under threat
 		{
-			if (clickCounter == 0) //first click
+			if (pieceInT1 != nullptr && teamToPlay == pieceInT1->GetTeam())
 			{
-				t1 = board.GetTileByMouse(mouse.GetPos()); //click 1 (get its coordinates)
-				if (t1)
+				if (pieceInT1->MoveTo(tile2Location)) //if moving succeed (if it actually moved!)
 				{
-					selectedPiece = getPiece(t1->location);
-					if (selectedPiece)
-						clickCounter++;
+					//do turn
+					gameEvents.push(DirectorEvent::TurnPassed);					
+					gameEvents.push(DirectorEvent::KingIsSafe);
+					GenerateMovesForAllPieces();
+					CheckKingsSafety();
+					if (!AreKingsSafe())
+					{ //prevent player from putting his king in danger
+						RerollTurn(pieceInT1);
+						gameEvents.pop();
+						gameEvents.pop();
+					}
 				}
-				else
-					selectedPiece = nullptr;
-			}
-			else if (clickCounter >= 1)
-			{
-				t2 = board.GetTileByMouse(mouse.GetPos()); //click 2 (get its coordinates)
-				if (t1 != nullptr && t2 != nullptr && t1 != t2) //if the 2 clicks locations are valid
+				else if (DoCastling(pieceInT1, pieceInT2))
 				{
-					//move the piece (if its logical)
-					auto pieceInT1 = getPiece(t1->location);
-					auto pieceInT2 = getPiece(t2->location);
-
-					//check cheating mode
-					if (cheatMode)
-					{
-						if (AreKingsSafe())
-						{
-							if (pieceInT1 != nullptr)
-							{
-								if (pieceInT1->MoveTo(t2->location)) //if piece moved
-								{
-									//do turn
-									gameTurn++;
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoCastling(pieceInT1, pieceInT2))
-								{
-									gameTurn++;
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoEnPassant(pieceInT1, t2->location))
-								{
-									gameTurn++;
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-							}
-						}
-						else //king is already under threat
-						{
-							//block moves if it doesn't remove threats
-							if (pieceInT1 != nullptr)
-							{
-								if (pieceInT1->MoveTo(t2->location)) //if piece moved
-								{
-									gameTurn++;
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if (!AreKingsSafe())
-									{
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoCastling(pieceInT1, pieceInT2))
-								{
-									gameTurn++;
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if (!AreKingsSafe())
-									{
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoEnPassant(pieceInT1, t2->location))
-								{									
-									gameTurn++;
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-							}
-
-						}
+					gameEvents.push(DirectorEvent::TurnPassed);
+					gameEvents.push(DirectorEvent::KingIsSafe);
+					GenerateMovesForAllPieces();
+					CheckKingsSafety();
+					if (!AreKingsSafe())
+					{ //prevent player from putting his king in danger
+						RerollTurn(pieceInT1);
+						gameEvents.pop();
+						gameEvents.pop();
 					}
-					else //not cheatMode
-					{
-						if (AreKingsSafe())
-						{
-							if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
-							{
-								if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
-								{
-									//do turn
-									gameTurn++;	//turn ends
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoCastling(pieceInT1, pieceInT2))
-								{
-									gameTurn++;	//turn ends
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoEnPassant(pieceInT1, t2->location))
-								{
-									gameTurn++;	//turn ends
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-							}
-							
-						}
-						else //king is already under threat
-						{
-							if (pieceInT1 != nullptr && WhoseTurn() == pieceInT1->GetTeam())
-							{
-								if (pieceInT1->MoveTo(t2->location)) //if moving succeed (if it actually moved!)
-								{
-									//do turn
-									gameTurn++;	//turn ends
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-
-									if (!AreKingsSafe())
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoCastling(pieceInT1, pieceInT2))
-								{
-									gameTurn++;	//turn ends
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if (!AreKingsSafe())
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-								else if (DoEnPassant(pieceInT1, t2->location))
-								{
-									gameTurn++;	//turn ends
-									GenerateMovesForAllPieces();
-									CheckKingsSafety();
-									if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-										(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-									{ //prevent player from putting his king in danger
-										RerollTurn(pieceInT1);
-									}
-								}
-							}
-							
-						}
-					}
-
-					DestroyMarkedPiece();
-					CheckForEnPassants();
 				}
-				clickCounter = 0;
-				selectionMode = false;
+				else if (DoEnPassant(pieceInT1, tile2Location))
+				{
+					gameEvents.push(DirectorEvent::TurnPassed);
+					gameEvents.push(DirectorEvent::KingIsSafe);
+					GenerateMovesForAllPieces();
+					CheckKingsSafety();
+					if (WillKingBeDead(pieceInT1))
+					{ //prevent player from putting his king in danger
+						RerollTurn(pieceInT1);
+						gameEvents.pop();
+						gameEvents.pop();
+					}
+				}
 			}
+
 		}
-	}
+		DestroyMarkedPiece();
+		CheckForEnPassants(gameTurn);
+	}		
 }
+
+void GameDirector::HandleInputCheatMode(const Vec2I tile1Location, const Vec2I tile2Location, int gameTurn)
+{
+	//it still doesn't trigger events!
+		if (tile1Location != tile2Location) //if the 2 clicks locations are valid
+		{
+			//move the piece (if its logical)
+			auto pieceInT1 = getPiece(tile1Location);
+			auto pieceInT2 = getPiece(tile2Location);
+
+
+			if (AreKingsSafe())
+			{
+				if (pieceInT1 != nullptr)
+				{
+					if (pieceInT1->MoveTo(tile2Location)) //if piece moved
+					{
+						//do turn
+						GenerateMovesForAllPieces();
+						CheckKingsSafety();
+
+						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+						{ //prevent player from putting his king in danger
+
+							RerollTurn(pieceInT1);
+						}
+					}
+					else if (DoCastling(pieceInT1, pieceInT2))
+					{
+						GenerateMovesForAllPieces();
+						CheckKingsSafety();
+						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+						{ //prevent player from putting his king in danger
+							RerollTurn(pieceInT1);
+						}
+					}
+					else if (DoEnPassant(pieceInT1, tile2Location))
+					{
+						GenerateMovesForAllPieces();
+						CheckKingsSafety();
+
+						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+						{ //prevent player from putting his king in danger
+							RerollTurn(pieceInT1);
+						}
+					}
+				}
+			}
+			else //king is already under threat
+			{
+				//block moves if it doesn't remove threats
+				if (pieceInT1 != nullptr)
+				{
+					if (pieceInT1->MoveTo(tile2Location)) //if piece moved
+					{
+						GenerateMovesForAllPieces();
+						CheckKingsSafety();
+						if (!AreKingsSafe())
+						{
+							RerollTurn(pieceInT1);
+						}
+					}
+					else if (DoCastling(pieceInT1, pieceInT2))
+					{
+						GenerateMovesForAllPieces();
+						CheckKingsSafety();
+						if (!AreKingsSafe())
+						{
+							RerollTurn(pieceInT1);
+						}
+					}
+					else if (DoEnPassant(pieceInT1, tile2Location))
+					{
+						GenerateMovesForAllPieces();
+						CheckKingsSafety();
+						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
+							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
+						{ //prevent player from putting his king in danger
+							RerollTurn(pieceInT1);
+						}
+					}
+				}
+
+			}
+
+			DestroyMarkedPiece();
+			CheckForEnPassants(gameTurn);
+		}
+	
+}
+
+
 
 void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 {	
@@ -848,7 +707,7 @@ bool GameDirector::DoEnPassant(std::shared_ptr<Piece> piece, Vec2I tileLoc)
 		return false; //not pawn
 }
 
-void GameDirector::CheckForEnPassants()
+void GameDirector::CheckForEnPassants(int gameTurn)
 {
 	//check the turn
 	static int turnRegistered;
@@ -1016,12 +875,14 @@ void GameDirector::CheckKingsSafety()
 			{
 				BkingUnderThreat = true;
 				threatningPiece = piece;
+				gameEvents.push(DirectorEvent(DirectorEvent::KingUnderThreat));
 				return;
 			}
 			else if (*itr == WKingLoc)
 			{
 				WkingUnderThreat = true;
 				threatningPiece = piece;
+				gameEvents.push(DirectorEvent(DirectorEvent::KingUnderThreat));
 				return;
 			}
 		}

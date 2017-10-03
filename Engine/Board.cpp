@@ -8,7 +8,7 @@
 #include "PiecesPainter.h"
 const int Board::Tile::HEIGHT = 80;
 const int Board::Tile::WIDTH = 80;
-Board::Board(int rows, int columns, Surface* const sprite)
+Board::Board(int rows, int columns)
 	:
 	rows(rows),
 	columns(columns),
@@ -148,7 +148,10 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 
 		   //if captured piece is KING
 			if (p->GetType() == KING)
+			{
 				director->gameOver = true;
+				director->gameEvents.push(GameDirector::DirectorEvent::GameOver);
+			}
 			director->MarkForDestruction(p);
 		}
 	}
@@ -156,6 +159,12 @@ void Board::ReadChange(Piece * piece, Vec2I oldLocation)
 	if (dynamic_cast<Pawn*>(piece) != nullptr && dynamic_cast<Pawn*>(piece)->isTransformed())
 	{
 		director->EnterPromotionMode(piece);
+
+		//adding event
+		if (piece->GetTeam() == Team::BLACK)
+			director->gameEvents.push(GameDirector::DirectorEvent::EnterBlackPromotion);
+		else if (piece->GetTeam() == Team::WHITE)
+			director->gameEvents.push(GameDirector::DirectorEvent::EnterWhitePromotion);
 	}
 	tile->ApplyChanges(true, piece->GetType(), piece->GetTeam());
 

@@ -17,6 +17,7 @@ class Piece;
 class Pawn;
 class Board;
 class GiveMeTile;
+
 namespace GlobalEnums
 {
 	enum pieceType
@@ -37,13 +38,48 @@ namespace GlobalEnums
 		INVALID
 	};
 	constexpr char * teamStrings[] = {"WHITE","BLACK","INVALID"};
+
 }
 
 class GameDirector
 {	
 public:
-	GameDirector(Board &board, Graphics &gfx,Mouse &mouse);
-	GameDirector(Board &board, Graphics &gfx, Mouse &mouse, std::string saveFile);
+	class DirectorEvent
+	{
+	public:
+		enum Type
+		{
+			EnterWhitePromotion,
+			EnterBlackPromotion,
+			KingUnderThreat,
+			KingIsSafe,
+			GameOver,
+			TurnPassed, //for increasing gameTurns
+			Invalid
+		};
+	private:
+		Type type;
+	public:
+		DirectorEvent()
+			:
+			type(Invalid)
+		{}
+		DirectorEvent(Type type)
+			:
+			type(type)
+		{}
+		bool IsValid() const
+		{
+			return type != Invalid;
+		}
+		Type GetType() const
+		{
+			return type;
+		}
+	};
+public:
+	GameDirector(Board &board);
+	GameDirector(Board &board, std::string saveFile);
 	//should be in global enums
 	char * GetTextForpieceType(int enumVal)
 	{
@@ -96,28 +132,17 @@ public:
 	}
 	std::shared_ptr<Piece> getPiece(GlobalEnums::pieceType type, GlobalEnums::Team team) const; //original
 	const  std::vector<std::shared_ptr<Piece>>* getPieces() const;
-	
-
-	int getTurn() const
-	{
-		return gameTurn;
-	}
+	DirectorEvent ReadEvent();
+	bool IsThereEvents() const;
 	bool isGameOver() const
 	{
 		return gameOver;
 	}
-	GlobalEnums::Team WhoseTurn() const
-	{
-		if (gameTurn % 2 == 0) //even
-			return GlobalEnums::Team::BLACK;
-		else //odd
-			return GlobalEnums::Team::WHITE;
-	}
-	inline int TransLocation(Vec2I location) const
+	int TransLocation(Vec2I location) const
 	{
 		return location.y * board_rows + location.x;
 	}	
-	inline Vec2I TransLocation(int location) const
+	Vec2I TransLocation(int location) const
 	{
 		//column = location % totalNumberOfColumns    <= X
 		//row = (location - column) / totalNumberOfRows    <= Y
@@ -135,28 +160,26 @@ public:
 	{
 		return !WkingUnderThreat;
 	}
+	bool WillKingBeDead(std::shared_ptr<Piece> movingPiece) const;
 	bool IsTileUnderThreatBy(Vec2I TileLocation,GlobalEnums::Team ThreatningTeam);
 	bool AreTilesUnderThreat(std::vector<Vec2I> Tileslocations, GlobalEnums::Team ThreatningTeam);
 	//actions , M = should be moved
-	void EnterPromotionMode(Piece* p); //M the section where it draws
+	void EnterPromotionMode(Piece* p); 
 	void RerollTurn(std::shared_ptr<Piece> piece);	//M
 	void SaveGame(std::string saveFile);//M
 	void QuickSaveGame();//M
 	void LoadGame(std::string saveFile);//M
 	void QuickLoadGame(); //M
 	//graphical actions
-	void SetStage(bool debugMode = false); //M
 	void DrawStartMenu(Vec2I mousPos); //M
-	void DrawPawnPromotionScreen(Vec2I mousPos, GlobalEnums::Team team, Color edgesClr, Color highlightClr); //M
-	void DrawWhoseTurn(Color clr); //M
-	void DrawTurn(Color clr); //M
-	void DrawThreatWarning(Color clr); //M
+
 	//logical actions
-	void HandleInput(bool cheatMode = false);  //mouse ,  //M
+	void HandleInput(const Vec2I tile1Location, const Vec2I tile2Location, GlobalEnums::Team teamToPlay, int gameTurn);
+	void HandleInputCheatMode(const Vec2I tile1Location, const Vec2I tile2Location, int gameTurn);
 	void PromoteTo(GlobalEnums::pieceType type);
 	bool DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
 	bool DoEnPassant(std::shared_ptr<Piece> piece, Vec2I tileLoc);
-	void CheckForEnPassants();
+	void CheckForEnPassants(int gameTurn);
 	//cheats
 	
 	
@@ -170,19 +193,14 @@ private:
 	bool DestroyPiece(std::shared_ptr<Piece> piece);
 	//generates moves and checks if king is threatened
 	void GenerateMovesForAllPieces();
-	void CheckKingsSafety();
+	void CheckKingsSafety(); //here it adds event kingThreat
 private:
 	std::vector<std::shared_ptr<Piece>> pieces;
 	Board &board;
-	Graphics &gfx; //M
-	Mouse &mouse; //M
-	const TextSurface::Font font; //M
 
 	int board_rows;
 	int board_columns;
-	int gameTurn = 1; //odd is white's turn
-	bool selectionMode = false; //M
-	std::shared_ptr<Piece> selectedPiece = nullptr; //M
+	
 	Color highlight = Colors::Red;	
 	bool gameOver = false; //manipulated by board
 	Vec2I BKingLoc;
@@ -192,8 +210,7 @@ private:
 	std::shared_ptr<Piece> threatningPiece = nullptr;
 	std::shared_ptr<Piece> pieceToDestroy = nullptr;
 	Pawn* luckyPawn = nullptr;
-	bool promotionMode = false;
-	std::vector<RectI> promotionRects; //M
 	
+	std::queue<DirectorEvent> gameEvents; //should be filled here, and emptied in gameManager with the respective action executed!
 };
 

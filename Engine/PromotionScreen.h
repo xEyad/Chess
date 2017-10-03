@@ -4,7 +4,7 @@
 class PromotionScreen :	public GameScreen
 {
 public:
-	PromotionScreen(int width, int height, Color textClr);
+	PromotionScreen( Color textClr);
 	~PromotionScreen() = 0;
 
 

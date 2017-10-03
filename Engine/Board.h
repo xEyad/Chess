@@ -11,6 +11,7 @@ class Piece;
 
 class Board
 {
+public:
 	class Tile
 	{
 	private:
@@ -62,7 +63,7 @@ class Board
 
 	};
 public:
-	Board(int rows, int columns, Surface* const sprite);
+	Board(int rows, int columns);
 	Board(Board&& board); //move constructor
 	Board(Board& board) = delete;
 	//getters

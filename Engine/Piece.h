@@ -39,11 +39,11 @@ protected:
 	}
 	virtual ~Piece(){}
 
-	inline int TransLocation(Vec2I location) const
+	int TransLocation(Vec2I location) const
 	{
 		return location.y * board->rows + location.x;
 	}
-	inline Vec2I TransLocation(int location) const
+	Vec2I TransLocation(int location) const
 	{
 		//column = location % totalNumberOfColumns    <= X
 		//row = (location - column) / totalNumberOfRows    <= Y

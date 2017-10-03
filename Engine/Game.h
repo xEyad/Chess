@@ -23,9 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "Board.h"
-#include "GameDirector.h"
-
+#include "GameManager.h"
 
 class Game
 {
@@ -46,9 +44,10 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	Board chessBoard;
-	GameDirector Director;
-	const TextSurface::Font fontus;
+	//Board chessBoard;
+	//GameDirector Director;
+	GameManager manager;
+	//const TextSurface::Font fontus;
 	/********************************/
 };
 

@@ -2,6 +2,10 @@
 
 
 
+GameScreen::GameScreen()
+{
+}
+
 GameScreen::GameScreen(int width, int height)
 	:
 	width(width),
@@ -42,5 +46,15 @@ const  std::vector<GuidedSurface> GameScreen::GuidedSprites() const
 const std::vector<GuidedButton> GameScreen::MappedButtons() const
 {
 	return buttons;
+}
+
+void GameScreen::setWidth(int w)
+{
+	width = w;
+}
+
+void GameScreen::setHeight(int h)
+{
+	height = h;
 }
 

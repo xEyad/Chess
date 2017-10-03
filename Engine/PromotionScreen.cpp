@@ -1,8 +1,7 @@
 #include "PromotionScreen.h"
 
-PromotionScreen::PromotionScreen(int width, int height, Color textClr )
+PromotionScreen::PromotionScreen(Color textClr )
 	:
-	GameScreen(width, height),
 	font(L"times",20),
 	textClr(textClr),
 	sprite(nullptr),

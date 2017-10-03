@@ -3,7 +3,8 @@
 
 ScreenPainter::ScreenPainter(Graphics & gfx)
 	:
-	Painter(gfx)
+	Painter(gfx),
+	btnsEdgeClr(Colors::White)
 {
 }
 
@@ -19,6 +20,11 @@ void ScreenPainter::DrawScreen(GameScreen& screen, Vec2I topLeft)
 
 	//texts are -generally- wString and position
 	//gfx.DrawTextW(L"Choose The Type of promotion", { (double)topLeft.x - 20.0f,(double)topLeft.y - 40.0f }, font, textClr);
+}
+
+void ScreenPainter::SetButtonsEdgeClr(Color clr)
+{
+	btnsEdgeClr = clr;
 }
 
 void ScreenPainter::DrawSprites(const GameScreen& screen, Vec2I topLeft)
@@ -55,7 +61,7 @@ void ScreenPainter::DrawButtons(const GameScreen & screen, Vec2I topLeft)
 		auto xOffset = mpdBtn.topLeftOffset.x;
 		auto yOffset = mpdBtn.topLeftOffset.y;
 		bb = RectI( bb.top + yOffset,bb.bottom + yOffset,bb.left + xOffset,bb.right + xOffset );
-		gfx.DrawRect(bb, Colors::Red);		
+		gfx.DrawRect(bb, btnsEdgeClr);
 	}
 	/*if (offsetX > width)
 		offsetX = 0;

@@ -32,12 +32,13 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	chessBoard(8, 8,new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Grey\\Chess_Board_Stone2.png"))), //basic chess board	
-	Director(chessBoard,gfx,wnd.mouse),
-	fontus(L"times", 20.0f)
+	manager(gfx, wnd.mouse)
+	//chessBoard(8, 8), //basic chess board	
+	//Director(chessBoard,gfx,wnd.mouse),
+	//fontus(L"times", 20.0f)
 {
 	//mo2ktn el 2byd makano ta7t daymn	
-	chessBoard.IntializeGameDirector(Director);
+	//chessBoard.IntializeGameDirector(Director);
 }
 
 void Game::Go()
@@ -50,17 +51,17 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if (!Director.isGameOver())
+	if (!manager.Director().isGameOver())
 	{
-		Director.HandleInput(false); // change parameter for cheating
-
+		//manager.Director().HandleInput(false); // change parameter for cheating
+		manager.HandleInput();
 		switch (wnd.kbd.ReadKey().GetCode())
 		{
 			case VK_F1:
-				Director.QuickSaveGame();
+				manager.Director().QuickSaveGame();
 				break;
 			case VK_F2:
-				Director.QuickLoadGame();
+				manager.Director().QuickLoadGame();
 				break;
 			default:
 				break;
@@ -71,21 +72,23 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {		
-#if _DEBUG
-	Director.SetStage(true);
-#else
-	Director.SetStage();
-#endif // DEBUG
+
+	manager.ManageDrawing();
+//#if _DEBUG
+//	manager.Director().SetStage(true);
+//#else
+//	manager.Director().SetStage();
+//#endif // DEBUG
 	
 	/*BoardPainter s(gfx);
 	s.DrawSprite(4);
 	s.DrawGrid(chessBoard, { 20,21 });
 
 	PiecesPainter p(gfx, Director.getPieces());
-	p.DrawPiecesSprites({ 20,21 });*/
+	p.DrawPiecesSprites({ 20,21 });
 
-	//BlackPromotionScreen bps(79 * 4, 79, gfx);
-	//ScreenPainter(gfx).DrawScreen(bps, { 20 + 80 * 2, 20 + 80 * 4  + 1 });
+	BlackPromotionScreen bps(79 * 4, 79, gfx);
+	ScreenPainter(gfx).DrawScreen(bps, { 20 + 80 * 2, 20 + 80 * 4  + 1 });
 	//just a demo on how to load text or Sprite
 	if (Director.isGameOver())
 	{		
@@ -99,5 +102,6 @@ void Game::ComposeFrame()
 		}
 		gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,Graphics::ScreenHeight / 2 + 30 }, fontus, Colors::Black);
 	}
+	*/
 }
 

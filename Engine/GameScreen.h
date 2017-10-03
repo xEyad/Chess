@@ -7,6 +7,7 @@
 class GameScreen
 {
 public:
+	GameScreen();
 	GameScreen(int width,int height);
 	virtual ~GameScreen() = 0;
 
@@ -18,6 +19,10 @@ public:
 	
 	//const std::vector<TextSurface::Font> Fonts() const;
 	const std::vector<GuidedButton> MappedButtons() const;
+
+protected:
+	void setWidth(int w);
+	void setHeight(int h);
 protected:
 	int width;
 	int height;
