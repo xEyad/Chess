@@ -1,49 +1,51 @@
 #pragma once
 #include "Rect.h"
 #include "Vec2.h"
+#include "Colors.h"
 class Button
 {
 public:
-	Button(unsigned int width, unsigned int height, std::wstring text)
-		:
-		width(width),
-		height(height),
-		text(text)
-	{}
+	Button(unsigned int width, unsigned int height, std::wstring text, Color txt, Color edges, Color fill, bool haveEdges, bool haveFill);
+		
 
-	Button(Vec2I topLeft, Vec2I botRight, std::wstring text)
-		:
-		width(abs(topLeft.x - botRight.x)),
-		height(abs(topLeft.y - botRight.y)),
-		text(text)
-	{}
-	Button(unsigned int width, unsigned int height)
-		:
-		Button(width,height,L"")
-	{}	
-	Button(Vec2I topLeft, Vec2I botRight)
-		:
-		Button(topLeft, botRight, L"")
-	{}
+	Button(Vec2I topLeft, Vec2I botRight, std::wstring text, Color txt, Color edges, Color fill, bool haveEdges, bool haveFill);
 	
-
-	RectI GetBoundingBox(Vec2I topLeftPointLocation) const
-	{
-		return RectI(topLeftPointLocation, { int(topLeftPointLocation.x + width),int(topLeftPointLocation.y + height)});
-	}
+	// fast constructors
+	static Button CreateNormalButton(unsigned int width, unsigned int height, std::wstring text);
+	static Button CreateColorfulButton(unsigned int width, unsigned int height, std::wstring text,Color edges,Color textClr);
+	static Button CreateTextlessButton(unsigned int width, unsigned int height);
+	static Button CreateEdgelessButton(unsigned int width, unsigned int height, std::wstring text);
+	static Button CreateFilledButton(unsigned int width, unsigned int height, std::wstring text, Color fillClr);
+	
+	//getters
+	RectI GetBoundingBox(Vec2I topLeftPointLocation) const;	
+	std::wstring Text() const;	
+	Color TextColor() const;	
+	Color EdgesColor() const;
+	Color FillColor() const;
+	bool HaveFill() const;
+	bool HaveEdges() const;
 private:
 	unsigned int width;
-	unsigned int height;
-	std::wstring text;
+	unsigned int height;  
+	std::wstring text; 
+	Color txtClr;
+	bool edges;
+	Color edgesClr;
+	Color fillClr;
+	bool fill;
 };
 
 //just a button and its offset from a location (topleft)
 struct GuidedButton
 {
-	GuidedButton(Button btn, Vec2I topLeftOffset)
+	GuidedButton(Button btn, Vec2I topLeftOffset, bool haveHighlight ,Color highlight,bool highlightText = false)
 		:
 		btn(btn),
-		topLeftOffset(topLeftOffset)
+		topLeftOffset(topLeftOffset),
+		haveHighlight(haveHighlight),
+		highlight(highlight),
+		highlightText(highlightText)
 	{}
 	RectI GetBoundingBox(Vec2I topLeftPointLocation) const
 	{
@@ -51,4 +53,7 @@ struct GuidedButton
 	}
 	Button btn;
 	Vec2I topLeftOffset;
+	Color highlight;
+	bool haveHighlight;
+	bool highlightText;
 };

@@ -27,7 +27,6 @@ int GameScreen::Height() const
 	return height;
 }
 
-
 RectI GameScreen::Rect() const
 {
 	return screenRect;
@@ -38,10 +37,10 @@ const  std::vector<GuidedSurface> GameScreen::GuidedSprites() const
 	return sprites;
 }
 
-//const std::vector< TextSurface::Font> GameScreen::Fonts() const
-//{
-//	return fonts;
-//}
+const std::vector<Text> GameScreen::Messages() const
+{
+	return messages;
+}
 
 const std::vector<GuidedButton> GameScreen::MappedButtons() const
 {

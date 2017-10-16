@@ -1,14 +1,14 @@
 #pragma once
 #include "Colors.h"
 #include "Vec2.h"
-#include "GameDirector.h" // for Global enums
 #include <memory>
 #include <assert.h>
 #include "Graphics.h"
 #include "ChiliWin.h"
-class Mouse;
+#include "GlobalEnums.h"
 class Piece;
 
+//it is responsiblity is managing its own tiles and which tile contain what
 class Board
 {
 public:
@@ -19,9 +19,13 @@ public:
 		{
 			bool containPiece = false; 
 			GlobalEnums::pieceType piecetype = GlobalEnums::pieceType::NOT_DEFINED;
-			GlobalEnums::Team pieceTeam = GlobalEnums::Team::INVALID;
+			GlobalEnums::Team pieceTeam = GlobalEnums::Team::INVALID; //should be deleted
 		};
-
+	public:
+		Status CurState()
+		{
+			return curState;
+		}
 	private:
 		Tile(Vec2I location, Color c)
 			:
@@ -49,10 +53,11 @@ public:
 		{
 			ApplyChanges(false, GlobalEnums::pieceType::NOT_DEFINED, GlobalEnums::Team::INVALID);
 		}
+
 	public:
 		const Color color;
 		const Vec2I location;
-
+		
 		const static int HEIGHT; //Graphical value
 		const static int WIDTH; //Graphical value
 
@@ -62,54 +67,45 @@ public:
 		Status prevState;
 
 	};
+	
+	
 public:
 	Board(int rows, int columns);
-	Board(Board&& board); //move constructor
-	Board(Board& board) = delete;
+	Board(Board& board);
+	void operator()(Board& rhs) //conversion operator , copy assignment
+	{
+		if (rhs.rows == rows && rhs.columns == columns)
+		{
+			ResetAllTiles();
+			boardTiles.clear();
+			boardTiles = rhs.boardTiles;
+		}
+	}
+
+	
 	//getters
 	const std::vector<std::shared_ptr<Tile>>* GetAllTiles() const
 	{
 		return &boardTiles;
 	}
-	static int GetTileWidth();
-	static int GetTileHeight();
 	std::shared_ptr<Tile> GetTile(Vec2I location) const; 
-	std::shared_ptr<Tile> GetTileByMouse(Vec2I mousePos) const;
+	std::shared_ptr<Tile> GetTileByMouse(Vec2I gridTopLeft, Vec2I mousePos) const;
 	const Tile::Status GetTileState(Vec2I location) const;	
-	Vec2I GetTileStartPoint(Vec2I Tilelocation) const;
 	bool IsInsideTheBoard(Vec2I location) const;
 
 	//actions
-	void ReadChange(Piece* piece,Vec2I oldLocation);
-	//used only with UndoMove
-	void ReadChange(Piece * piece, Vec2I locationGoingTo, bool Undo); 
-
 	void ResetAllTiles();
 	void ResetTile(Vec2I TileLocation);
-	void DrawGrid(Graphics &gfx, Color edgesClr, Vec2I topLeft);
-	void DrawGrid(Graphics &gfx, Color edgesClr) const;
-	void DrawLabels(Graphics &gfx, Color labelsClr) const;
-	void DrawSprite( Graphics &gfx) const;
-	void HighlightTile(Graphics & gfx, Vec2I mousePos, Color edgesClr) const;
-	void HighlightTiles(Graphics & gfx, std::vector<Vec2I> tilesPos, Color edgesClr) const;
-	void DrawPiecesSprite(Graphics & gfx) const;
-	void DrawPieces(Graphics & gfx) const;
-	void IntializeGameDirector(GameDirector &d) 
-	{
-		assert(director == nullptr); //if it is already intialized, crash.  (if the director = null then everything is OK)
-		director = &d;
-	}
+	void PutPieceOnTile(Vec2I TileLocation, std::shared_ptr<Piece> piece);
+
 	
 	Board& operator=(const Board& board) = delete;
 	Board& operator=(Board&& board) = delete;
-	friend GameDirector;
-	friend GiveMeTile;
 private:
 	std::vector<std::shared_ptr<Tile>> boardTiles; //array of shared pointers of type Tile 
-	GameDirector* director;
-	Vec2I topLeft = { 20,21 }; //top left point that drawing of the board starts at
 public:
 	const int rows; 
 	const int columns;
 	const std::vector<std::shared_ptr<Tile>> p = boardTiles;
 };
+

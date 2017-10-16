@@ -104,7 +104,6 @@ bool Pawn::MoveTo(Vec2I newLocation)
 		if (stepsCounter >= 6 )
 			transformed = true;
 		movedBefore = true;	
-		ReportChange();
 		return true;
 	}
 	else
@@ -119,7 +118,6 @@ void Pawn::UndoMove()
 	oldLocation = lastTurn.oldLocation;
 	captured = lastTurn.captured;
 	movedBefore = lastTurn.movedBefore;
-	board->ReadChange(this, locationGoingTo, true); //reporting change with reversed tiles locations
 }
 
 void Pawn::GenerateValidMoves()

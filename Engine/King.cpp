@@ -71,4 +71,3 @@ King::~King()
 }
 int King::nWhiteLeft = 0;
 int King::nBlackLeft = 0;
-

@@ -1,20 +1,9 @@
 #include "GameDirector.h"
-#include "Board.h"
-#include "Pawn.h"
-#include "Rook.h"
-#include "Bishop.h"
-#include "King.h"
-#include "Queen.h"
-#include "Knight.h"
-
 
 GameDirector::GameDirector(Board &board)
 	:
 	board(board)
 {
-	//Rows are Y , Columns are X
-	board_rows = board.rows;
-	board_columns = board.columns;
 	//spawn the pieces
 	int boardWidth = board.rows;
 	for (int row = 0; row < board.rows; row++)
@@ -85,16 +74,14 @@ GameDirector::GameDirector(Board &board)
 			}
 		}
 	}
+	
+	//intialize board tiles
+	for each (auto piece  in pieces)	
+		board.PutPieceOnTile( piece->Locate(), piece);
+	
 	GenerateMovesForAllPieces();
 	BKingLoc = getPiece(KING, Team::BLACK)->Locate();
 	WKingLoc = getPiece(KING, Team::WHITE)->Locate();
-}
-
-GameDirector::GameDirector(Board & board,std::string saveFile)
-	:
-	board(board)
-{
-	LoadGame(saveFile);
 }
 
 std::shared_ptr<Piece> GameDirector::getPiece(Vec2I location, GlobalEnums::pieceType type, GlobalEnums::Team team) const
@@ -195,129 +182,21 @@ bool GameDirector::WillKingBeDead(std::shared_ptr<Piece> movingPiece) const
 void GameDirector::RerollTurn(std::shared_ptr<Piece> piece)
 {
 	piece->UndoMove();
+	board.PutPieceOnTile(piece->Locate(), piece);
 	GenerateMovesForAllPieces();
 	CheckKingsSafety();
 }
 
-void GameDirector::SaveGame(std::string saveFile)
+void GameDirector::ChangeGamePieces(std::vector<std::shared_ptr<Piece>> newPieces)
 {
-	using namespace std;
-	//save pieces location
-	//open file
-	ofstream file(saveFile);
-
-	//save operation
+	pieces.clear();
+	pieces = newPieces;
 	for each (auto piece in pieces)
-	{		
-		string type(GetTextForpieceType(piece->GetType()));
-		string team(GetTextForTeam((int)piece->GetTeam()));
-		string location(to_string(piece->Locate().x) + ' '+ to_string(piece->Locate().y));
-		string nStepsMoved;
-		if (dynamic_pointer_cast<Pawn> (piece))
-			nStepsMoved = to_string(dynamic_pointer_cast<Pawn> (piece)->nStepsMoved());
-		else
-			nStepsMoved = '0';
-
-		string line(type + ' ' + team + ' ' + location + ' ' + nStepsMoved );
-		file << line << " \n" ;
-	}	
-
-	//file << "turn "<<gameTurn << "\n";
-	file.close();
-	
-}
-
-void GameDirector::QuickSaveGame()
-{
-	SaveGame("../Quick Save.txt");
-}
-
-void GameDirector::LoadGame(std::string saveFile)
-{	
-	using namespace std;
-	//open file
-	ifstream loadFile(saveFile);
-
-	//check if its there
-	if (loadFile)
-	{
-		//clear remove all pieces from the game
-		pieces.clear();
-		board.ResetAllTiles();		
-		string type,team,locationX, locationY,nStepsMoved, turn;
-		int round = 0;
-	
-		//Read operation
-		while (loadFile)
-		{
-			if (round == 0)
-				loadFile >> type;
-			else if (round == 1)
-				loadFile >> team;
-			else if (round == 2)
-				loadFile >> locationX;
-			else if (round == 3)
-				loadFile >> locationY;
-			else if (round == 4)
-				loadFile >> nStepsMoved;
-			round++;
-			//means we got all the data we want
-			if (round > 4)
-			{
-				int x = std::stoi(locationX);
-				int y = std::stoi(locationY);
-				int steps = std::stoi(nStepsMoved);
-				auto Team = GetTeamFromText(team);
-				auto pieceType = GetPieceTypeFromText(type);
-				//check type
-				switch (pieceType)
-				{
-					case GlobalEnums::PAWN:
-						pieces.push_back(std::shared_ptr<Pawn>(new Pawn(Vec2I{ x,y }, Team, &board , steps)));
-						break;
-					case GlobalEnums::KNIGHT:
-						pieces.push_back(std::shared_ptr<Knight>(new Knight(Vec2I{ x,y }, Team, &board )));
-						break;
-					case GlobalEnums::ROOK:
-						pieces.push_back(std::shared_ptr<Rook>(new Rook(Vec2I{ x,y }, Team, &board )));
-						break;
-					case GlobalEnums::BISHOP:
-						pieces.push_back(std::shared_ptr<Bishop>(new Bishop(Vec2I{ x,y }, Team, &board )));
-						break;
-					case GlobalEnums::QUEEN:
-						pieces.push_back(std::shared_ptr<Queen>(new Queen(Vec2I{ x,y }, Team, &board )));
-						break;
-					case GlobalEnums::KING:
-						pieces.push_back(std::shared_ptr<King>(new King(Vec2I{ x,y }, Team, &board )));
-						break;
-					case GlobalEnums::NOT_DEFINED:
-						break;
-					default:
-						break;
-				}
-				round = 0;
-			}
-
-			//loadFile >> turn;
-			//if (turn == "turn")
-				//loadFile >> gameTurn;			
-			else
-			{
-				for each(auto c in turn)
-					loadFile.unget();   // remove the extracted characters 1 by 1
-				loadFile.unget();		// remove the white space behind it
-			}
-		}
-		GenerateMovesForAllPieces();
-		BKingLoc = getPiece(KING, Team::BLACK)->Locate();
-		WKingLoc = getPiece(KING, Team::WHITE)->Locate();		
-		loadFile.close();
-	}
-}
-
-void GameDirector::QuickLoadGame()
-{
-	LoadGame("../Quick Save.txt");
+		board.PutPieceOnTile(piece->Locate(), piece); //re-intialize board
+	GenerateMovesForAllPieces();
+	BKingLoc = getPiece(KING, Team::BLACK)->Locate();
+	WKingLoc = getPiece(KING, Team::WHITE)->Locate();
+	CheckKingsSafety();
 }
 
 void GameDirector::MarkForDestruction(std::shared_ptr<Piece> pieceToDestroy)
@@ -337,32 +216,60 @@ void GameDirector::DestroyMarkedPiece()
 		DestroyPiece(pieceToDestroy);
 }
 
-void GameDirector::DrawStartMenu(Vec2I mousePos)
+bool GameDirector::MovePiece(std::shared_ptr<Piece> piece, Vec2I Location)
 {
-	////screen background coordinates
-	//static Vec2I topLeft{ 0,0 };
-	//static Vec2I botRight{ (int) Graphics::ScreenWidth,(int)Graphics::ScreenHeight };
+	//move piece
+	if (piece->MoveTo(Location))
+	{
+		//affect all other pieces and tell board
 
-	////buttons
-	//static Button startBtn({ (int)(Graphics::ScreenWidth / 2 - 80.0),(int)(Graphics::ScreenHeight / 2 + 30) } ,100,50,L"Start" );
+		if (board.IsInsideTheBoard(piece->OldLocation()))
+			board.ResetTile(piece->OldLocation());//supposing that we left this tile empty		
+		
+		auto tile = board.GetTile(piece->Locate());
 
-	////drawing
-	//for ( int x = topLeft.x; x < botRight.x; x++)
-	//{
-	//	for ( int y = topLeft.y; y < botRight.y; y++)
-	//	{
-	//		gfx.PutPixel(x, y, Colors::Black);
-	//	}
-	//}
+		//if tile contains a piece then we send it to prison.
+		if (tile->CurState().containPiece) 
+		{			
+			std::shared_ptr<Piece> p = getPiece(piece->Locate(), tile->CurState().piecetype, tile->CurState().pieceTeam);
+			if (p != nullptr)
+			{
+				MarkForDestruction(p);
+				//if captured piece is KING
+				if (p->GetType() == KING)				
+					gameEvents.push(GameDirector::DirectorEvent::GameOver);				
+			}
+		}
 
-	//if(startBtn.GetBoundingBox().Contains(mousePos))
-	//	startBtn.Draw(gfx, font, 15,10,Colors::Red);
-	//else
-	//	startBtn.Draw(gfx, font, 15, 10, Colors::Green);
+		// check for promotions
+		if (dynamic_cast<Pawn*>(piece.get()) != nullptr && dynamic_cast<Pawn*>(piece.get())->isTransformed())
+		{
+			EnterPromotionMode(piece.get());
 
+			//adding event
+			if (piece->GetTeam() == Team::BLACK)
+				gameEvents.push(GameDirector::DirectorEvent::EnterBlackPromotion);
+			else if (piece->GetTeam() == Team::WHITE)
+				gameEvents.push(GameDirector::DirectorEvent::EnterWhitePromotion);
+		}
+		
+		// do changes to the tile which the piece moved TO
+		board.PutPieceOnTile(Location, piece);
 
+		//report kings' location
+		if (piece->GetType() == KING)
+		{
+			if (piece->GetTeam() == Team::BLACK)
+				BKingLoc = piece->Locate();
+
+			else if (piece->GetTeam() == Team::WHITE)
+				WKingLoc = piece->Locate();			
+		}
+		return true;
+	}
+	else
+		return false;
 }
-
 
 void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Location,GlobalEnums::Team teamToPlay,int gameTurn )
 {	
@@ -376,7 +283,7 @@ void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Locat
 		{
 			if (pieceInT1 != nullptr && teamToPlay == pieceInT1->GetTeam())
 			{
-				if (pieceInT1->MoveTo(tile2Location)) //if moving succeed (if it actually moved!)
+				if (MovePiece(pieceInT1,tile2Location)) //if moving succeed (if it actually moved!)
 				{
 					//do turn					
 					gameEvents.push(DirectorEvent::TurnPassed);
@@ -419,7 +326,7 @@ void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Locat
 		{
 			if (pieceInT1 != nullptr && teamToPlay == pieceInT1->GetTeam())
 			{
-				if (pieceInT1->MoveTo(tile2Location)) //if moving succeed (if it actually moved!)
+				if (MovePiece(pieceInT1,tile2Location)) //if moving succeed (if it actually moved!)
 				{
 					//do turn
 					gameEvents.push(DirectorEvent::TurnPassed);					
@@ -481,7 +388,7 @@ void GameDirector::HandleInputCheatMode(const Vec2I tile1Location, const Vec2I t
 			{
 				if (pieceInT1 != nullptr)
 				{
-					if (pieceInT1->MoveTo(tile2Location)) //if piece moved
+					if (MovePiece(pieceInT1,tile2Location)) //if piece moved
 					{
 						//do turn
 						GenerateMovesForAllPieces();
@@ -522,7 +429,7 @@ void GameDirector::HandleInputCheatMode(const Vec2I tile1Location, const Vec2I t
 				//block moves if it doesn't remove threats
 				if (pieceInT1 != nullptr)
 				{
-					if (pieceInT1->MoveTo(tile2Location)) //if piece moved
+					if (MovePiece(pieceInT1,tile2Location)) //if piece moved
 					{
 						GenerateMovesForAllPieces();
 						CheckKingsSafety();
@@ -722,7 +629,7 @@ void GameDirector::CheckForEnPassants(int gameTurn)
 		turnRegistered = -2;
 
 	bool checkedBefore;
-	for (int x = 0; x < board_columns; x++)
+	for (int x = 0; x < board.columns; x++)
 	{
 		
 		//from left to right
@@ -777,7 +684,7 @@ void GameDirector::CheckForEnPassants(int gameTurn)
 	//=====================================================================
 	//this section is for white rows
 
-	for (int x = 0; x < board_columns; x++)
+	for (int x = 0; x < board.columns; x++)
 	{
 		checkedBefore = std::find(checkedLocations.begin(), checkedLocations.end(), Vec2I(x, whitePawnsRow)) != checkedLocations.end();
 		if (checkedBefore)

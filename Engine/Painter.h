@@ -1,6 +1,6 @@
 #pragma once
 #include "Graphics.h"
-//this class know how to draw anything , and the sole responsible for drawing . no other class should be able to use GFX directly!
+//this class is the sole responsible for drawing anything , no other class should use GFX directly!
 class Painter
 {
 public:

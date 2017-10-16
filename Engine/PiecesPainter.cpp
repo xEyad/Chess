@@ -16,8 +16,8 @@ PiecesPainter::~PiecesPainter()
 
 void PiecesPainter::DrawPiecesSquares(Vec2I topLeft)
 {
-	int tileWidth = Board::GetTileWidth();
-	int tileHeight = Board::GetTileHeight();
+	int tileWidth = Board::Tile::WIDTH;
+	int tileHeight = Board::Tile::HEIGHT;
 	Color c;
 	Vec2I screenLocation = topLeft;
 	for (auto i = pieces->cbegin(); i < pieces->cend(); i++)
@@ -59,33 +59,19 @@ void PiecesPainter::DrawPiecesSquares(Vec2I topLeft)
 
 void PiecesPainter::DrawPiecesSprites(Vec2I topLeft)
 {
-	int tileWidth = Board::GetTileWidth();
-	int tileHeight = Board::GetTileHeight();
-	Color c;
+	int tileWidth = Board::Tile::WIDTH;
+	int tileHeight = Board::Tile::HEIGHT;
 	Vec2I screenLocation = topLeft;
 	for (auto pPiece = pieces->cbegin(); pPiece < pieces->cend(); pPiece++)
 	{
 		if ((*pPiece)->isCaptured() == false)
 		{
 			auto sprite = GetSprite(pPiece->get());
-			auto sprWidth = sprite->GetWidth();
-			auto sprHeight = sprite->GetHeight();
 			
 			//top left point of the tile which the piece is on
 			Vec2I topLeftPoint(screenLocation.x + (*pPiece)->Locate().x * tileWidth, screenLocation.y + (*pPiece)->Locate().y * tileHeight);
 
-			int xPieceSpr = 0;
-			int yPieceSpr = 0;
-			for (unsigned int x = topLeftPoint.x; x < sprWidth - 1 + topLeftPoint.x; x++)
-			{
-				for (unsigned int y = topLeftPoint.y; y < sprHeight - 1 + topLeftPoint.y; y++)
-				{
-					gfx.PutPixelAlphaClipped(x, y, sprite->GetPixel(xPieceSpr, yPieceSpr), RectI(0, Graphics::ScreenHeight, 0, Graphics::ScreenWidth));
-					yPieceSpr++;
-				}
-				xPieceSpr++;
-				yPieceSpr = 0;
-			}
+			gfx.DrawSpriteClipped(sprite, topLeftPoint);			
 		}
 		else
 			continue;

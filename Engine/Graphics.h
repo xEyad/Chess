@@ -108,8 +108,18 @@ public:
 	{
 		sysBuffer.DrawString(string, pt, font, c);
 	}
+	void DrawText(const Text txt)
+	{
+		DrawText(txt.content, txt.pos,*(txt.font), txt.clr);
+	}
 	void DrawSprite(const Surface* sprite, Vec2I topLeftLocation);
+	void DrawSpriteSubregion(const Surface* sprite, RectI regionToDraw, Vec2I drawLocation);
+	//void DrawSpriteSubregionClipped(const Surface* sprite, RectI regionToDraw, Vec2I drawLocation, RectI clipRect);
+
 	void DrawSpriteClipped(const Surface* sprite, Vec2I topLeftLocation, RectI clipRect);
+	void DrawSpriteClipped(const Surface * sprite, Vec2I topLeftLocation);
+	void DrawSpriteSubRegionClipped(const Surface * sprite, RectI subRegion, Vec2I topLeftLocation, RectI clipRect);
+	void DrawSpriteSubRegionClipped(const Surface * sprite, RectI subRegion, Vec2I topLeftLocation);
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

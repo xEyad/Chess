@@ -8,13 +8,14 @@ public:
 	~PromotionScreen() = 0;
 
 
-
 protected:
 	std::shared_ptr<Surface> sprite;
 	Vec2I spriteOffset;
 private:
+	Text title;
 	const TextSurface::Font font;
 	Color textClr;
+	std::wstring message;
 	GuidedButton rookBtn;
 	GuidedButton knightBtn;
 	GuidedButton bishopBtn;

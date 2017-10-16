@@ -158,7 +158,9 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GDIPlusManager.h" />
+    <ClInclude Include="GlobalEnums.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="IOManger.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="KingLeg.h" />
@@ -166,7 +168,6 @@
     <ClInclude Include="LocationValidator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="MouseInputHandler.h" />
     <ClInclude Include="Painter.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Piece.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Rook.h" />
     <ClInclude Include="RookLeg.h" />
     <ClInclude Include="ScreenPainter.h" />
+    <ClInclude Include="StartMenu.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TextSurface.h" />
     <ClInclude Include="Timer.h" />
@@ -192,6 +194,7 @@
     <ClCompile Include="BlackPromotionScreen.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BoardPainter.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDirector.cpp" />
@@ -199,6 +202,7 @@
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="IOManger.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="King.cpp" />
     <ClCompile Include="KingLeg.cpp" />
@@ -207,7 +211,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="MouseInputHandler.cpp" />
     <ClCompile Include="Painter.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PiecesPainter.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="Rook.cpp" />
     <ClCompile Include="RookLeg.cpp" />
     <ClCompile Include="ScreenPainter.cpp" />
+    <ClCompile Include="StartMenu.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TextSurface.cpp" />
     <ClCompile Include="Timer.cpp" />

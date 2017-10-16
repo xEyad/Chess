@@ -1,20 +1,17 @@
 #include "GameManager.h"
 
-
-
 GameManager::GameManager(Graphics& gfx, Mouse& mouse)
 	:
 	gfx(gfx),
 	mouse(mouse),
 	piecesPainter(gfx, director.getPieces()),
-	boardPainter(gfx),
 	screenPainter(gfx),
 	board(8, 8), //basic chess board	
+	boardPainter(gfx,board),
 	director(board),
 	font(L"times", 20.0f)
 {
 	//mo2ktn el 2byd makano ta7t daymn	
-	board.IntializeGameDirector(director);
 }
 
 
@@ -32,7 +29,7 @@ void GameManager::ManageDrawing()
 	if (BlackPromotoinOnGoing)
 	{
 		static BlackPromotionScreen bps;
-		Vec2I topLeft = { 20 + 80 * 2, 20 + 80 * 4 + 1 };
+		Vec2I topLeft = { 20 + Board::Tile::WIDTH * 2, 20 + Board::Tile::HEIGHT * 4 + 1 };
 		screenPainter.DrawScreen(bps, topLeft);
 		for each (auto mpdBtn in bps.MappedButtons())
 		{
@@ -43,7 +40,7 @@ void GameManager::ManageDrawing()
 	if (whitePromotoinOnGoing)
 	{
 		static WhitePromotionScreen wps;
-		Vec2I topLeft = { 20 + 80 * 2 ,20 + 80 * 3 + 1 };
+		Vec2I topLeft = { 20 + Board::Tile::WIDTH * 2 ,20 + Board::Tile::HEIGHT * 3 + 1 };
 		screenPainter.DrawScreen(wps, topLeft);
 		for each (auto mpdBtn in wps.MappedButtons())
 		{
@@ -105,7 +102,7 @@ void GameManager::HandleInput()
 			if (clickCounter == 0) //first click
 			{
 
-				t1 = board.GetTileByMouse(mouse.GetPos()); //click 1 (get its coordinates)
+				t1 = board.GetTileByMouse(gridTopLeft, mouse.GetPos()); //click 1 (get its coordinates)
 				selectedPiece = director.getPiece(t1->location);
 				if (selectedPiece)
 				{
@@ -119,7 +116,7 @@ void GameManager::HandleInput()
 
 				tileHighlightClr = Colors::Red;
 
-				t2 = board.GetTileByMouse(mouse.GetPos()); //click 2 (get its coordinates)
+				t2 = board.GetTileByMouse(gridTopLeft, mouse.GetPos()); //click 2 (get its coordinates)
 				if (t1 != nullptr && t2 != nullptr) //if the 2 clicks locations are valid
 				{
 					director.HandleInput(t1->location, t2->location,WhoseTurn(),gameTurn);
@@ -130,24 +127,40 @@ void GameManager::HandleInput()
 	}
 }
 
+void GameManager::LoadGameState(GameState newState)
+{
+	board(*(newState.board)); // use the conversion operator	
+	gameTurn = newState.turn;
+	director.ChangeGamePieces(newState.pieces);	
+}
+
+GameState GameManager::GetGameState()
+{
+	GameState currentState;
+	currentState.board = std::make_shared<Board>(board);
+	currentState.turn = gameTurn;
+	currentState.pieces = *(director.getPieces());
+	return currentState;
+}
+
 void GameManager::DrawStage()
 {
 #if _DEBUG // DEBUG mode
-	piecesPainter.DrawPiecesSquares({ 20,21 });
+	piecesPainter.DrawPiecesSquares(gridTopLeft);
 #else //release mode
 	boardPainter.DrawSprite(2);
-	piecesPainter.DrawPiecesSprites({ 20,21 }, 1);
+	piecesPainter.DrawPiecesSprites(gridTopLeft, 1);
 #endif 
 			
-	board.DrawLabels(gfx, Colors::White);
-	boardPainter.DrawGrid(board, { 20,21 }, Colors::LightGray);
+	boardPainter.DrawLabels(gridTopLeft, Colors::White);
+	boardPainter.DrawGrid(gridTopLeft, Colors::LightGray);
 	
 	if (selectedPiece)
 	{
 		auto p = selectedPiece->getValidTiles();
-		board.HighlightTiles(gfx, p, Colors::Orange);
+		boardPainter.HighlightTiles(gridTopLeft, p, Colors::Orange);
 	}
-	board.HighlightTile(gfx, mouse.GetPos(), tileHighlightClr); //re check color
+	boardPainter.HighlightTile(gridTopLeft, mouse.GetPos(), tileHighlightClr); //re check color
 	DrawWhoseTurn(Colors::Green);
 	DrawTurn(Colors::Orange);	
 }
@@ -167,9 +180,9 @@ void GameManager::DrawGameOverScreen()
 
 void GameManager::ProcessEvents()
 {
-	while (director.IsThereEvents()) //while there is events
+	while (director.IsThereEvents()) 
 	{
-		switch (director.ReadEvent().GetType())
+		switch (director.ReadEvent())
 		{
 			case GameDirector::DirectorEvent::TurnPassed:
 				gameTurn++;

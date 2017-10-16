@@ -417,36 +417,122 @@ void Graphics::FillRect(const RectI rect, Color c ,int shrink, bool fillEdges)
 
 void Graphics::DrawSprite(const Surface * sprite, Vec2I topLeftLocation)
 {
-	int xPieceSpr = 0;
-	int yPieceSpr = 0;
-	for (unsigned int x = topLeftLocation.x; x < sprite->GetWidth() + topLeftLocation.x; x++)
+	RectI regionToDraw(0, sprite->GetHeight(),0, sprite->GetWidth() );
+	DrawSpriteSubregion(sprite, regionToDraw, topLeftLocation);	
+}
+
+void Graphics::DrawSpriteSubregion(const Surface * sprite, RectI subRegion, Vec2I drawLocation)
+{
+	for (int sy = subRegion.top; sy < subRegion.bottom; sy++)
 	{
-		for (unsigned int y = topLeftLocation.y; y < sprite->GetHeight() + topLeftLocation.y; y++)
+		for (int sx = subRegion.left; sx < subRegion.right; sx++)
 		{
-			PutPixelAlpha(x, y, sprite->GetPixel(xPieceSpr, yPieceSpr));
-			yPieceSpr++;
-		}
-		xPieceSpr++;
-		yPieceSpr = 0;
+			PutPixelAlpha(drawLocation.x+ sx -subRegion.left, drawLocation.y + sy - subRegion.top, sprite->GetPixel(sx, sy));
+		}		
 	}
 }
 
 void Graphics::DrawSpriteClipped(const Surface * sprite, Vec2I topLeftLocation, RectI clipRect)
 {
-	int xPieceSpr = 0;
-	int yPieceSpr = 0;
-	for (unsigned int x = topLeftLocation.x; x < sprite->GetWidth() + topLeftLocation.x; x++)
+	RectI sprREC(topLeftLocation.y, topLeftLocation.y + sprite->GetHeight(), topLeftLocation.x, topLeftLocation.x + sprite->GetWidth());
+	int startX = topLeftLocation.x;
+	int shiftY = 0;
+	int shiftX = 0;
+	int sprStartX = 0;
+	int sprStartY = 0;
+	int sprEndX = sprite->GetWidth();
+	int sprEndY = sprite->GetHeight();
+	if (sprREC.top < clipRect.top)
 	{
-		for (unsigned int y = topLeftLocation.y; y < sprite->GetHeight() + topLeftLocation.y; y++)
+		shiftY = clipRect.top - sprREC.top;
+		sprStartY = shiftY;
+	}
+
+	if (sprREC.bottom > clipRect.bottom)
+		sprEndY = sprite->GetHeight() - (sprREC.bottom - clipRect.bottom);
+
+
+	if (sprREC.left < clipRect.left)
+	{
+		shiftX = clipRect.left - sprREC.left;
+		sprStartX = shiftX;
+	}
+
+	if (sprREC.right > clipRect.right)
+		sprEndX = sprite->GetWidth() - (sprREC.right - clipRect.right);
+	//its shifted from the right, meaning we will end drawing earlier by this much (shift), but won't start drawing shifted!
+
+
+	for (int sy = sprStartY; sy < sprEndY; sy++)
+	{
+		for (int sx = sprStartX; sx < sprEndX; sx++)
 		{
-			PutPixelAlphaClipped(x, y, sprite->GetPixel(xPieceSpr, yPieceSpr), clipRect);
-			yPieceSpr++;
+			PutPixelAlpha(topLeftLocation.x++ + shiftX, topLeftLocation.y + shiftY, sprite->GetPixel(sx, sy));
 		}
-		xPieceSpr++;
-		yPieceSpr = 0;
+		topLeftLocation.x = startX;
+		topLeftLocation.y++;
 	}
 }
 
+void Graphics::DrawSpriteClipped(const Surface * sprite, Vec2I topLeftLocation)
+{
+	RectI clipRect(0, ScreenHeight, 0, ScreenWidth);
+	DrawSpriteClipped(sprite, topLeftLocation, clipRect);
+}
+
+void Graphics::DrawSpriteSubRegionClipped(const Surface * sprite, RectI subRegion, Vec2I topLeftLocation, RectI clipRect)
+{
+	int subRegionWidth = subRegion.right - subRegion.left;
+	int subRegionHeight = subRegion.bottom - subRegion.top;
+	RectI sprREC(topLeftLocation.y, topLeftLocation.y + subRegionHeight, topLeftLocation.x, topLeftLocation.x + subRegionWidth);
+	int startX = topLeftLocation.x;
+	int shiftY = 0;
+	int shiftX = 0;
+	int sprStartX = subRegion.left;
+	int sprStartY = subRegion.top;
+	int sprEndX = subRegion.right;
+	int sprEndY = subRegion.bottom;
+	if (sprREC.top < clipRect.top)
+	{
+		shiftY = clipRect.top - sprREC.top;
+		sprStartY = subRegion.top + shiftY;
+	}
+
+	if (sprREC.bottom > clipRect.bottom)
+	{
+		sprEndY = subRegion.bottom - (sprREC.bottom - clipRect.bottom);
+	}
+
+
+	if (sprREC.left < clipRect.left)
+	{
+		shiftX = clipRect.left - sprREC.left;
+		sprStartX = subRegion.left + shiftX;
+	}
+
+	if (sprREC.right > clipRect.right)
+	{
+		sprEndX = subRegion.right - (sprREC.right - clipRect.right);
+		//its shifted from the right, meaning we will end drawing earlier by this much (shift), but won't start drawing shifted!
+	}
+
+
+	for (int sy = sprStartY; sy < sprEndY; sy++)
+	{
+		for (int sx = sprStartX; sx < sprEndX; sx++)
+		{
+			PutPixelAlpha(topLeftLocation.x++ + shiftX, topLeftLocation.y + shiftY, sprite->GetPixel(sx, sy));
+		}
+		topLeftLocation.x = startX;
+		topLeftLocation.y++;
+	}
+}
+
+void Graphics::DrawSpriteSubRegionClipped(const Surface * sprite, RectI subRegion, Vec2I topLeftLocation)
+{
+	RectI clipRect(0, ScreenHeight, 0, ScreenWidth);
+	DrawSpriteSubRegionClipped(sprite, subRegion, topLeftLocation, clipRect);
+}
 Graphics::Exception::Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line )
 	:
 	ChiliException( file,line,note ),

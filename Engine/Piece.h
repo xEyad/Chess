@@ -1,12 +1,12 @@
 #pragma once
 #include "Vec2.h"
 #include "Colors.h"
-#include "GameDirector.h"
 #include "Board.h"
 #include <iostream>
+#include "GlobalEnums.h"
 #include <Windows.h>
 using namespace GlobalEnums;
-//abstract class
+//abstract class act as interface for any game Piece. Piece is only responsible for managing itself
 class Piece
 {
 protected:
@@ -32,7 +32,6 @@ protected:
 		else if (team == Team::WHITE)
 			enemyTeam = Team::BLACK;
 
-		ReportChange();
 
 		GenerateValidMoves();
 
@@ -49,12 +48,7 @@ protected:
 		//row = (location - column) / totalNumberOfRows    <= Y
 		return{ location % board->columns,(location - (location % board->columns)) / board->rows };
 	}
-	//actions
-	virtual void ReportChange() //sends to board a pointer to the changed piece
-	{
-		board->ReadChange(this, oldLocation);
-	}
-
+	
 public:
 	//getters
 	pieceType GetType() const
@@ -94,6 +88,10 @@ public:
 	{
 		return lastTurn;
 	}
+	Vec2I OldLocation() const
+	{
+		return oldLocation;
+	}
 	//actions
 	virtual bool MoveTo(Vec2I newLocation)//original
 	{
@@ -103,7 +101,6 @@ public:
 			oldLocation = curLocation;
 			curLocation = newLocation;
 			movedBefore = true;
-			ReportChange();
 			return true;
 		}
 		else
@@ -120,7 +117,6 @@ public:
 		oldLocation = lastTurn.oldLocation;
 		captured = lastTurn.captured;
 		movedBefore = lastTurn.movedBefore;
-		board->ReadChange(this, locationGoingTo, true); //reporting change with reversed tiles locations
 	}
 	virtual void CopyThisTurn() 
 	{
@@ -143,7 +139,6 @@ public:
 			CopyThisTurn();
 			oldLocation = curLocation;
 			curLocation = newLocation;
-			ReportChange();
 			return true;
 		}
 		else

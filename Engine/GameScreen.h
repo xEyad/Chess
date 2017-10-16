@@ -15,9 +15,8 @@ public:
 	int Height() const;
 	RectI Rect() const;
 
-	const std::vector<GuidedSurface> GuidedSprites() const;
-	
-	//const std::vector<TextSurface::Font> Fonts() const;
+	const std::vector<GuidedSurface> GuidedSprites() const;	
+	const std::vector<Text> Messages() const;
 	const std::vector<GuidedButton> MappedButtons() const;
 
 protected:
@@ -30,7 +29,7 @@ protected:
 
 	//new variables
 	std::vector<GuidedSurface> sprites;
-	std::vector<TextSurface::Font> fonts;
+	std::vector<Text> messages;
 	std::vector<GuidedButton> buttons;
 };
 

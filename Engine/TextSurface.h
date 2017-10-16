@@ -44,3 +44,19 @@ private:
 	std::unique_ptr<Gdiplus::Bitmap>	pBmp;
 	std::unique_ptr<Gdiplus::Graphics>	pGfx;
 };
+
+struct Text
+{
+	Text(std::wstring content,Vec2I pos,const TextSurface::Font* font,Color clr)
+		:
+		content(content),
+		pos(pos),
+		font(font),
+		clr(clr)
+	{}
+	
+	std::wstring content;
+	Vec2I pos;
+	const TextSurface::Font* font;
+	Color clr;
+};

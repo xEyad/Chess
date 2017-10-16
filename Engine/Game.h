@@ -20,11 +20,15 @@
  ******************************************************************************************/
 #pragma once
 
+#include <random>
+#include <iostream>
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
 #include "GameManager.h"
-
+#include "IOManger.h"
+#include "MainWindow.h"
+#include "ChiliWin.h"
 class Game
 {
 public:
@@ -44,10 +48,8 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	//Board chessBoard;
-	//GameDirector Director;
 	GameManager manager;
-	//const TextSurface::Font fontus;
+	IOManager ioManager;
 	/********************************/
 };
 

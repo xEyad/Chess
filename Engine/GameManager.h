@@ -16,11 +16,8 @@ public:
 	~GameManager();
 	void ManageDrawing();
 	void HandleInput();
-	//temp functions (should be deleted)
-	GameDirector& Director()
-	{
-		return director;
-	}
+	void LoadGameState(GameState newState);
+	GameState GetGameState();
 private:
 	void DrawStage();
 	void DrawGameOverScreen(); //should be a subclass of GameScreen
@@ -35,12 +32,13 @@ private:
 	Graphics& gfx;
 	Mouse& mouse;
 	const TextSurface::Font font;
-	Board board; //the manager should create it
-	GameDirector director;	//the manager should create it
+	Board board; 
+	GameDirector director;	
 	BoardPainter boardPainter;
 	PiecesPainter piecesPainter; 
 	ScreenPainter screenPainter;
 	Color tileHighlightClr = Colors::Red;
+	const Vec2I gridTopLeft = { 20, 21 };
 	std::shared_ptr<Piece> selectedPiece = nullptr;
 	std::shared_ptr<Tile> selectedTile = nullptr;
 	std::vector<RectI> pawnPromotionRects;
@@ -52,4 +50,3 @@ private:
 	bool promotoinOnGoing = false;
 	bool gameOver = false;
 };
-

@@ -1,7 +1,7 @@
 #pragma once
 #include "Vec2.h"
 #include "Board.h"
-#include "GameDirector.h"
+#include "GlobalEnums.h"
 class LocationValidator
 {
 public:
