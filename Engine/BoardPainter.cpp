@@ -15,9 +15,8 @@ BoardPainter::~BoardPainter()
 {
 }
 
-void BoardPainter::DrawSprite(int spriteNum)
+void BoardPainter::DrawSprite()
 {
-	ChangeSpriteTo(spriteNum);
 	gfx.DrawSpriteClipped(sprite, { 0,0 });
 }
 
@@ -104,23 +103,23 @@ void BoardPainter::DrawLabels(Vec2I GridTopleft,Color labelsClr) const
 	}
 }
 //1-stoneGrey, 2-stoneBlue, 3-stoneBlack, 4-wood
-void BoardPainter::ChangeSpriteTo(int spriteNum)
+void BoardPainter::ChangeSpriteTo(BoardSprites spritePic)
 {
-	switch (spriteNum)
+	switch (spritePic)
 	{
-		case 1:
+		case BoardSprites::StoneGrey:
 			delete sprite;
 			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Grey\\Chess_Board_Stone2_nolabel.png"));
 			break;
-		case 2:
+		case BoardSprites::StoneBlue:
 			delete sprite;
 			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Blue\\Chess_Board_Stone3_nolabel.png"));
 			break;
-		case 3:
+		case BoardSprites::StoneBlack:
 			delete sprite;
 			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Black\\Chess_Board_Stone_nolabel.png"));
 			break;
-		default: //case 4
+		default: //case 4 Wood
 			delete sprite;
 			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Wood\\Chess_Board_wood_nolabel.png"));
 			break;

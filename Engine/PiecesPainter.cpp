@@ -7,7 +7,7 @@ PiecesPainter::PiecesPainter(Graphics & gfx, const std::vector<std::shared_ptr<P
 	Painter(gfx),
 	pieces(pieces)
 {
-	ChangeStyleTo(1);
+	ChangeStyleTo(PiecesStyle::stone);
 }
 
 PiecesPainter::~PiecesPainter()
@@ -78,17 +78,11 @@ void PiecesPainter::DrawPiecesSprites(Vec2I topLeft)
 	}
 }
 
-void PiecesPainter::DrawPiecesSprites(Vec2I topLeft, int styleNum)
-{
-	DeleteSprites();
-	ChangeStyleTo(styleNum);
-	DrawPiecesSprites(topLeft);
-}
-void PiecesPainter::ChangeStyleTo(int styleNum)
+void PiecesPainter::ChangeStyleTo(PiecesStyle style)
 {	
-	switch (styleNum)
+	switch (style)
 	{
-		case 1:
+		case PiecesStyle::stone:
 			wPawnSpr = new Surface(Surface::FromFile(L"Resources\\Chess Pieces\\Stone\\PawnW.png"));
 			wRookSpr = new Surface(Surface::FromFile(L"Resources\\Chess Pieces\\Stone\\RookW.png"));
 			wKnightSpr = new Surface(Surface::FromFile(L"Resources\\Chess Pieces\\Stone\\KnightW.png"));

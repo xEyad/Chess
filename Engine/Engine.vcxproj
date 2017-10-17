@@ -160,6 +160,7 @@
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="GlobalEnums.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="InteractionHandler.h" />
     <ClInclude Include="IOManger.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="King.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="LocationValidator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="OptionsMenu.h" />
     <ClInclude Include="Painter.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Piece.h" />
@@ -202,6 +204,7 @@
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="InteractionHandler.cpp" />
     <ClCompile Include="IOManger.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="King.cpp" />
@@ -211,6 +214,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="OptionsMenu.cpp" />
     <ClCompile Include="Painter.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PiecesPainter.cpp" />

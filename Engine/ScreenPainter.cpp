@@ -46,10 +46,7 @@ void ScreenPainter::DrawButtons(const GameScreen & screen, Vec2I topLeft)
 	for each (auto mpdBtn in screen.MappedButtons())
 	{	
 		auto Btn = mpdBtn.btn;
-		auto bb = Btn.GetBoundingBox(topLeft);
-		auto xOffset = mpdBtn.topLeftOffset.x;
-		auto yOffset = mpdBtn.topLeftOffset.y;
-		bb = RectI( bb.top + yOffset,bb.bottom + yOffset,bb.left + xOffset,bb.right + xOffset );
+		auto bb = mpdBtn.GetBoundingBox(topLeft);
 		
 		//Button Drawing
 		if(Btn.HaveEdges())

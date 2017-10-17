@@ -11,13 +11,13 @@ StartMenu::StartMenu()
 	btnsTopLeftOffset(screenCenter.x - btnsWidth / 2, screenCenter.y - btnsHeight / 2),
 	btnsSepartaionDist(btnsHeight + 50),
 	playBtn(Button(btnsWidth, btnsHeight, L"Play", btnsTxtClr, btnsEdgesClr,Colors::White,false,false),
-	{ btnsTopLeftOffset.x,btnsTopLeftOffset.y - btnsSepartaionDist }, true, btnsHighlight, true),
+	{ btnsTopLeftOffset.x,btnsTopLeftOffset.y - btnsSepartaionDist }, true, btnsHighlight, "playBtn", true),
 
 	optBtn(Button(btnsWidth, btnsHeight, L"Options", btnsTxtClr, btnsEdgesClr, Colors::White, false, false),
-	{ btnsTopLeftOffset.x - 20,btnsTopLeftOffset.y }, true, btnsHighlight, true),
+	{ btnsTopLeftOffset.x - 20,btnsTopLeftOffset.y }, true, btnsHighlight, "optBtn", true),
 
 	exitBtn(Button(btnsWidth, btnsHeight, L"Exit", btnsTxtClr, btnsEdgesClr, Colors::White, false, false),
-	{ btnsTopLeftOffset.x,btnsTopLeftOffset.y + btnsSepartaionDist }, true, btnsHighlight,true),
+	{ btnsTopLeftOffset.x,btnsTopLeftOffset.y + btnsSepartaionDist }, true, btnsHighlight,"exitBtn",true),
 
 	backgroundSprite(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\startMenu.jpg")), Vec2I( 0,0 ))
 {
@@ -26,7 +26,3 @@ StartMenu::StartMenu()
 	buttons.push_back(exitBtn);
 	sprites.push_back(backgroundSprite);
 }
-
-
-
-

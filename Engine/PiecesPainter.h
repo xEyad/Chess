@@ -4,16 +4,19 @@
 class PiecesPainter :	public Painter
 {
 public:
+	enum class PiecesStyle
+	{
+		wood,
+		stone
+	};
+public:
 	PiecesPainter(Graphics& gfx, const std::vector<std::shared_ptr<Piece>>* pieces);
 	~PiecesPainter();
 
 	void DrawPiecesSquares(Vec2I topLeft);
 	void DrawPiecesSprites(Vec2I topLeft);
-	//1-stone, 2-wood
-	void DrawPiecesSprites(Vec2I topLeft, int styleNum);
+	void ChangeStyleTo(PiecesStyle style);
 private:
-	//1-stone, 2-wood
-	void ChangeStyleTo(int styleNum);
 	void DeleteSprites();
 	Surface* GetSprite(Piece* pPiece);
 private:

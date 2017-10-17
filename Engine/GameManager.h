@@ -7,18 +7,29 @@
 #include "ScreenPainter.h"
 #include "WhitePromotionScreen.h"
 #include "BlackPromotionScreen.h"
-//singelton, responsible for drawing(rendering) and connecting between major classes
-//handels input 
+#include "InteractionHandler.h"
+#include "StartMenu.h"
+#include "OptionsMenu.h"
+//responsible for drawing(rendering) and connecting between major classes
 class GameManager
 {
+	enum class UserStates
+	{
+		startMenu,
+		optionsMenu,
+		paused,
+		playing,
+		exiting
+	};
 public:
-	GameManager(Graphics& gfx, Mouse& mouse);
+	GameManager(Graphics& gfx, Mouse& mouse, Keyboard& kbd);
 	~GameManager();
-	void ManageDrawing();
-	void HandleInput();
+	void DrawGameScreen();
+	void HandleInput(); //screens input
 	void LoadGameState(GameState newState);
 	GameState GetGameState();
 private:
+	void DrawGameplayScreens();
 	void DrawStage();
 	void DrawGameOverScreen(); //should be a subclass of GameScreen
 	void ProcessEvents();
@@ -26,11 +37,15 @@ private:
 	void PromotionModeEnd();
 	void DrawWhoseTurn(Color clr); 
 	void DrawTurn(Color clr); 
+	void HandleGameplayInput(); //only input related to pieces and moving etc..
 
 	GlobalEnums::Team WhoseTurn() const;
 private:
 	Graphics& gfx;
 	Mouse& mouse;
+	Keyboard& kbd;
+	InteractionHandler inputter;
+	UserStates userState;
 	const TextSurface::Font font;
 	Board board; 
 	GameDirector director;	
@@ -43,6 +58,8 @@ private:
 	std::shared_ptr<Tile> selectedTile = nullptr;
 	std::vector<RectI> pawnPromotionRects;
 	int gameTurn = 1; //odd is white's turn 
+	std::unique_ptr<GameScreen> pScreen = nullptr;
+	Vec2I curScreenTopleft;
 	//Flags
 	bool kingUnderThreat = false;
 	bool whitePromotoinOnGoing = false;

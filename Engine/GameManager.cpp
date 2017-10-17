@@ -1,16 +1,21 @@
 #include "GameManager.h"
 
-GameManager::GameManager(Graphics& gfx, Mouse& mouse)
+GameManager::GameManager(Graphics& gfx, Mouse& mouse, Keyboard& kbd)
 	:
 	gfx(gfx),
 	mouse(mouse),
+	kbd(kbd),
+	inputter(mouse, kbd),
+	userState(UserStates::startMenu),
 	piecesPainter(gfx, director.getPieces()),
 	screenPainter(gfx),
 	board(8, 8), //basic chess board	
 	boardPainter(gfx,board),
 	director(board),
 	font(L"times", 20.0f)
-{
+{		
+	boardPainter.ChangeSpriteTo(BoardPainter::BoardSprites::StoneBlue);
+	piecesPainter.ChangeStyleTo(PiecesPainter::PiecesStyle::stone);
 	//mo2ktn el 2byd makano ta7t daymn	
 }
 
@@ -19,7 +24,87 @@ GameManager::~GameManager()
 {
 }
 
-void GameManager::ManageDrawing()
+//draws appropriate screens in approrpiate times
+void GameManager::DrawGameScreen()
+{
+	switch (userState)
+	{
+		case GameManager::UserStates::startMenu:
+			pScreen = std::make_unique<StartMenu>(StartMenu()); 
+			curScreenTopleft = Vec2I( 0,0 );
+			screenPainter.DrawScreenWithHighlights(*pScreen, curScreenTopleft ,mouse.GetPos());
+			break;
+		case GameManager::UserStates::optionsMenu:
+			pScreen = std::make_unique<OptionsMenu>(OptionsMenu(&font));
+			curScreenTopleft = Vec2I(0, 0);
+			screenPainter.DrawScreenWithHighlights(*pScreen, curScreenTopleft, mouse.GetPos());
+			break;
+		case GameManager::UserStates::paused:
+			break;
+		case GameManager::UserStates::playing:
+			pScreen = nullptr;
+			DrawGameplayScreens();
+			break;
+		case GameManager::UserStates::exiting:
+			//kill Message
+			break;
+		default:
+			break;
+	}
+}
+
+void GameManager::HandleInput()
+{
+	if (pScreen != nullptr)
+	{
+		auto btnName = inputter.HandleMouseInput(*pScreen, curScreenTopleft);
+
+		//handle based on what screen is running ----- Use functors------
+		if (userState == UserStates::startMenu)
+		{
+			if (btnName == "playBtn")
+				userState = UserStates::playing;
+			else if (btnName == "optBtn")
+				userState = UserStates::optionsMenu;
+			else if (btnName == "exitBtn")
+				userState = UserStates::exiting;
+		}
+
+		else if (userState == UserStates::optionsMenu)
+		{
+			if (btnName == "stoneGreyBtn")
+			{
+				boardPainter.ChangeSpriteTo(BoardPainter::BoardSprites::StoneGrey);
+				piecesPainter.ChangeStyleTo(PiecesPainter::PiecesStyle::stone);
+				userState = UserStates::startMenu;
+			}
+			if (btnName == "stoneBlueBtn")
+			{
+				boardPainter.ChangeSpriteTo(BoardPainter::BoardSprites::StoneBlue);
+				piecesPainter.ChangeStyleTo(PiecesPainter::PiecesStyle::stone);
+				userState = UserStates::startMenu;
+			}
+			if (btnName == "stoneBlackBtn")
+			{
+				boardPainter.ChangeSpriteTo(BoardPainter::BoardSprites::StoneBlack);
+				piecesPainter.ChangeStyleTo(PiecesPainter::PiecesStyle::stone);
+				userState = UserStates::startMenu;
+			}
+			if (btnName == "woodBtn")
+			{		
+				boardPainter.ChangeSpriteTo(BoardPainter::BoardSprites::Wood);
+				piecesPainter.ChangeStyleTo(PiecesPainter::PiecesStyle::wood);
+				userState = UserStates::startMenu;
+			}
+			if (btnName == "backBtn")
+				userState = UserStates::startMenu;
+		}
+	}
+	else
+		HandleGameplayInput();
+}
+
+void GameManager::DrawGameplayScreens()
 {
 	DrawStage();
 
@@ -52,7 +137,7 @@ void GameManager::ManageDrawing()
 		DrawGameOverScreen();
 }
 
-void GameManager::HandleInput()
+void GameManager::HandleGameplayInput()
 {
 	ProcessEvents();
 	static int clickCounter = 0;
@@ -103,7 +188,8 @@ void GameManager::HandleInput()
 			{
 
 				t1 = board.GetTileByMouse(gridTopLeft, mouse.GetPos()); //click 1 (get its coordinates)
-				selectedPiece = director.getPiece(t1->location);
+				if(t1 != nullptr)
+					selectedPiece = director.getPiece(t1->location);
 				if (selectedPiece)
 				{
 					clickCounter++;
@@ -148,8 +234,8 @@ void GameManager::DrawStage()
 #if _DEBUG // DEBUG mode
 	piecesPainter.DrawPiecesSquares(gridTopLeft);
 #else //release mode
-	boardPainter.DrawSprite(2);
-	piecesPainter.DrawPiecesSprites(gridTopLeft, 1);
+	boardPainter.DrawSprite();
+	piecesPainter.DrawPiecesSprites(gridTopLeft);
 #endif 
 			
 	boardPainter.DrawLabels(gridTopLeft, Colors::White);

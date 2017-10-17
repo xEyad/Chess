@@ -189,6 +189,12 @@
     <ClInclude Include="StartMenu.h">
       <Filter>Header Files\Game Screens</Filter>
     </ClInclude>
+    <ClInclude Include="InteractionHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionsMenu.h">
+      <Filter>Header Files\Game Screens</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -301,6 +307,12 @@
     </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractionHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionsMenu.cpp">
+      <Filter>Source Files\Game Screens</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

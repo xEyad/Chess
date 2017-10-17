@@ -39,13 +39,14 @@ private:
 //just a button and its offset from a location (topleft)
 struct GuidedButton
 {
-	GuidedButton(Button btn, Vec2I topLeftOffset, bool haveHighlight ,Color highlight,bool highlightText = false)
+	GuidedButton(Button btn, Vec2I topLeftOffset, bool haveHighlight ,Color highlight, std::string name,bool highlightText = false)
 		:
 		btn(btn),
 		topLeftOffset(topLeftOffset),
 		haveHighlight(haveHighlight),
 		highlight(highlight),
-		highlightText(highlightText)
+		highlightText(highlightText),
+		name(name)
 	{}
 	RectI GetBoundingBox(Vec2I topLeftPointLocation) const
 	{
@@ -56,4 +57,5 @@ struct GuidedButton
 	Color highlight;
 	bool haveHighlight;
 	bool highlightText;
+	std::string name;
 };

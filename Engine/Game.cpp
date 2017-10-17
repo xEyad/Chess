@@ -21,11 +21,12 @@
 #include "Game.h"
 #include "StartMenu.h"
 #include "ScreenPainter.h"
+#include "InteractionHandler.h"
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	manager(gfx, wnd.mouse)
+	manager(gfx, wnd.mouse,wnd.kbd)
 {
 	
 }
@@ -56,9 +57,6 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {		
-	//manager.ManageDrawing();
-	ScreenPainter sc(gfx);
-	StartMenu s;
-	sc.DrawScreenWithHighlights(s, { 0,0 },wnd.mouse.GetPos());
+	manager.DrawGameScreen();
 }
 
