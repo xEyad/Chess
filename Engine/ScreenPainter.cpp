@@ -58,7 +58,7 @@ void ScreenPainter::DrawButtons(const GameScreen & screen, Vec2I topLeft)
 		auto btnW = bb.right - bb.left;
 		auto btnH = bb.bottom - bb.top;
 		Vec2I btnCenter(bb.left + btnW / 2, bb.top + btnH / 2);
-		Vec2I textPlacement(btnCenter.x - btnW / 4, btnCenter.y - btnH*.4 );
+		Vec2I textPlacement(int(btnCenter.x - btnW / 4), int(btnCenter.y - btnH*.4) );
 		gfx.DrawText(mpdBtn.btn.Text(), textPlacement, TextSurface::Font(L"times", 20), mpdBtn.btn.TextColor());
 	}
 }
@@ -83,7 +83,7 @@ void ScreenPainter::DoHighlights(const GameScreen & screen, Vec2I topLeft, Vec2I
 					auto btnW = bb.right - bb.left;
 					auto btnH = bb.bottom - bb.top;
 					Vec2I btnCenter(bb.left + btnW / 2, bb.top + btnH / 2);
-					Vec2I textPlacement(btnCenter.x - btnW / 4, btnCenter.y - btnH*.4);
+					Vec2I textPlacement(int(btnCenter.x - btnW / 4),int(btnCenter.y - btnH*.4));
 					gfx.DrawText(mpdBtn.btn.Text(), textPlacement, TextSurface::Font(L"times", 20), mpdBtn.highlight);
 				}
 			}

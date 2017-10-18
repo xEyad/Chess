@@ -72,7 +72,7 @@ public:
 public:
 	Board(int rows, int columns);
 	Board(Board& board);
-	void operator()(Board& rhs) //conversion operator , copy assignment
+	void copy(Board& rhs) //used only in loading
 	{
 		if (rhs.rows == rows && rhs.columns == columns)
 		{
@@ -106,6 +106,5 @@ private:
 public:
 	const int rows; 
 	const int columns;
-	const std::vector<std::shared_ptr<Tile>> p = boardTiles;
 };
 

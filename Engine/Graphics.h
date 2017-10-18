@@ -138,5 +138,5 @@ private:
 	TextSurface                                         sysBuffer;
 public:
 	static constexpr unsigned int ScreenWidth = 680u;
-	static constexpr unsigned int ScreenHeight = 680u;
+	static constexpr unsigned int ScreenHeight = 680u - 4u;
 };

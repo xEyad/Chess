@@ -102,27 +102,48 @@ void BoardPainter::DrawLabels(Vec2I GridTopleft,Color labelsClr) const
 		gfx.DrawText(std::to_wstring(rows), botRowLabels, fonto, labelsClr);
 	}
 }
-//1-stoneGrey, 2-stoneBlue, 3-stoneBlack, 4-wood
-void BoardPainter::ChangeSpriteTo(BoardSprites spritePic)
+
+void BoardPainter::ChangeSpriteTo(BoardSprites spritePic, bool wantLabeledBoard)
 {
-	switch (spritePic)
-	{
-		case BoardSprites::StoneGrey:
-			delete sprite;
-			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Grey\\Chess_Board_Stone2_nolabel.png"));
-			break;
-		case BoardSprites::StoneBlue:
-			delete sprite;
-			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Blue\\Chess_Board_Stone3_nolabel.png"));
-			break;
-		case BoardSprites::StoneBlack:
-			delete sprite;
-			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Black\\Chess_Board_Stone_nolabel.png"));
-			break;
-		default: //case 4 Wood
-			delete sprite;
-			sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Wood\\Chess_Board_wood_nolabel.png"));
-			break;
+	if(wantLabeledBoard)
+		switch (spritePic)
+		{
+			case BoardSprites::StoneGrey:
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Grey\\Chess_Board_Stone2.png"));
+				break;
+			case BoardSprites::StoneBlue:
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Blue\\Chess_Board_Stone3.png"));
+				break;
+			case BoardSprites::StoneBlack:
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Black\\Chess_Board_Stone.png"));
+				break;
+			default: //case 4 Wood
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Wood\\Chess_Board_wood.png"));
+				break;
+		}
+	else
+		switch (spritePic)
+		{
+			case BoardSprites::StoneGrey:
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Grey\\Chess_Board_Stone2_nolabel.png"));
+				break;
+			case BoardSprites::StoneBlue:
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Blue\\Chess_Board_Stone3_nolabel.png"));
+				break;
+			case BoardSprites::StoneBlack:
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Stone Black\\Chess_Board_Stone_nolabel.png"));
+				break;
+			default: //case 4 Wood
+				delete sprite;
+				sprite = new Surface(Surface::FromFile(L"Resources\\Chess Board\\Wood\\Chess_Board_wood_nolabel.png"));
+				break;
 		
-	}
+		}
 }

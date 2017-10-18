@@ -156,6 +156,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameDirector.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="GlobalEnums.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDirector.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />

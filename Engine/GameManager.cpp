@@ -12,7 +12,8 @@ GameManager::GameManager(Graphics& gfx, Mouse& mouse, Keyboard& kbd)
 	board(8, 8), //basic chess board	
 	boardPainter(gfx,board),
 	director(board),
-	font(L"times", 20.0f)
+	font(L"times", 20.0f),
+	feedbackFrame({ gridTopLeft.x ,gridTopLeft.y }, { (int)Graphics::ScreenWidth - gridTopLeft.x ,(int)Graphics::ScreenHeight - gridTopLeft.y + 2 })
 {		
 	boardPainter.ChangeSpriteTo(BoardPainter::BoardSprites::StoneBlue);
 	piecesPainter.ChangeStyleTo(PiecesPainter::PiecesStyle::stone);
@@ -34,26 +35,32 @@ void GameManager::DrawGameScreen()
 			curScreenTopleft = Vec2I( 0,0 );
 			screenPainter.DrawScreenWithHighlights(*pScreen, curScreenTopleft ,mouse.GetPos());
 			break;
+
 		case GameManager::UserStates::optionsMenu:
 			pScreen = std::make_unique<OptionsMenu>(OptionsMenu(&font));
 			curScreenTopleft = Vec2I(0, 0);
 			screenPainter.DrawScreenWithHighlights(*pScreen, curScreenTopleft, mouse.GetPos());
 			break;
-		case GameManager::UserStates::paused:
+
+		case GameManager::UserStates::gameOver:
+			DrawGameplayScreens();
+			pScreen = std::make_unique<GameOver>(GameOver(&font));
+			curScreenTopleft = Vec2I(0, 0);
+			screenPainter.DrawScreen(*pScreen, curScreenTopleft);
 			break;
+
 		case GameManager::UserStates::playing:
 			pScreen = nullptr;
+			curScreenTopleft = gridTopLeft;
 			DrawGameplayScreens();
 			break;
-		case GameManager::UserStates::exiting:
-			//kill Message
-			break;
+
 		default:
 			break;
 	}
 }
 
-void GameManager::HandleInput()
+bool GameManager::HandleInput()
 {
 	if (pScreen != nullptr)
 	{
@@ -67,7 +74,7 @@ void GameManager::HandleInput()
 			else if (btnName == "optBtn")
 				userState = UserStates::optionsMenu;
 			else if (btnName == "exitBtn")
-				userState = UserStates::exiting;
+				return false; //exit the program
 		}
 
 		else if (userState == UserStates::optionsMenu)
@@ -99,18 +106,34 @@ void GameManager::HandleInput()
 			if (btnName == "backBtn")
 				userState = UserStates::startMenu;
 		}
+
 	}
-	else
+	else // userState = playing
+	{
+		switch (kbd.ReadKey().GetCode())
+		{
+			case VK_F1:
+				ioManager.QuickSaveGame(GetGameState());
+				break;
+			case VK_F2:
+				LoadGameState(ioManager.QuickLoadGame());
+				break;
+			case VK_ESCAPE:
+				userState = UserStates::startMenu;
+				return true;
+			default:
+				break;
+		}
 		HandleGameplayInput();
+	}
+
+	return true;
 }
 
 void GameManager::DrawGameplayScreens()
 {
 	DrawStage();
-
-	if(kingUnderThreat)
-		gfx.DrawText(L"King is under Threat", { Graphics::ScreenWidth / 2 - 80.0f,0.0f }, font, Colors::Green);
-
+	
 	if (BlackPromotoinOnGoing)
 	{
 		static BlackPromotionScreen bps;
@@ -132,9 +155,6 @@ void GameManager::DrawGameplayScreens()
 			pawnPromotionRects.push_back(mpdBtn.GetBoundingBox(topLeft));
 		}
 	}
-
-	if (gameOver)
-		DrawGameOverScreen();
 }
 
 void GameManager::HandleGameplayInput()
@@ -205,7 +225,11 @@ void GameManager::HandleGameplayInput()
 				t2 = board.GetTileByMouse(gridTopLeft, mouse.GetPos()); //click 2 (get its coordinates)
 				if (t1 != nullptr && t2 != nullptr) //if the 2 clicks locations are valid
 				{
-					director.HandleInput(t1->location, t2->location,WhoseTurn(),gameTurn);
+					if (cheatMode)
+						director.HandleInputCheatMode(t1->location, t2->location, WhoseTurn(), gameTurn);
+					else
+						director.HandleInput(t1->location, t2->location,WhoseTurn(),gameTurn);
+
 					selectedPiece = nullptr;
 				}
 			}
@@ -213,9 +237,21 @@ void GameManager::HandleGameplayInput()
 	}
 }
 
+Color GameManager::CurrentHighlight() const
+{
+	if (kingUnderThreat)
+		return kingThreatHighlight;
+	else if (WhoseTurn() == Team::BLACK)
+		return blackPlayerHighlight;
+	else if (WhoseTurn() == Team::WHITE)
+		return whitePlayerHighlight;
+	else
+		return Colors::Green;
+}
+
 void GameManager::LoadGameState(GameState newState)
 {
-	board(*(newState.board)); // use the conversion operator	
+	board.copy(*(newState.board)); // use the conversion operator
 	gameTurn = newState.turn;
 	director.ChangeGamePieces(newState.pieces);	
 }
@@ -229,6 +265,11 @@ GameState GameManager::GetGameState()
 	return currentState;
 }
 
+void GameManager::SetCheatingMode(bool cheating)
+{
+	cheatMode = cheating;
+}
+
 void GameManager::DrawStage()
 {
 #if _DEBUG // DEBUG mode
@@ -237,9 +278,9 @@ void GameManager::DrawStage()
 	boardPainter.DrawSprite();
 	piecesPainter.DrawPiecesSprites(gridTopLeft);
 #endif 
-			
-	boardPainter.DrawLabels(gridTopLeft, Colors::White);
-	boardPainter.DrawGrid(gridTopLeft, Colors::LightGray);
+	
+	//boardPainter.DrawLabels(gridTopLeft, Colors::White);
+	boardPainter.DrawGrid(gridTopLeft, CurrentHighlight());
 	
 	if (selectedPiece)
 	{
@@ -247,21 +288,7 @@ void GameManager::DrawStage()
 		boardPainter.HighlightTiles(gridTopLeft, p, Colors::Orange);
 	}
 	boardPainter.HighlightTile(gridTopLeft, mouse.GetPos(), tileHighlightClr); //re check color
-	DrawWhoseTurn(Colors::Green);
-	DrawTurn(Colors::Orange);	
-}
-
-void GameManager::DrawGameOverScreen()
-{
-	std::random_device rd; // obtain a random number from hardware
-	std::mt19937 eng(rd()); // seed the generator
-	std::mt19937 eng2(rd()); // seed the generator
-	std::uniform_int_distribution<> distr(0, 225); // define the range
-	for (auto y = 10.0f; y < Graphics::ScreenHeight; y += 30)
-	{
-		gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,y }, TextSurface::Font(L"times", 15.0f), Colors::MakeRGB(distr(eng), distr(eng) + distr(eng2), distr(eng) - distr(eng2)));
-	}
-	gfx.DrawText(L"GAME OVER!", { Graphics::ScreenWidth / 2 - 80.0f,Graphics::ScreenHeight / 2 + 30 }, TextSurface::Font(L"times", 15.0f), Colors::Black);
+	//DrawTurn(Colors::Orange);	
 }
 
 void GameManager::ProcessEvents()
@@ -287,6 +314,7 @@ void GameManager::ProcessEvents()
 				break;
 			case GameDirector::DirectorEvent::GameOver:
 				gameOver = true;
+				userState = UserStates::gameOver;
 				break;
 			default:
 				break;
@@ -308,28 +336,12 @@ void GameManager::PromotionModeEnd()
 	promotoinOnGoing = false;
 }
 
-void GameManager::DrawWhoseTurn(Color clr)
-{
-	switch (WhoseTurn())
-	{
-		case Team::BLACK:
-			//gfx.DrawText(L"B", { 0.0f,0.0f }, fontus, Colors::Green);
-			gfx.DrawText(L"B", { Graphics::ScreenWidth - 25.0f,Graphics::ScreenHeight - 30.0f, }, font, clr);
-			break;
-		case Team::WHITE:
-			//gfx.DrawText(L"W", { 0.0f,00.0f }, fontus, Colors::Green);
-			gfx.DrawText(L"W", { Graphics::ScreenWidth - 30.0f,Graphics::ScreenHeight - 30.0f, }, font, clr);
-			break;
-		default:
-			gfx.DrawText(L"Whoops, Error!", { 0.0f,20.0f }, font, Colors::Red);
-			break;
-	}
-}
 void GameManager::DrawTurn(Color clr)
 {
 	std::wstring turnNumber = std::wstring(L"Turn ") + std::to_wstring(gameTurn);
 	gfx.DrawText(turnNumber, { 0.0f,0.0f }, font, clr );
 }
+
 GlobalEnums::Team GameManager::WhoseTurn() const
 {
 	if (gameTurn % 2 == 0) //even

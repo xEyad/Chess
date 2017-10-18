@@ -19,16 +19,14 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #include "Game.h"
-#include "StartMenu.h"
-#include "ScreenPainter.h"
-#include "InteractionHandler.h"
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
 	manager(gfx, wnd.mouse,wnd.kbd)
 {
-	
+	manager.SetCheatingMode(false);
+	wnd.kbd.DisableAutorepeat();
 }
 
 void Game::Go()
@@ -41,22 +39,12 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	manager.HandleInput();
-	switch (wnd.kbd.ReadKey().GetCode())
-	{
-		case VK_F1:
-			ioManager.QuickSaveGame(manager.GetGameState());
-			break;
-		case VK_F2:
-			manager.LoadGameState(ioManager.QuickLoadGame());
-			break;
-		default:
-			break;
-	}
+	if (manager.HandleInput() == false)
+		wnd.Kill();
 }
 
 void Game::ComposeFrame()
 {		
-	manager.DrawGameScreen();
+	manager.DrawGameScreen(); 
 }
 

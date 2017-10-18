@@ -26,7 +26,6 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "GameManager.h"
-#include "IOManger.h"
 #include "MainWindow.h"
 #include "ChiliWin.h"
 class Game
@@ -49,7 +48,6 @@ private:
 	/********************************/
 	/*  User Variables              */
 	GameManager manager;
-	IOManager ioManager;
 	/********************************/
 };
 

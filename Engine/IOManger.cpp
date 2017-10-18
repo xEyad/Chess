@@ -44,7 +44,7 @@ GameState IOManager::LoadGame(std::string saveFile)
 	//open file
 	ifstream loadFile(saveFile);
 	GlobalEnums::GameState loadedState;
-	loadedState.board = std::make_shared<Board>(Board(8,8)); //jeap allocation is done by make_shared
+	loadedState.board = std::make_shared<Board>(Board(8,8)); //Heap allocation is done by make_shared
 
 	//check if its there
 	if (loadFile)

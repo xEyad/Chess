@@ -195,6 +195,9 @@
     <ClInclude Include="OptionsMenu.h">
       <Filter>Header Files\Game Screens</Filter>
     </ClInclude>
+    <ClInclude Include="GameOver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="OptionsMenu.cpp">
       <Filter>Source Files\Game Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOver.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

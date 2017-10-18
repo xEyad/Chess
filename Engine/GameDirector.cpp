@@ -221,57 +221,24 @@ bool GameDirector::MovePiece(std::shared_ptr<Piece> piece, Vec2I Location)
 	//move piece
 	if (piece->MoveTo(Location))
 	{
-		//affect all other pieces and tell board
-
-		if (board.IsInsideTheBoard(piece->OldLocation()))
-			board.ResetTile(piece->OldLocation());//supposing that we left this tile empty		
-		
-		auto tile = board.GetTile(piece->Locate());
-
-		//if tile contains a piece then we send it to prison.
-		if (tile->CurState().containPiece) 
-		{			
-			std::shared_ptr<Piece> p = getPiece(piece->Locate(), tile->CurState().piecetype, tile->CurState().pieceTeam);
-			if (p != nullptr)
-			{
-				MarkForDestruction(p);
-				//if captured piece is KING
-				if (p->GetType() == KING)				
-					gameEvents.push(GameDirector::DirectorEvent::GameOver);				
-			}
-		}
-
-		// check for promotions
-		if (dynamic_cast<Pawn*>(piece.get()) != nullptr && dynamic_cast<Pawn*>(piece.get())->isTransformed())
-		{
-			EnterPromotionMode(piece.get());
-
-			//adding event
-			if (piece->GetTeam() == Team::BLACK)
-				gameEvents.push(GameDirector::DirectorEvent::EnterBlackPromotion);
-			else if (piece->GetTeam() == Team::WHITE)
-				gameEvents.push(GameDirector::DirectorEvent::EnterWhitePromotion);
-		}
-		
-		// do changes to the tile which the piece moved TO
-		board.PutPieceOnTile(Location, piece);
-
-		//report kings' location
-		if (piece->GetType() == KING)
-		{
-			if (piece->GetTeam() == Team::BLACK)
-				BKingLoc = piece->Locate();
-
-			else if (piece->GetTeam() == Team::WHITE)
-				WKingLoc = piece->Locate();			
-		}
+		ReflectChangesToBoard(piece);
 		return true;
 	}
 	else
 		return false;
 }
 
-void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Location,GlobalEnums::Team teamToPlay,int gameTurn )
+bool GameDirector::PutPieceAt(std::shared_ptr<Piece> piece, Vec2I Location)
+{
+	if (piece->PutAt(Location))
+	{
+		ReflectChangesToBoard(piece);
+		return true;
+	}
+	return false;
+}
+
+void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Location,const GlobalEnums::Team teamToPlay, const int gameTurn )
 {	
 	if (tile1Location != tile2Location) //if the 2 clicks locations are valid
 	{
@@ -330,39 +297,33 @@ void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Locat
 				{
 					//do turn
 					gameEvents.push(DirectorEvent::TurnPassed);					
-					gameEvents.push(DirectorEvent::KingIsSafe);
 					GenerateMovesForAllPieces();
 					CheckKingsSafety();
 					if (!AreKingsSafe())
 					{ //prevent player from putting his king in danger
 						RerollTurn(pieceInT1);
-						gameEvents.pop();
 						gameEvents.pop();
 					}
 				}
 				else if (DoCastling(pieceInT1, pieceInT2))
 				{
 					gameEvents.push(DirectorEvent::TurnPassed);
-					gameEvents.push(DirectorEvent::KingIsSafe);
 					GenerateMovesForAllPieces();
 					CheckKingsSafety();
 					if (!AreKingsSafe())
 					{ //prevent player from putting his king in danger
 						RerollTurn(pieceInT1);
 						gameEvents.pop();
-						gameEvents.pop();
 					}
 				}
 				else if (DoEnPassant(pieceInT1, tile2Location))
 				{
 					gameEvents.push(DirectorEvent::TurnPassed);
-					gameEvents.push(DirectorEvent::KingIsSafe);
 					GenerateMovesForAllPieces();
 					CheckKingsSafety();
 					if (WillKingBeDead(pieceInT1))
 					{ //prevent player from putting his king in danger
 						RerollTurn(pieceInT1);
-						gameEvents.pop();
 						gameEvents.pop();
 					}
 				}
@@ -374,100 +335,38 @@ void GameDirector::HandleInput(const Vec2I tile1Location, const Vec2I tile2Locat
 	}		
 }
 
-void GameDirector::HandleInputCheatMode(const Vec2I tile1Location, const Vec2I tile2Location, int gameTurn)
+void GameDirector::HandleInputCheatMode(const Vec2I tile1Location, const Vec2I tile2Location, const GlobalEnums::Team teamToPlay, const int gameTurn)
 {
-	//it still doesn't trigger events!
-		if (tile1Location != tile2Location) //if the 2 clicks locations are valid
-		{
-			//move the piece (if its logical)
-			auto pieceInT1 = getPiece(tile1Location);
-			auto pieceInT2 = getPiece(tile2Location);
+	if (tile1Location != tile2Location) //if the 2 clicks locations are valid
+	{
+		//move the piece (if its logical)
+		auto pieceInT1 = getPiece(tile1Location);
+		auto pieceInT2 = getPiece(tile2Location);
 
-
-			if (AreKingsSafe())
+		if (pieceInT1 != nullptr)
+		{			
+			if (DoCastling(pieceInT1, pieceInT2))
 			{
-				if (pieceInT1 != nullptr)
-				{
-					if (MovePiece(pieceInT1,tile2Location)) //if piece moved
-					{
-						//do turn
-						GenerateMovesForAllPieces();
-						CheckKingsSafety();
-
-						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-						{ //prevent player from putting his king in danger
-
-							RerollTurn(pieceInT1);
-						}
-					}
-					else if (DoCastling(pieceInT1, pieceInT2))
-					{
-						GenerateMovesForAllPieces();
-						CheckKingsSafety();
-						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-						{ //prevent player from putting his king in danger
-							RerollTurn(pieceInT1);
-						}
-					}
-					else if (DoEnPassant(pieceInT1, tile2Location))
-					{
-						GenerateMovesForAllPieces();
-						CheckKingsSafety();
-
-						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-						{ //prevent player from putting his king in danger
-							RerollTurn(pieceInT1);
-						}
-					}
-				}
+				gameEvents.push(DirectorEvent::TurnPassed);
+				GenerateMovesForAllPieces();
 			}
-			else //king is already under threat
+			/*else if (DoEnPassant(pieceInT1, tile2Location))
 			{
-				//block moves if it doesn't remove threats
-				if (pieceInT1 != nullptr)
-				{
-					if (MovePiece(pieceInT1,tile2Location)) //if piece moved
-					{
-						GenerateMovesForAllPieces();
-						CheckKingsSafety();
-						if (!AreKingsSafe())
-						{
-							RerollTurn(pieceInT1);
-						}
-					}
-					else if (DoCastling(pieceInT1, pieceInT2))
-					{
-						GenerateMovesForAllPieces();
-						CheckKingsSafety();
-						if (!AreKingsSafe())
-						{
-							RerollTurn(pieceInT1);
-						}
-					}
-					else if (DoEnPassant(pieceInT1, tile2Location))
-					{
-						GenerateMovesForAllPieces();
-						CheckKingsSafety();
-						if ((WkingUnderThreat && pieceInT1->GetTeam() == Team::WHITE) ||
-							(BkingUnderThreat && pieceInT1->GetTeam() == Team::BLACK))
-						{ //prevent player from putting his king in danger
-							RerollTurn(pieceInT1);
-						}
-					}
-				}
-
+				gameEvents.push(DirectorEvent::TurnPassed);
+				GenerateMovesForAllPieces();
+			}*/
+			 else if (PutPieceAt(pieceInT1, tile2Location)) //if moving succeed (if it actually moved!)
+			{
+				//do turn					
+				gameEvents.push(DirectorEvent::TurnPassed);
+				GenerateMovesForAllPieces();
 			}
-
-			DestroyMarkedPiece();
-			CheckForEnPassants(gameTurn);
+				CheckKingsSafety();
 		}
-	
+		DestroyMarkedPiece();
+		CheckForEnPassants(gameTurn);
+	}
 }
-
-
 
 void GameDirector::PromoteTo(GlobalEnums::pieceType type)
 {	
@@ -560,14 +459,14 @@ bool GameDirector::DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Pie
 		{
 			if (king->Locate().x < rook->Locate().x) //means rook is on the right
 			{//t2 rook
-				king->PutAt({ king->Locate().x + 2,y });
-				rook->PutAt({ king->Locate().x - 1,y });
+				PutPieceAt(king, { king->Locate().x + 2,y });
+				PutPieceAt(rook, { king->Locate().x - 1,y });
 				return true;
 			}
 			else //rook is on left
 			{
-				king->PutAt({ king->Locate().x - 2,y });
-				rook->PutAt({ king->Locate().x + 1,y });
+				PutPieceAt(king, { king->Locate().x - 2,y });
+				PutPieceAt(rook, { king->Locate().x + 1,y });
 				return true;
 			}
 		}
@@ -586,7 +485,7 @@ bool GameDirector::DoEnPassant(std::shared_ptr<Piece> piece, Vec2I tileLoc)
 		auto pawn = std::dynamic_pointer_cast<Pawn>(piece);
 		if (std::find(pawn->getValidTiles().begin(), pawn->getValidTiles().end(), tile->location) != pawn->getValidTiles().end()) //if its valid tile
 		{
-			if (pawn->PutAt(tile->location))
+			if (PutPieceAt(pawn,tile->location))
 			{
 				if (pawn->GetTeam() == Team::WHITE)
 				{
@@ -797,6 +696,55 @@ void GameDirector::CheckKingsSafety()
 		WkingUnderThreat = false;
 		BkingUnderThreat = false;
 		threatningPiece = nullptr;
+		gameEvents.push(DirectorEvent(DirectorEvent::KingIsSafe));
+	}
+}
+
+void GameDirector::ReflectChangesToBoard(std::shared_ptr<Piece> piece)
+{
+	//affect all other pieces and tell board
+
+	if (board.IsInsideTheBoard(piece->OldLocation()))
+		board.ResetTile(piece->OldLocation());//supposing that we left this tile empty		
+
+	auto tile = board.GetTile(piece->Locate());
+
+	//if tile contains a piece then we send it to prison.
+	if (tile->CurState().containPiece)
+	{
+		std::shared_ptr<Piece> p = getPiece(piece->Locate(), tile->CurState().piecetype, tile->CurState().pieceTeam);
+		if (p != nullptr)
+		{
+			MarkForDestruction(p);
+			//if captured piece is KING
+			if (p->GetType() == KING)
+				gameEvents.push(GameDirector::DirectorEvent::GameOver);
+		}
+	}
+
+	// check for promotions
+	if (dynamic_cast<Pawn*>(piece.get()) != nullptr && dynamic_cast<Pawn*>(piece.get())->isTransformed())
+	{
+		EnterPromotionMode(piece.get());
+
+		//adding event
+		if (piece->GetTeam() == Team::BLACK)
+			gameEvents.push(GameDirector::DirectorEvent::EnterBlackPromotion);
+		else if (piece->GetTeam() == Team::WHITE)
+			gameEvents.push(GameDirector::DirectorEvent::EnterWhitePromotion);
+	}
+
+	// do changes to the tile which the piece moved TO
+	board.PutPieceOnTile(piece->Locate(), piece);
+
+	//report kings' location
+	if (piece->GetType() == KING)
+	{
+		if (piece->GetTeam() == Team::BLACK)
+			BKingLoc = piece->Locate();
+
+		else if (piece->GetTeam() == Team::WHITE)
+			WKingLoc = piece->Locate();
 	}
 }
 

@@ -10,6 +10,8 @@
 #include "InteractionHandler.h"
 #include "StartMenu.h"
 #include "OptionsMenu.h"
+#include "GameOver.h"
+#include "IOManger.h"
 //responsible for drawing(rendering) and connecting between major classes
 class GameManager
 {
@@ -17,7 +19,7 @@ class GameManager
 	{
 		startMenu,
 		optionsMenu,
-		paused,
+		gameOver,
 		playing,
 		exiting
 	};
@@ -25,25 +27,25 @@ public:
 	GameManager(Graphics& gfx, Mouse& mouse, Keyboard& kbd);
 	~GameManager();
 	void DrawGameScreen();
-	void HandleInput(); //screens input
+	bool HandleInput(); //screens input, false = QUIT
 	void LoadGameState(GameState newState);
 	GameState GetGameState();
+	void SetCheatingMode(bool cheating);
 private:
 	void DrawGameplayScreens();
 	void DrawStage();
-	void DrawGameOverScreen(); //should be a subclass of GameScreen
 	void ProcessEvents();
 	void PromotionModeStart(bool whitePromotion);
 	void PromotionModeEnd();
-	void DrawWhoseTurn(Color clr); 
 	void DrawTurn(Color clr); 
 	void HandleGameplayInput(); //only input related to pieces and moving etc..
-
+	Color CurrentHighlight() const;
 	GlobalEnums::Team WhoseTurn() const;
 private:
 	Graphics& gfx;
 	Mouse& mouse;
 	Keyboard& kbd;
+	IOManager ioManager;
 	InteractionHandler inputter;
 	UserStates userState;
 	const TextSurface::Font font;
@@ -53,7 +55,11 @@ private:
 	PiecesPainter piecesPainter; 
 	ScreenPainter screenPainter;
 	Color tileHighlightClr = Colors::Red;
+	Color kingThreatHighlight = Colors::Red;
+	Color blackPlayerHighlight = Colors::Black;
+	Color whitePlayerHighlight = Colors::White;
 	const Vec2I gridTopLeft = { 20, 21 };
+	RectI feedbackFrame;
 	std::shared_ptr<Piece> selectedPiece = nullptr;
 	std::shared_ptr<Tile> selectedTile = nullptr;
 	std::vector<RectI> pawnPromotionRects;
@@ -66,4 +72,5 @@ private:
 	bool BlackPromotoinOnGoing = false;
 	bool promotoinOnGoing = false;
 	bool gameOver = false;
+	bool cheatMode = false;
 };

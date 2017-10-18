@@ -84,8 +84,9 @@ public:
 
 	//logical actions
 	bool MovePiece(std::shared_ptr<Piece> piece, Vec2I Location);
-	void HandleInput(const Vec2I tile1Location, const Vec2I tile2Location, GlobalEnums::Team teamToPlay, int gameTurn);
-	void HandleInputCheatMode(const Vec2I tile1Location, const Vec2I tile2Location, int gameTurn); //needs REFACTORING
+	bool PutPieceAt(std::shared_ptr<Piece> piece, Vec2I Location); //doesn't give a fuck about game rules
+	void HandleInput(const Vec2I tile1Location, const Vec2I tile2Location,const GlobalEnums::Team teamToPlay,const int gameTurn);
+	void HandleInputCheatMode(const Vec2I tile1Location,const Vec2I tile2Location,const GlobalEnums::Team teamToPlay,const int gameTurn); 
 	void PromoteTo(GlobalEnums::pieceType type);
 	bool DoCastling(std::shared_ptr<Piece> piece1, std::shared_ptr<Piece> piece2);
 	bool DoEnPassant(std::shared_ptr<Piece> piece, Vec2I tileLoc);
@@ -102,6 +103,7 @@ private:
 	//generates moves and checks if king is threatened
 	void GenerateMovesForAllPieces();
 	void CheckKingsSafety(); //here it adds event kingThreat
+	void ReflectChangesToBoard(std::shared_ptr<Piece> piece); //called after the piece had actually done a move
 private:
 	std::vector<std::shared_ptr<Piece>> pieces;
 	Board &board;
