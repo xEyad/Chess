@@ -8,7 +8,7 @@
   <SolutionCreattionDate>2019-07-15T16:14:36.9572038+02:00</SolutionCreattionDate>
   <ProjectsCreatedDateList>
     <ProjectCreated>
-      <ProjectName>D:\workshop\Chess - Copy\Engine\Engine.vcxproj</ProjectName>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
       <CreatedDate>2017-10-18T21:10:59.0381979+02:00</CreatedDate>
     </ProjectCreated>
   </ProjectsCreatedDateList>
@@ -20,9 +20,9 @@
       <ModifiedBy>eyad</ModifiedBy>
       <EditedCount>1</EditedCount>
       <ViewedCount>1</ViewedCount>
-      <Item>D:\workshop\Chess - Copy\Engine\Button.h</Item>
+      <Item>D:\workshop\Chess\Engine\Button.h</Item>
       <ItemType>ProjectItem</ItemType>
-      <ProjectName>D:\workshop\Chess - Copy\Engine\Engine.vcxproj</ProjectName>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
       <CreatedDate>2019-07-15T16:17:21.4773641+02:00</CreatedDate>
       <ViewedBy>eyad</ViewedBy>
     </DevTrackerDataItem>
@@ -53,9 +53,9 @@
       <ModifiedBy>eyad</ModifiedBy>
       <EditedCount>1</EditedCount>
       <ViewedCount>1</ViewedCount>
-      <Item>D:\workshop\Chess - Copy\Engine\Button.h</Item>
+      <Item>D:\workshop\Chess\Engine\Button.h</Item>
       <ItemType>ProjectItem</ItemType>
-      <ProjectName>D:\workshop\Chess - Copy\Engine\Engine.vcxproj</ProjectName>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
       <CreatedDate>2019-07-15T16:17:21.4773641+02:00</CreatedDate>
       <ViewedBy>eyad</ViewedBy>
     </DevTrackerDataItem>
