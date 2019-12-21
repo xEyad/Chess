@@ -14,23 +14,23 @@ OptionsMenu::OptionsMenu(const TextSurface::Font* font)
 
 	stoneGrey(Text(L"Stone\nGrey ", firstPrevLbl, font, textClr),
 		GuidedButton(Button::CreateTextlessButton(prevBoxSide, prevBoxSide), firstPrevBox, true, prevBoxHighlight, "stoneGreyBtn"),
-		GuidedSurface(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\prevStoneGrey.png")), firstPrevBox)),
+		GuidedSurface(new Surface(Surface::FromFile(L"Resources\\images\\prevStoneGrey.png")), firstPrevBox)),
 
 	stoneBlue(Text(L"Stone\nBlue ", { firstPrevLbl.x + prevLblSepDist , firstPrevLbl.y }, font, textClr),
 		GuidedButton(Button::CreateTextlessButton(prevBoxSide, prevBoxSide), Vec2I(firstPrevBox.x + prevBoxSepDist, firstPrevBox.y), true, prevBoxHighlight, "stoneBlueBtn"),
-		GuidedSurface(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\prevStoneBlue.png")), Vec2I(firstPrevBox.x + prevBoxSepDist, firstPrevBox.y))),
+		GuidedSurface(new Surface(Surface::FromFile(L"Resources\\images\\prevStoneBlue.png")), Vec2I(firstPrevBox.x + prevBoxSepDist, firstPrevBox.y))),
 
 	stoneBlack(Text(L"Stone\nBlack ", { firstPrevLbl.x + prevLblSepDist * 2 , firstPrevLbl.y }, font, textClr),
 		GuidedButton(Button::CreateTextlessButton(prevBoxSide, prevBoxSide), Vec2I(firstPrevBox.x + prevBoxSepDist * 2, firstPrevBox.y), true, prevBoxHighlight, "stoneBlackBtn"),
-		GuidedSurface(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\prevStoneBlack.png")), Vec2I(firstPrevBox.x + prevBoxSepDist * 2, firstPrevBox.y))),
+		GuidedSurface(new Surface(Surface::FromFile(L"Resources\\images\\prevStoneBlack.png")), Vec2I(firstPrevBox.x + prevBoxSepDist * 2, firstPrevBox.y))),
 
 	wood(Text(L"Wood ", { firstPrevLbl.x + prevLblSepDist * 3 -10 , firstPrevLbl.y +20 }, font, textClr),
 		GuidedButton(Button::CreateTextlessButton(prevBoxSide, prevBoxSide), Vec2I(firstPrevBox.x + prevBoxSepDist * 3, firstPrevBox.y), true, prevBoxHighlight, "woodBtn"),
-		GuidedSurface(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\prevWood.png")), Vec2I(firstPrevBox.x + prevBoxSepDist * 3, firstPrevBox.y))),
+		GuidedSurface(new Surface(Surface::FromFile(L"Resources\\images\\prevWood.png")), Vec2I(firstPrevBox.x + prevBoxSepDist * 3, firstPrevBox.y))),
 
 
 	backBtn(Button(119, 60, L"Back",textClr,Colors::Green,Colors::Green,false,false), { 280,530 }, true, prevBoxHighlight, "backBtn",true),
-	background(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\optionsMenu.jpg")),Vec2I(0,0))
+	background(new Surface(Surface::FromFile(L"Resources\\images\\optionsMenu.jpg")),Vec2I(0,0))
 {
 	buttons.push_back(stoneGrey.btn);
 	buttons.push_back(stoneBlue.btn);

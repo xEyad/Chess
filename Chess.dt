@@ -1,20 +1,241 @@
 <?xml version="1.0" encoding="utf-16"?>
-<DevTrackerData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SolutionTotalEditTime="PT2.9245408S" SolutionTotalViewTime="PT1M40.5863867S" SolutionTotalDebugTime="PT3.8670724S">
+<DevTrackerData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SolutionTotalEditTime="PT2.9245408S" SolutionTotalViewTime="PT16M38.0961189S" SolutionTotalDebugTime="PT3M21.5691471S">
   <FileVersion>
     <Major>1</Major>
     <Minor>0</Minor>
   </FileVersion>
-  <SolutionFolder>D:\workshop\Chess - Copy</SolutionFolder>
+  <SolutionFolder>D:\workshop\Chess</SolutionFolder>
   <SolutionCreattionDate>2019-07-15T16:14:36.9572038+02:00</SolutionCreattionDate>
   <ProjectsCreatedDateList>
     <ProjectCreated>
       <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
-      <CreatedDate>2017-10-18T21:10:59.0381979+02:00</CreatedDate>
+      <CreatedDate>2019-07-16T04:22:34.5580426+02:00</CreatedDate>
     </ProjectCreated>
   </ProjectsCreatedDateList>
   <SessionTimeList />
-  <LastSessionTimeList />
+  <LastSessionTimeList>
+    <DevTrackerDataItem ViewActiveTime="PT16.0762877S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Bishop.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:27.8376321+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.9025772S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Bitmap.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:23.1355627+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1M39.4090765S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\BlackPromotionScreen.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:09:41.9770262+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT7.7993156S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Board.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:36:32.5632353+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.4319876S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Button.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:24.0401414+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1M52.63855S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>Debug Mode</Item>
+      <ItemType>DebugModeItem</ItemType>
+      <ProjectName />
+      <CreatedDate>2019-12-21T20:34:38.7542937+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT38.2566367S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Game.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:18.1812584+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.7286038S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameDirector.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:17.4506545+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT47.5795469S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameManager.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:16.7556713+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT36.7297709S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameOver.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:36:37.0864342+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT4.2460013S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameScreen.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:07:59.0637016+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1.4007571S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\InteractionHandler.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:13.2212208+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.7317316S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\IOManger.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:15.4289554+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT10M36.6797335S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Knight.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:28.7126086+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.8059776S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Painter.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:14.6229778+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT2.374226S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Resource.rc</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:12:18.6089303+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT3.3645028S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Timer.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:24.472129+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+  </LastSessionTimeList>
   <TotalTimeList>
+    <DevTrackerDataItem ViewActiveTime="PT16.0762877S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Bishop.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:27.8376321+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.9025772S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Bitmap.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:23.1355627+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1M39.4030759S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\BlackPromotionScreen.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:09:41.9770262+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT7.7993156S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Board.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:36:32.5632353+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.4319876S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Button.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:24.0401414+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
     <DevTrackerDataItem ViewActiveTime="PT1M40.5863867S" EditActiveTime="PT2.9245408S">
       <ModifiedDate>2019-07-15T16:17:28.3089372+02:00</ModifiedDate>
       <ModifiedBy>eyad</ModifiedBy>
@@ -26,37 +247,296 @@
       <CreatedDate>2019-07-15T16:17:21.4773641+02:00</CreatedDate>
       <ViewedBy>eyad</ViewedBy>
     </DevTrackerDataItem>
-    <DevTrackerDataItem ViewActiveTime="PT3.8670724S" EditActiveTime="PT0S">
+    <DevTrackerDataItem ViewActiveTime="PT3M21.5701447S" EditActiveTime="PT0S">
       <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
       <EditedCount>0</EditedCount>
-      <ViewedCount>1</ViewedCount>
+      <ViewedCount>3</ViewedCount>
       <Item>Debug Mode</Item>
       <ItemType>DebugModeItem</ItemType>
       <ProjectName />
       <CreatedDate>2019-07-15T16:17:42.6063373+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT38.2566367S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Game.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:18.1812584+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.7286038S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameDirector.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:17.4506545+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT47.5795469S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameManager.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:16.7556713+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT36.7297709S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameOver.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:36:37.0864342+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT4.2460013S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameScreen.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:07:59.0637016+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1.4007571S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\InteractionHandler.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:13.2212208+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.7317316S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\IOManger.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:15.4289554+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT10M36.6797335S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Knight.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:28.7126086+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.8059776S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Painter.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:14.6229778+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT2.374226S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Resource.rc</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:12:18.6089303+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT3.3645028S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Timer.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:24.472129+02:00</CreatedDate>
       <ViewedBy>eyad</ViewedBy>
     </DevTrackerDataItem>
   </TotalTimeList>
   <HistoryTimeList>
-    <DevTrackerDataItem ViewActiveTime="PT3.8670724S" EditActiveTime="PT0S">
+    <DevTrackerDataItem ViewActiveTime="PT2.374226S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Resource.rc</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:12:18.6089303+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1M39.4040757S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\BlackPromotionScreen.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:09:41.9770262+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT4.2460013S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameScreen.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T22:07:59.0637016+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT10M36.6797335S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Knight.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:28.7126086+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT16.0762877S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Bishop.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:27.8376321+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT3.3645028S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Timer.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:24.472129+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.4319876S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Button.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:24.0401414+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.9025772S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Bitmap.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:23.1355627+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT38.2566367S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Game.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:18.1812584+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.7286038S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameDirector.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:17.4506545+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT47.5795469S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameManager.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:16.7556713+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.7317316S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\IOManger.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:15.4289554+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT0.8059776S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Painter.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:14.6229778+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1.4007571S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\InteractionHandler.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:37:13.2212208+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT36.7297709S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\GameOver.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:36:37.0864342+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT7.7993156S" EditActiveTime="PT0S">
+      <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
+      <EditedCount>0</EditedCount>
+      <ViewedCount>1</ViewedCount>
+      <Item>D:\workshop\Chess\Engine\Board.cpp</Item>
+      <ItemType>ProjectItem</ItemType>
+      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
+      <CreatedDate>2019-12-21T20:36:32.5632353+02:00</CreatedDate>
+      <ViewedBy>eyad</ViewedBy>
+    </DevTrackerDataItem>
+    <DevTrackerDataItem ViewActiveTime="PT1M52.63855S" EditActiveTime="PT0S">
       <ModifiedDate>0001-01-01T00:00:00</ModifiedDate>
       <EditedCount>0</EditedCount>
       <ViewedCount>1</ViewedCount>
       <Item>Debug Mode</Item>
       <ItemType>DebugModeItem</ItemType>
       <ProjectName />
-      <CreatedDate>2019-07-15T16:17:42.6063373+02:00</CreatedDate>
-      <ViewedBy>eyad</ViewedBy>
-    </DevTrackerDataItem>
-    <DevTrackerDataItem ViewActiveTime="PT1M40.5873889S" EditActiveTime="PT2.9245408S">
-      <ModifiedDate>2019-07-15T16:17:28.3089372+02:00</ModifiedDate>
-      <ModifiedBy>eyad</ModifiedBy>
-      <EditedCount>1</EditedCount>
-      <ViewedCount>1</ViewedCount>
-      <Item>D:\workshop\Chess\Engine\Button.h</Item>
-      <ItemType>ProjectItem</ItemType>
-      <ProjectName>D:\workshop\Chess\Engine\Engine.vcxproj</ProjectName>
-      <CreatedDate>2019-07-15T16:17:21.4773641+02:00</CreatedDate>
+      <CreatedDate>2019-12-21T20:34:38.7542937+02:00</CreatedDate>
       <ViewedBy>eyad</ViewedBy>
     </DevTrackerDataItem>
   </HistoryTimeList>

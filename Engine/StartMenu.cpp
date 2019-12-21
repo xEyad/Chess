@@ -19,7 +19,7 @@ StartMenu::StartMenu()
 	exitBtn(Button(btnsWidth, btnsHeight, L"Exit", btnsTxtClr, btnsEdgesClr, Colors::White, false, false),
 	{ btnsTopLeftOffset.x,btnsTopLeftOffset.y + btnsSepartaionDist }, true, btnsHighlight,"exitBtn",true),
 
-	backgroundSprite(new Surface(Surface::FromFile(L"D:\\workshop\\Chess\\Engine\\Resources\\images\\startMenu.jpg")), Vec2I( 0,0 ))
+	backgroundSprite(new Surface(Surface::FromFile(L"Resources\\images\\startMenu.jpg")), Vec2I( 0,0 ))
 {
 	buttons.push_back(playBtn);
 	buttons.push_back(optBtn);
